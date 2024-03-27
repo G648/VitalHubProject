@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "VitalHub",
+    "slug": "VitalHub",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "notification" :{
+      "icon" : "./src/assets/Images/LogoBlue.png",
+      "color": "green",
+      "androidMode": "default",
+      "androidCollapsedTitle": "Updates from Colab.notes",
+      "iosDisplayInForeground": true      
+    },
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./src/assets/Images/SplashScreen.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./src/assets/Images/LogoBlue.png",
+          "color": "green"
+        }
+      ]
+    ]
+  }
+}
