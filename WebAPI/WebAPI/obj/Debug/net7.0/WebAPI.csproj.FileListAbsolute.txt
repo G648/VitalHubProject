@@ -256,3 +256,14 @@ C:\Users\45845444845\Documents\VitalHubProject\WebAPI\WebAPI\obj\Debug\net7.0\We
 C:\Users\45845444845\Documents\VitalHubProject\WebAPI\WebAPI\obj\Debug\net7.0\WebAPI.dll
 C:\Users\45845444845\Documents\VitalHubProject\WebAPI\WebAPI\obj\Debug\net7.0\refint\WebAPI.dll
 C:\Users\45845444845\Documents\VitalHubProject\WebAPI\WebAPI\obj\Debug\net7.0\WebAPI.pdb
+C:\Users\45845444845\Downloads\VitalHubProject\WebAPI\WebAPI\obj\Debug\net7.0\WebAPI.csproj.AssemblyReference.cache
+C:\Users\45845444845\Downloads\VitalHubProject\WebAPI\WebAPI\obj\Debug\net7.0\WebAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\45845444845\Downloads\VitalHubProject\WebAPI\WebAPI\obj\Debug\net7.0\WebAPI.AssemblyInfoInputs.cache
+C:\Users\45845444845\Downloads\VitalHubProject\WebAPI\WebAPI\obj\Debug\net7.0\WebAPI.AssemblyInfo.cs
+C:\Users\45845444845\Downloads\VitalHubProject\WebAPI\WebAPI\obj\Debug\net7.0\WebAPI.csproj.CoreCompileInputs.cache
+C:\Users\45845444845\Downloads\VitalHubProject\WebAPI\WebAPI\obj\Debug\net7.0\WebAPI.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\45845444845\Downloads\VitalHubProject\WebAPI\WebAPI\obj\Debug\net7.0\WebAPI.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\45845444845\Downloads\VitalHubProject\WebAPI\WebAPI\obj\Debug\net7.0\WebAPI.sourcelink.json
+C:\Users\45845444845\Downloads\VitalHubProject\WebAPI\WebAPI\obj\Debug\net7.0\WebAPI.dll
+C:\Users\45845444845\Downloads\VitalHubProject\WebAPI\WebAPI\obj\Debug\net7.0\refint\WebAPI.dll
+C:\Users\45845444845\Downloads\VitalHubProject\WebAPI\WebAPI\obj\Debug\net7.0\WebAPI.pdb

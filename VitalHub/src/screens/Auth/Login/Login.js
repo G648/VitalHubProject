@@ -9,37 +9,44 @@ import { ActivityIndicator, TurboModuleRegistry, View } from 'react-native';
 import { ComeBack } from '../../../components/GoBackPage/GoBackPage';
 import { APP_COLORS } from '../../../utils/App_colors';
 import api, { LoginResource } from '../../../service/service';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Login = ({ navigation }) => {
 
   const [selectUser, setSelectUser] = useState("")
+
   const [submitData, setSubmitData] = useState({
     email: "guilherme@guilherme.com",
     senha: "string"
   })
+
   const [loading, setLoading] = useState(false)
 
   console.log(submitData);
 
   async function handleSelectUser() {
+
     setLoading(true)
-    if (selectUser === "Paciente") {
-      navigation.navigate("DoctorHome"); // Adicione a página correspondente para outro tipo de usuário
-    } else {
 
-      try {
-        const response = await api.post(LoginResource, submitData)
+    try {
+      const response = await api.post(LoginResource, submitData)
 
-        console.log(response);
+      await AsyncStorage.setItem("token", JSON.stringify(response.data))
 
+      if (selectUser === "Paciente") {
+        navigation.navigate("DoctorHome"); // Adicione a página correspondente para outro tipo de usuário
+      } else {
         navigation.navigate("HomePatient");
-
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false)
       }
+
+    } catch (error) {
+
+      console.log(error);
+
+    } finally {
+
+      setLoading(false)
     }
   }
 

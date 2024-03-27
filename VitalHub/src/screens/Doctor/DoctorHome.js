@@ -33,7 +33,6 @@ const DoctorHome = ({ navigation }) => {
             const token = await userDecodeToken();
 
             if (token) {
-                console.log('Token de acesso recuperado:', token);
 
                 setEmailUser(token.email)
                 setNomeUser(token.name)

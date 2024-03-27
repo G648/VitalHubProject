@@ -86,14 +86,6 @@ const PatientHome = ({ navigation }) => {
             return;
         }
 
-        //obter o token de envio de notificação
-        // const token = await Notifications.getExpoPushTokenAsync();
-
-        // console.log('====================================');
-        // console.log(token);
-        // console.log('====================================');
-
-        //agendar uma notificação para ser exibida após 5 segundos
         await Notifications.scheduleNotificationAsync({
             content: {
                 title: "Vital Hub",
@@ -112,7 +104,6 @@ const PatientHome = ({ navigation }) => {
             const token = await userDecodeToken();
 
             if (token) {
-                console.log('Token de acesso recuperado:', token);
 
                 setEmailUser(token.email)
                 setNomeUser(token.name)
