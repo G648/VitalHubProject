@@ -37,12 +37,12 @@ export const VerificaEmail = ({ navigation }) => {
             </ContainerValidator>
 
             <Button
-                titleButton={"Entrar"}
-                backgroudButton={APP_COLORS.secondaryV2}
-                fieldButton={APP_COLORS.secondaryV2}
+                title={"Entrar".toUpperCase()}
+                activeOpacity={.8}
+                backgroundColor={APP_COLORS.secondary}
+                border={APP_COLORS.secondary}
                 color={APP_COLORS.white}
-                buttonOppacity={.9}
-                marginTopButton={50}
+                marginTop={60}
             />
 
             <UnderlinedLink

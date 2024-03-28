@@ -47,12 +47,13 @@ export default function CadastroUser({ navigation }) {
             />
 
             <Button
-                backgroudButton={APP_COLORS.secondaryV2}
-                fieldButton={APP_COLORS.secondaryV2}
-                buttonOppacity={.9}
+                title={"cadastrar".toUpperCase()}
+                backgroundColor={APP_COLORS.secondary}
+                border={APP_COLORS.secondary}
                 color={APP_COLORS.white}
-                marginTopButton={25}
-                titleButton={"Cadastrar"}
+                marginTop={30}
+                activeOpacity={.8}
+                onPress={() => navigation.navigate("Login")}
             />
 
             <UnderlinedLink

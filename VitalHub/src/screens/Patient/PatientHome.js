@@ -16,7 +16,7 @@ import ScheduleAppointment from '../../components/Dialogs/ScheduleAppointment';
 import { SeeMedicalDialog } from '../../components/Dialogs/SeeMedicalDialog';
 import * as Notifications from 'expo-notifications'
 import { userDecodeToken } from '../../utils/Auth';
-import { Image } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 
 export const ScheduledButton = styled.TouchableOpacity`

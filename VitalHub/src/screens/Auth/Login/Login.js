@@ -5,11 +5,12 @@ import { Title } from '../../../components/Title/Style';
 import { Input, InputValues } from '../../../components/Input/Input';
 import { LinkMedium, UnderlinedLink } from '../../../components/Links/Style';
 import { Button, ButtonFlex } from '../../../components/Button/Button';
-import { ActivityIndicator, TurboModuleRegistry, View } from 'react-native';
+import { ActivityIndicator, Text, ToastAndroid, TurboModuleRegistry, View } from 'react-native';
 import { ComeBack } from '../../../components/GoBackPage/GoBackPage';
 import { APP_COLORS } from '../../../utils/App_colors';
 import api, { LoginResource } from '../../../service/service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 
 
 const Login = ({ navigation }) => {
@@ -18,8 +19,8 @@ const Login = ({ navigation }) => {
   const [errors, setErrors] = useState({})
   const [isFormValid, setIsFormValid] = useState(false);
   const [submitData, setSubmitData] = useState({
-    email: "guilherme@guilherme.com",
-    senha: "string"
+    email: "",
+    senha: ""
   })
 
   const [loading, setLoading] = useState(false)
@@ -28,14 +29,14 @@ const Login = ({ navigation }) => {
 
     setLoading(true)
 
-    if (isFormValid) {
+    if (!isFormValid) {
 
       // Form is valid, perform the submission logic 
       console.log('Form submitted successfully!');
     } else {
 
       // Form is invalid, display error messages 
-      console.log('Form has errors. Please correct them.');
+      showErrorToastMessage()
     }
 
     try {
@@ -51,7 +52,8 @@ const Login = ({ navigation }) => {
 
     } catch (error) {
 
-      console.log(error);
+      showValidationLogin()
+      console.log(`teste ${error}`);
 
     } finally {
 
@@ -59,35 +61,60 @@ const Login = ({ navigation }) => {
     }
   }
 
+  const showErrorToastMessage = () => {
+    Toast.show({
+      type: "success",
+      text1: "Login efetuado com sucesso",
+      text1Style: {
+        fontSize: 16
+      },
+      text2: `seja bem vindo: ${submitData.email}`,
+      text2Style: {
+        fontSize: 14
+      },
+      position: 'bottom',
+      bottomOffset: 40
+    })
+  }
+
+  const showValidationLogin = () => {
+    Toast.show({
+      type: 'error',
+      text1: 'Autenticação',
+      text2: 'Usuário ou senha inválidos',
+      visibilityTime: 4000,
+      position: 'bottom',
+      bottomOffset: 40
+    })
+  }
+
   const validateForm = () => {
     let errors = {};
 
     // Validate email field 
     if (!submitData.email) {
-      errors.submitData.email = 'Email is required.';
+      errors.email = 'Email is required.';
     } else if (!/\S+@\S+\.\S+/.test(submitData.email)) {
-      errors.submitData.email = 'Email is invalid.';
+      errors.email = 'Email is invalid.';
     }
 
     // Validate password field 
     if (!submitData.senha) {
-      errors.password = 'Password is required.';
+      errors.senha = 'Password is required.';
     } else if (submitData.senha.length < 6) {
-      errors.submitData.senha = 'Password must be at least 6 characters.';
+      errors.senha = 'Password must be at least 6 characters.';
     }
 
     // Set the errors and update form validity 
     setErrors(errors);
     setIsFormValid(Object.keys(errors).length === 0);
+
+    return Object.keys(errors).length === 0; // Return true if no errors, false otherwise
   }
 
-  const handleSubmit = () => {
-
-  };
-
-  // useEffect(() => {
-  //   validateForm()
-  // },[submitData.email, submitData.senha])
+  useEffect(() => {
+    validateForm();
+  }, [submitData]);
 
   return (
 
@@ -116,6 +143,15 @@ const Login = ({ navigation }) => {
           senha: txt
         })}
       />
+
+      {/* Display error messages */}
+      {Object.values(errors).map((error, index) => (
+        <Text key={index} style={{ color: 'red', fontSize: 16, marginBottom: 12 }}>
+          {error}
+        </Text>
+
+
+      ))}
 
       <UnderlinedLink
         textIntput={"Esqueceu a sua senha?"}
@@ -161,6 +197,8 @@ const Login = ({ navigation }) => {
           buttonAlign={'end'}
         />
       </View>
+
+
     </Container>
   );
 };

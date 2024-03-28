@@ -8,7 +8,7 @@ import { Button } from "../../../components/Button/Button";
 import { APP_COLORS } from "../../../utils/App_colors";
 import { ComeBack } from "../../../components/GoBackPage/GoBackPage";
 
-const Cadastro = ({navigation}) => {
+const Cadastro = ({ navigation }) => {
     return (
         <Container>
             <ComeBack
@@ -30,18 +30,18 @@ const Cadastro = ({navigation}) => {
                 textValue={"Digite abaixo seu email cadastrado que enviaremos um link para recuperação de senha"}
             />
 
-            <Input 
+            <Input
                 placeholder="Usuário ou Email"
             />
 
             <Button
-                backgroudButton={APP_COLORS.secondaryV2}
-                fieldButton={1}
-                titleButton={"Continuar".toUpperCase()}
+                backgroundColor={APP_COLORS.secondary}
+                border={APP_COLORS.secondary}
+                marginTop={60}
                 color={APP_COLORS.white}
-                marginTopButton={30}
-                onClick={() => {navigation.navigate('VerificaEmail')}}
-                buttonOppacity={0.8}
+                title={"Continuar".toUpperCase()}
+                onPress={() => { navigation.navigate('VerificaEmail') }}
+                activeOpacity={.8}
             />
 
         </Container>
