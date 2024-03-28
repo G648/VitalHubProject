@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container } from '../../../components/Container/Style';
 import { Logo } from '../../../components/Logo/Style';
 import { Title } from '../../../components/Title/Style';
@@ -9,37 +9,43 @@ import { ActivityIndicator, TurboModuleRegistry, View } from 'react-native';
 import { ComeBack } from '../../../components/GoBackPage/GoBackPage';
 import { APP_COLORS } from '../../../utils/App_colors';
 import api, { LoginResource } from '../../../service/service';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Login = ({ navigation }) => {
 
   const [selectUser, setSelectUser] = useState("")
+  const [errors, setErrors] = useState({})
+  const [isFormValid, setIsFormValid] = useState(false);
   const [submitData, setSubmitData] = useState({
-    email: "guilherme@guilherme.com",
-    senha: "string"
+    email: "biel@biel.com",
+    senha: "123456"
   })
+
   const [loading, setLoading] = useState(false)
 
-  console.log(submitData);
-
   async function handleSelectUser() {
+
     setLoading(true)
-    if (selectUser === "Paciente") {
-      navigation.navigate("DoctorHome"); // Adicione a página correspondente para outro tipo de usuário
-    } else {
 
-      try {
-        const response = await api.post(LoginResource, submitData)
+    try {
+      const response = await api.post(LoginResource, submitData)
 
-        console.log(response);
+      await AsyncStorage.setItem("token", JSON.stringify(response.data))
 
+      if (selectUser === "Paciente") {
+        navigation.navigate("DoctorHome"); // Adicione a página correspondente para outro tipo de usuário
+      } else {
         navigation.navigate("HomePatient");
-
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false)
       }
+
+    } catch (error) {
+
+      console.log(error);
+
+    } finally {
+
+      setLoading(false)
     }
   }
 
@@ -86,7 +92,8 @@ const Login = ({ navigation }) => {
         activeOpacity={1}
         title={!loading ? "Entrar".toUpperCase() : <ActivityIndicator size='small' color="#fff" />}
         marginTop={15}
-        buttonOppacity={0.8}
+        buttonOppacity={{ opacity: isFormValid ? 1 : .5 }}
+        disabled={!isFormValid}
         backgroundColor={APP_COLORS.secondary}
         onPress={() => handleSelectUser()}
       />
