@@ -192,13 +192,13 @@ const PatientHome = ({ navigation }) => {
             </ContainerView>
 
             <FlatlistInfos
-                data={filteredData}
+                data={QueryResource}
                 renderItem={({ item }) => (
                     <CardUser
                         imageUser={item.imagem}
-                        nameUser={item.nome}
+                        nameUser={item.idNavigation.nome}
                         ageUser={`${item.idade} anos`}
-                        descriptionUser={item.especialidade}
+                        descriptionUser={item.especialidade.especialidade1}
                         iconName={"clockcircle"}
                         bgColor={item.situation}
                         schedulingTime={'14:00'}

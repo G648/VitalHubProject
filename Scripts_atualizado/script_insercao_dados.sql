@@ -1,4 +1,7 @@
-USE VitalHub_MG16;
+
+CREATE DATABASE [VitalHub_MG16];
+
+DROP DATABASE [VitalHub_MG16]
 
 -- Selecionando todos os endereços
 SELECT * FROM dbo.Enderecos;
@@ -6,7 +9,7 @@ SELECT * FROM dbo.Enderecos;
 INSERT INTO
 	dbo.Enderecos
 VALUES
-	(NEWID(), '09510200', 'Rua Niterói', 180, 23.6151, 46.5707);
+	(NEWID(), '09510200', 'Rua Niterói', 180, 23.6151, 46.5707, 'São Bernardo do Campo');
 
 
 
@@ -23,7 +26,7 @@ SELECT * FROM dbo.Usuarios;
 INSERT INTO
 	dbo.Usuarios
 VALUES
-	(NEWID(), 'ADA71C00-9A15-4C9F-BA63-FAA88B62CA72', 'Lucas Silveira Portal', 'lucas.portal@gmail.com', 'medico123', 'string'),
+	(NEWID(), 'F0BA4638-B470-4723-AE63-574874D61E98', 'Gab', 'gab@gab.com', '123456', 'string'),
 	(NEWID(), 'ADA71C00-9A15-4C9F-BA63-FAA88B62CA72', 'Carlos Roque', 'carlos.roque@gmail.com', 'medico123', 'string'),
 	(NEWID(), '41375149-6A84-4690-ACE8-196700FFB1D1', 'Martin Lorenzo', 'martin_ferreira@gmail.com', 'paciente123', 'string'),
 	(NEWID(), '41375149-6A84-4690-ACE8-196700FFB1D1', 'Heitor Paulo Campos', 'heitor-campos80@gmail.com', 'paciente123', 'string');
@@ -85,6 +88,7 @@ VALUES
 	(NEWID(), 'Realizados'),
 	(NEWID(), 'Cancelados');
 
+	DELETE FROM Situacoes
 
 
 -- Selecionando todas as clínicas
@@ -93,5 +97,13 @@ SELECT * FROM dbo.Clinicas;
 INSERT INTO
 	dbo.Clinicas
 VALUES
-	(NEWID(), 'Clínica Médica Vida & Saúde', '12345678000190', 'Clínica Médica Vida & Saúde', -23.5505, -46.6333, 'clinica.vidasaude@gmail.com'),
-	(NEWID(), 'Centro Médico São Paulo', '23456789000101', 'Centro Médico São Paulo', -23.5674, -46.6482, 'medico.saopaulo@gmail.com');
+	(NEWID(), 'Clínica Médica Vida & Saúde', '12345678000190', 'Clínica Médica Vida & Saúde', 'clinica.vidasaude@gmail.com','415ED3FF-DF0E-4103-96BF-0D8FE732F8E6')
+
+
+-- Selecionando todas as consultas
+SELECT * FROM dbo.Consultas;
+
+INSERT INTO
+	dbo.Consultas
+VALUES
+	(NEWID(), 'Clínica Médica Vida & Saúde', '12345678000190', 'Clínica Médica Vida & Saúde', 'clinica.vidasaude@gmail.com','415ED3FF-DF0E-4103-96BF-0D8FE732F8E6')
