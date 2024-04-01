@@ -21,6 +21,7 @@ import MapViewLocation from './src/screens/Patient/MapViewLocation';
 import MedicalRecordPage from './src/screens/Patient/MedicalRecordPage';
 import MedicalExamsPhotos from './src/screens/Patient/MedicalExamsPhotos';
 import Toast from 'react-native-toast-message';
+import RecoverPassword from './src/screens/Auth/RecoverPassword/RecoverPassword';
 
 
 export default function App() {
@@ -61,6 +62,12 @@ export default function App() {
             //Titulo da tela
             options={{ title: 'Login' }}
 
+          />
+
+          <Stack.Screen
+            name='RecoverPassword'
+            component={RecoverPassword}
+            options={{title: 'RecoverPassword'}}
           />
 
           <Stack.Screen

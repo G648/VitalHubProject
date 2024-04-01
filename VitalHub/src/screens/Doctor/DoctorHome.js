@@ -7,7 +7,6 @@ import { Button } from '../../components/Button/Button';
 import { APP_COLORS } from '../../utils/App_colors';
 import { FlatlistInfos } from '../../components/FlatlistUsers/FlatlistUsers';
 import { CardUser } from '../../components/FlatlistUsers/CardFlatlistUsers';
-// import Teste from '../../components/FlatlistUsers/FlatlistUsers';
 import { MockData } from '../../utils/MockData';
 import { CardSituation } from '../../utils/AppSituationCard';
 import CancelDialogs from '../../components/Dialogs/CalcelDialogs';

@@ -43,6 +43,7 @@ export const VerificaEmail = ({ navigation }) => {
                 border={APP_COLORS.secondary}
                 color={APP_COLORS.white}
                 marginTop={60}
+                onPress={() => navigation.navigate('RecoverPassword')}
             />
 
             <UnderlinedLink

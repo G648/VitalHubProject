@@ -164,13 +164,12 @@ const Login = ({ navigation }) => {
 
       <Button
         color={APP_COLORS.white}
-        border={APP_COLORS.secondary}
+        border={isFormValid ? APP_COLORS.secondary : APP_COLORS.grayV6}
         activeOpacity={1}
         title={!loading ? "Entrar".toUpperCase() : <ActivityIndicator size='small' color="#fff" />}
         marginTop={15}
-        buttonOppacity={{ opacity: isFormValid ? 1 : .5 }}
         disabled={!isFormValid}
-        backgroundColor={APP_COLORS.secondary}
+        backgroundColor={isFormValid ? APP_COLORS.secondary : APP_COLORS.grayV6}
         onPress={() => handleSelectUser()}
       />
 
@@ -180,7 +179,7 @@ const Login = ({ navigation }) => {
           marginTop={15}
           color={APP_COLORS.secondary}
           title={"Entrar com Google".toUpperCase()}
-          buttonOppacity={.8}
+          activeOpacity={.8}
         />
       </ButtonFlex>
 
