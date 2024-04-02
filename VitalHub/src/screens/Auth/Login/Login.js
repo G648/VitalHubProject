@@ -5,7 +5,7 @@ import { Title } from '../../../components/Title/Style';
 import { Input, InputValues } from '../../../components/Input/Input';
 import { LinkMedium, UnderlinedLink } from '../../../components/Links/Style';
 import { Button, ButtonFlex } from '../../../components/Button/Button';
-import { ActivityIndicator, Text, ToastAndroid, TurboModuleRegistry, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import { ComeBack } from '../../../components/GoBackPage/GoBackPage';
 import { APP_COLORS } from '../../../utils/App_colors';
 import api, { LoginResource } from '../../../service/service';
@@ -142,6 +142,7 @@ const Login = ({ navigation }) => {
           ...submitData,
           senha: txt
         })}
+        isRecoveryPassword={false}
       />
 
       {/* Display error messages */}

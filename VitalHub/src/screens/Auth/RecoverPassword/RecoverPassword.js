@@ -1,58 +1,159 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { Container } from '../../../components/Container/Style'
-import { ComeBack } from '../../../components/GoBackPage/GoBackPage'
-import { Logo } from '../../../components/Logo/Style'
-import { Title } from '../../../components/Title/Style'
-import { ParagrafText } from '../../../components/Paragraf/Paragraf'
-import { APP_COLORS } from '../../../utils/App_colors'
-import { Input, InputValues } from '../../../components/Input/Input'
-import { InputStyle } from '../../Doctor/MedicalRecord'
-import { Button } from '../../../components/Button/Button'
+import { View, Text, SafeAreaView, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Container } from "../../../components/Container/Style";
+import { ComeBack } from "../../../components/GoBackPage/GoBackPage";
+import { Logo } from "../../../components/Logo/Style";
+import { Title } from "../../../components/Title/Style";
+import { ParagrafText } from "../../../components/Paragraf/Paragraf";
+import { APP_COLORS } from "../../../utils/App_colors";
+import { InputValues } from "../../../components/Input/Input";
+import { Button } from "../../../components/Button/Button";
+import styled from "styled-components/native";
+
+export const StrengthMeter = styled.View`
+  width: 100%;
+  height: 20px;
+  background-color: ${APP_COLORS.grayV6};
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  overflow: hidden;
+`;
 
 export default function RecoverPassword({ navigation }) {
-    return (
-        <Container>
-            <ComeBack
-                buttonOpacity={.8}
-                isClosable={true}
-                onClick={() => navigation.navigate('Login')}
-            />
+  const [password, setPassword] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [strength, setStrength] = useState("");
 
-            <Logo
-                source={require('../../../assets/Images/LogoBlue.png')}
-            />
+  const validatePassword = (input) => {
+    let newSuggestions = [];
 
-            <Title>
-                Redefinir senha
-            </Title>
+    if (input.length < 8) {
+      newSuggestions.push("A senha deverá ter pelo menos 8 caracteres");
+    }
+    if (!/\d/.test(input)) {
+      newSuggestions.push("Adicione pelo menos um número");
+    }
 
-            <ParagrafText
-                FontColorParagrafo={APP_COLORS.grayV3}
-                FontSizeParagrafo={16}
-                textValue={"Insira e confirme a sua nova senha"}
-            />
+    if (!/[A-Z]/.test(input) || !/[a-z]/.test(input)) {
+      newSuggestions.push("Inclua letras maiúsculas e minúsculas");
+    }
 
-            <InputValues
-                placeholder='Nova senha'
-                secureTextEntry={true}
-            />
+    if (!/[^A-Za-z0-9]/.test(input)) {
+      newSuggestions.push("Inclua pelo menos um caractere especial");
+    }
 
-            <InputValues
-                placeholder='Confirmar senha'
-                secureTextEntry={true}
-            />
+    setSuggestions(newSuggestions);
 
-            <Button
-                activeOpacity={.8}
-                backgroundColor={APP_COLORS.secondary}
-                border={APP_COLORS.secondary}
-                color={APP_COLORS.white}
-                height={48}
-                title={"Confirmar nova senha"}
-                onPress={() => navigation.navigate('Login')}
-                marginTop={30}
-            />
-        </Container>
-    )
+    // Determine password strength based on suggestions
+    if (newSuggestions.length === 0) {
+      setStrength("Muito forte");
+    } else if (newSuggestions.length <= 1) {
+      setStrength("Forte");
+    } else if (newSuggestions.length <= 2) {
+      setStrength("Moderada");
+    } else if (newSuggestions.length <= 3) {
+      setStrength("Fraca");
+    } else {
+      setStrength("Muito fraca");
+    }
+  };
+
+  return (
+    <Container>
+      <ComeBack
+        buttonOpacity={0.8}
+        isClosable={true}
+        onClick={() => navigation.navigate("Login")}
+      />
+
+      <Logo source={require("../../../assets/Images/LogoBlue.png")} />
+
+      <Title>Redefinir senha</Title>
+
+      <ParagrafText
+        FontColorParagrafo={APP_COLORS.grayV3}
+        FontSizeParagrafo={16}
+        textValue={"Insira e confirme a sua nova senha"}
+      />
+      <ScrollView style={{ width: "90%" }}>
+        <InputValues
+          placeholder="Nova senha"
+          secureTextEntry={true}
+          onChangeText={(txt) => {
+            setPassword(txt);
+            validatePassword(txt);
+          }}
+          width="100%"
+          isRecoveryPassword={true}
+        />
+
+        <StrengthMeter>
+          <View
+            style={{
+              width: `${
+                strength === "Muito forte"
+                  ? 100
+                  : strength === "Forte"
+                  ? 75
+                  : strength === "Moderada"
+                  ? 50
+                  : strength === "Fraca"
+                  ? 25
+                  : 0
+              }%`,
+              height: 20,
+              backgroundColor:
+                strength === "Muito Fraca"
+                  ? "red"
+                  : strength === "Fraca"
+                  ? "orange"
+                  : strength === "Moderada"
+                  ? "yellow"
+                  : strength === "Forte"
+                  ? "green"
+                  : "limegreen",
+            }}
+          ></View>
+        </StrengthMeter>
+        <ParagrafText
+          FontColorParagrafo={APP_COLORS.primary}
+          FontSizeParagrafo={16}
+          textValue={`Senha: ${strength}`}
+        />
+        {suggestions.map((suggestion, index) => {
+          return (
+            <Text key={index}>
+              {suggestion}
+              {"\n"}
+            </Text>
+          );
+        })}
+
+        <InputValues
+          placeholder="Confirmar senha"
+          secureTextEntry={true}
+          onChangeText={(txt) =>
+            setPassword({
+              txt,
+            })
+          }
+          width="100%"
+          isRecoveryPassword={true}
+        />
+
+        <Button
+          activeOpacity={0.8}
+          backgroundColor={APP_COLORS.secondary}
+          border={APP_COLORS.secondary}
+          color={APP_COLORS.white}
+          height={48}
+          title={"Confirmar nova senha"}
+          onPress={() => navigation.navigate("Login")}
+          marginTop={30}
+          width={'100%'}
+        />
+      </ScrollView>
+    </Container>
+  );
 }
