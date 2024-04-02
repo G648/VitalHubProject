@@ -17,6 +17,7 @@ import { SeeMedicalDialog } from '../../components/Dialogs/SeeMedicalDialog';
 import * as Notifications from 'expo-notifications'
 import { userDecodeToken } from '../../utils/Auth';
 import { Image } from 'react-native';
+import api, { QueryResource } from '../../service/service'
 
 
 export const ScheduledButton = styled.TouchableOpacity`
@@ -33,7 +34,7 @@ export const ScheduledButton = styled.TouchableOpacity`
     justify-content: center;
 `
 
-const PatientHome = ({ navigation }) => {
+const PatientHome = ({ navigation, role, jti }) => {
 
     const data = [
         { key: '1', value: 'CheckUp' },
@@ -49,6 +50,41 @@ const PatientHome = ({ navigation }) => {
     const [selectedInput, setSelectedInput] = useState("");
     const [emailUser, setEmailUser] = useState('');
     const [nomeUser, setNomeUser] = useState('');
+    const [queryList, setQueryList] = useState([])
+    const [dataConsulta, setDataConsulta] = useState([])
+    const [Consultas, setConsultas] = useState([])
+
+    const getQuery = async () => {
+        await api.get(QueryResource)
+          .then(response => {
+            setQueryList(response.data)
+          })
+          .catch(error => console.log(error));
+      }
+
+
+
+
+
+      const url = (role == 'Medico' ? "Medico" : "Paciente")
+      async function ListarConsultas() {
+        await api.get(`/${url}/BuscarPorData?data=${dataConsulta}&id=${jti}`) 
+        .then(response => {
+            setConsultas(response.data);
+        }).catch(error => {
+            console.log(error);
+        })
+      }
+    
+      useEffect(() => {
+        if(dataConsulta != ''){
+            ListarConsultas()
+        }
+      }, [dataConsulta])
+
+
+    
+
 
     const handleCardPress = (selectedSituation, userData) => {
         selectedSituation == "Agendadas" ? setIsModalCancel(true) : navigation.navigate('MedicalRecordPage', { userData: userData })
@@ -59,6 +95,14 @@ const PatientHome = ({ navigation }) => {
         selectedSituation == "Realizadas" ? setisModalMedical(true) : setisModalMedical(true)
         setSelectedUserData(userData)
     }
+
+    useEffect(() => {
+        getQuery()
+    }, [])
+
+    useEffect(() => {
+        console.log(queryList);
+      }, [queryList]);
 
     //solicitar as permissões de notificação ao iniciar o app
     Notifications.requestPermissionsAsync();
@@ -192,13 +236,14 @@ const PatientHome = ({ navigation }) => {
             </ContainerView>
 
             <FlatlistInfos
-                data={QueryResource}
-                renderItem={({ item }) => (
+                data={queryList}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => {
                     <CardUser
                         imageUser={item.imagem}
-                        nameUser={item.idNavigation.nome}
+                        nameUser={item.medicoClinica.medico.idNavigation.nome}
                         ageUser={`${item.idade} anos`}
-                        descriptionUser={item.especialidade.especialidade1}
+                        descriptionUser={item.prioridade.prioridade}
                         iconName={"clockcircle"}
                         bgColor={item.situation}
                         schedulingTime={'14:00'}
@@ -207,7 +252,7 @@ const PatientHome = ({ navigation }) => {
                         onPress={() => handleCardPress(selectedButton, item)}
                         onPressBorder={() => item.situation === "Agendadas" ? handleCardPressInfoDoctor(selectedButton, item) : null}
                     />
-                )}
+                }}
                 style={{ flex: 1 }}
                 showsVerticalScrollIndicator={false}
             />

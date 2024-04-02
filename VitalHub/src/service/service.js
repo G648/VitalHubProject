@@ -10,7 +10,7 @@ const ip = '192.168.19.123'
 export const LoginResource = '/api/Login'
 export const DoctorResource = '/api/Medicos'
 export const ClinicResource = '/api/Clinica/ListarTodas'
-export const QueryResource = '/api/Consultas/Consultas'
+export const QueryResource = '/api/Consultas'
 export const DoctorQueryResource = '/api/Consultas/ConsultasMedico'
 
 const externalUrlApi = `http://${ip}:${apiPort}`
