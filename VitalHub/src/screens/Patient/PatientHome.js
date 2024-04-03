@@ -20,6 +20,7 @@ import { Image } from 'react-native';
 import api, { QueryResource } from '../../service/service'
 
 
+
 export const ScheduledButton = styled.TouchableOpacity`
     background-color: ${APP_COLORS.primary};
     width: 60px;
@@ -53,37 +54,45 @@ const PatientHome = ({ navigation, role, jti }) => {
     const [queryList, setQueryList] = useState([])
     const [dataConsulta, setDataConsulta] = useState([])
     const [Consultas, setConsultas] = useState([])
+    const [userLogin, setUserLogin] = useState("")
 
-    const getQuery = async () => {
-        await api.get(QueryResource)
-          .then(response => {
-            setQueryList(response.data)
-          })
-          .catch(error => console.log(error));
-      }
-
-
-
-
-
-      const url = (role == 'Medico' ? "Medico" : "Paciente")
-      async function ListarConsultas() {
-        await api.get(`/${url}/BuscarPorData?data=${dataConsulta}&id=${jti}`) 
-        .then(response => {
-            setConsultas(response.data);
-        }).catch(error => {
-            console.log(error);
-        })
-      }
-    
-      useEffect(() => {
-        if(dataConsulta != ''){
-            ListarConsultas()
-        }
-      }, [dataConsulta])
+    // const getQuery = async () => {
+    //     const token = await userDecodeToken();
+    //     await api.get(`/api/Consultas`, {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //           }
+    //     })
+    //       .then(response => {
+    //         setQueryList(response.data)
+    //       })
+    //       .catch(error => console.log(error));
+    //   }
 
 
-    
+
+    //   const url = (userLogin.role == 'Medico' ? "Medico" : "Paciente")
+    // async function ListarConsultas() {
+    //     await api.get(`/api/BuscarPorData?data=${dataConsulta}&id=${userLogin.jti}`, {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //         }
+    //     })
+    //         .then(response => {
+    //             setConsultas(response.data);
+    //         }).catch(error => {
+    //             console.log(error);
+    //         })
+    // }
+
+    // useEffect(() => {
+    //     if (dataConsulta != '') {
+    //         ListarConsultas()
+    //     }
+    // }, [dataConsulta])
+
+
+
 
 
     const handleCardPress = (selectedSituation, userData) => {
@@ -99,10 +108,6 @@ const PatientHome = ({ navigation, role, jti }) => {
     useEffect(() => {
         getQuery()
     }, [])
-
-    useEffect(() => {
-        console.log(queryList);
-      }, [queryList]);
 
     //solicitar as permissões de notificação ao iniciar o app
     Notifications.requestPermissionsAsync();

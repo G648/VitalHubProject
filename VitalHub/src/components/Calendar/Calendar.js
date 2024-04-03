@@ -3,6 +3,7 @@ import styled from 'styled-components/native'
 import CalendarStrip from "react-native-calendar-strip";
 import moment from "moment";
 import { StyleSheet } from "react-native";
+import { useState } from 'react';
 
 
 
@@ -14,6 +15,7 @@ export const StyledCalendarStrip = styled(CalendarStrip)`
 `
 
 export const CalendarHome = () => {
+    const [dataConsulta, setDataConsulta] = useState([])
 
     //define padrão pt-br para calendário
     moment.updateLocale("pt-br", {
@@ -50,7 +52,7 @@ export const CalendarHome = () => {
     const endingDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     return (
         <StyledCalendarStrip
-            onDateSelected={date => setDataConsulta( moment(date).format(YYYY-MM-DD))}
+            onDateSelected={date => setDataConsulta( moment(date).format('YYYY-MM-DD'))}
 
             // animação e seleção de cada data
             calendarAnimation={{ type: "sequence", duration: 30 }}

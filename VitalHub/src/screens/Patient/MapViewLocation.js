@@ -93,7 +93,11 @@ export const CenterInfoMap = styled.View`
     top: 20%;
 `
 
-export default function MapViewLocation({navigation}) {
+export default function MapViewLocation({navigation, route}) {
+useEffect(() => {
+    console.log(route);
+}, [])
+
     const mapReference = useRef(null)
     const [initialPosition, setInitialPosition] = useState(null);
     const [finalPosition, setFinalPosition] = useState({
