@@ -10,6 +10,7 @@ const ip = '192.168.19.142'
 export const LoginResource = '/api/Login'
 export const DoctorResource = '/api/Medicos'
 export const ClinicListAll = '/api/Clinica/ListarTodas'
+export const GetDoctorAppointment = '/api/Consultas'
 
 const externalUrlApi = `http://${ip}:${apiPort}`
 

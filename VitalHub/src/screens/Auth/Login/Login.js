@@ -45,9 +45,9 @@ const Login = ({ navigation }) => {
       await AsyncStorage.setItem("token", JSON.stringify(response.data))
 
       if (selectUser === "Paciente") {
-        navigation.navigate("DoctorHome"); // Adicione a página correspondente para outro tipo de usuário
-      } else {
         navigation.navigate("HomePatient");
+      } else {
+        navigation.navigate("DoctorHome"); // Adicione a página correspondente para outro tipo de usuário
       }
 
     } catch (error) {
