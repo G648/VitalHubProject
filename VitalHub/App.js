@@ -20,6 +20,8 @@ import ChooseDate from './src/screens/Patient/ChooseDate';
 import MapViewLocation from './src/screens/Patient/MapViewLocation';
 import MedicalRecordPage from './src/screens/Patient/MedicalRecordPage';
 import MedicalExamsPhotos from './src/screens/Patient/MedicalExamsPhotos';
+import Toast from 'react-native-toast-message';
+import RecoverPassword from './src/screens/Auth/RecoverPassword/RecoverPassword';
 
 
 export default function App() {
@@ -47,113 +49,122 @@ export default function App() {
     //StackNavigator
     //StackScreen
 
-    <NavigationContainer>
-      {/* Componente para navegação */}
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <>
+      <NavigationContainer>
+        {/* Componente para navegação */}
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
 
-        <Stack.Screen
-          //nome da tela
-          name='Login'
-          //Componente que será chamado
-          component={Login}
-          //Titulo da tela
-          options={{ title: 'Login' }}
+          <Stack.Screen
+            //nome da tela
+            name='Login'
+            //Componente que será chamado
+            component={Login}
+            //Titulo da tela
+            options={{ title: 'Login' }}
 
-        />
+          />
 
-        <Stack.Screen
-          name='MedicalExamsPhotos'
-          component={MedicalExamsPhotos}
-          options={{ title: 'MedicalExamsPhotos' }}
-        />
+          <Stack.Screen
+            name='RecoverPassword'
+            component={RecoverPassword}
+            options={{title: 'RecoverPassword'}}
+          />
 
-        <Stack.Screen
-          name='MedicalRecordPage'
-          component={MedicalRecordPage}
-          options={{ title: 'MedicalRecordPage' }}
-        />
+          <Stack.Screen
+            name='MedicalExamsPhotos'
+            component={MedicalExamsPhotos}
+            options={{ title: 'MedicalExamsPhotos' }}
+          />
 
-        <Stack.Screen
-          name='MapViewLocation'
-          component={MapViewLocation}
-          options={{ title: 'MapViewLocation' }}
-        />
+          <Stack.Screen
+            name='MedicalRecordPage'
+            component={MedicalRecordPage}
+            options={{ title: 'MedicalRecordPage' }}
+          />
 
-        <Stack.Screen
-          name='CadastroUser'
-          component={CadastroUser}
-          options={{ title: 'CadastroUser' }}
-        />
+          <Stack.Screen
+            name='MapViewLocation'
+            component={MapViewLocation}
+            options={{ title: 'MapViewLocation' }}
+          />
 
-        <Stack.Screen
-          name='DoctorHome'
-          component={BottomTabNavigation}
-          options={{ title: 'DoctorHome' }}
+          <Stack.Screen
+            name='CadastroUser'
+            component={CadastroUser}
+            options={{ title: 'CadastroUser' }}
+          />
 
-        />
+          <Stack.Screen
+            name='DoctorHome'
+            component={BottomTabNavigation}
+            options={{ title: 'DoctorHome' }}
 
-        <Stack.Screen
-          name='HomePatient'
-          component={BottomTabNavigationPatient}
-          options={{ title: 'HomePatient' }}
-        />
+          />
 
-        <Stack.Screen
-          name='ChooseDate'
-          component={ChooseDate}
-          options={{ title: 'ChooseDate' }}
-        />
+          <Stack.Screen
+            name='HomePatient'
+            component={BottomTabNavigationPatient}
+            options={{ title: 'HomePatient' }}
+          />
 
-        <Stack.Screen
-          name='ChoseDoctor'
-          component={ChoseDoctor}
-          options={{ title: 'ChoseDoctor' }}
-        />
+          <Stack.Screen
+            name='ChooseDate'
+            component={ChooseDate}
+            options={{ title: 'ChooseDate' }}
+          />
 
-        <Stack.Screen
-          name='ChooseClinic'
-          component={ChooseClinic}
-          options={{ title: 'ChooseClinic' }}
-        />
+          <Stack.Screen
+            name='ChoseDoctor'
+            component={ChoseDoctor}
+            options={{ title: 'ChoseDoctor' }}
+          />
 
-        <Stack.Screen
-          name='Home'
-          component={BottomTabNavigation}
-          options={{ title: 'Home' }}
-        />
+          <Stack.Screen
+            name='ChooseClinic'
+            component={ChooseClinic}
+            options={{ title: 'ChooseClinic' }}
+          />
 
-        <Stack.Screen
-          name='MedicalRecord'
-          component={MedicalRecord}
-          options={{ title: 'MedicalRecord' }}
-        />
+          <Stack.Screen
+            name='Home'
+            component={BottomTabNavigation}
+            options={{ title: 'Home' }}
+          />
 
-        <Stack.Screen
-          //nome da tela
-          name='Navegacao'
-          //Componente que será chamado
-          component={Navegacao}
-          //Titulo da tela
-          options={{ title: 'Navegacao' }}
-        />
+          <Stack.Screen
+            name='MedicalRecord'
+            component={MedicalRecord}
+            options={{ title: 'MedicalRecord' }}
+          />
 
-
-        <Stack.Screen
-          name='Cadastro'
-          component={Cadastro}
-          options={{ title: 'Cadastro' }}
-        />
-
-        <Stack.Screen
-          name='VerificaEmail'
-          component={VerificaEmail}
-          options={{ title: 'VerificaEmail' }}
-        />
+          <Stack.Screen
+            //nome da tela
+            name='Navegacao'
+            //Componente que será chamado
+            component={Navegacao}
+            //Titulo da tela
+            options={{ title: 'Navegacao' }}
+          />
 
 
+          <Stack.Screen
+            name='Cadastro'
+            component={Cadastro}
+            options={{ title: 'Cadastro' }}
+          />
 
-      </Stack.Navigator>
-    </NavigationContainer>
+          <Stack.Screen
+            name='VerificaEmail'
+            component={VerificaEmail}
+            options={{ title: 'VerificaEmail' }}
+          />
+
+
+
+        </Stack.Navigator>
+      </NavigationContainer>
+      <Toast />
+    </>
   );
 }
 

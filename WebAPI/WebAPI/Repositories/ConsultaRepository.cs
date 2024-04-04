@@ -47,8 +47,13 @@ namespace WebAPI.Repositories
         {
             List<Consulta> listaConsultas = ctx.Consultas
                 .Include(x => x.Paciente!.IdNavigation)
+<<<<<<< HEAD
                 .Include(x => x.Situacao)
                 .Include(x => x.Prioridade)
+=======
+                .Include(x => x.Situacao!)
+                .Include(x => x.Prioridade!)
+>>>>>>> guilherme
                 .Where(x => x.MedicoClinica != null && x.MedicoClinica.MedicoId == IdMedico)
                 .ToList();
 
@@ -60,8 +65,13 @@ namespace WebAPI.Repositories
         {
             List<Consulta> listaConsultas = ctx.Consultas
                 .Include(x => x.MedicoClinica!.Medico!.IdNavigation)
+<<<<<<< HEAD
                 .Include(x => x.Situacao)
                 .Include(x => x.Prioridade)
+=======
+                .Include(x => x.Paciente)
+                .Include(x => x.Situacao)
+>>>>>>> guilherme
                 .Where(x => x.PacienteId != null && x.PacienteId == IdPaciente)
                 .ToList();
 

@@ -40,7 +40,8 @@ export function Button({
     height,
     iconRef,
     isButtonTakePicture,
-    spaceIconText
+    spaceIconText,
+    disabled
 }) {
     return (
         <ButtonStyle
@@ -51,6 +52,7 @@ export function Button({
             activeOpacity={activeOpacity}
             width={width}
             height={height}
+            disabled={disabled}
         >
             {iconRef &&
                 <ContainerView 

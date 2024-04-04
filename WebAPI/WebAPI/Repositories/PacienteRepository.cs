@@ -56,10 +56,17 @@ namespace WebAPI.Repositories
 
         public List<Consulta> BuscarPorData(DateTime dataConsulta, Guid idPaciente)
         {
+<<<<<<< HEAD
             return ctx.Consultas
                  .Include(x => x.Situacao)
                  .Where(x => x.PacienteId == idPaciente && EF.Functions.DateDiffDay(x.DataConsulta, dataConsulta) == 0)
                 //.Where(x  => x.PacienteId == idPaciente && x.DataConsulta == dataConsulta)
+=======
+           return ctx.Consultas
+                .Include(x => x.Situacao)
+                //.Where(x  => x.PacienteId == idPaciente && x.DataConsulta == dataConsulta)
+                .Where(x => x.PacienteId == idPaciente && EF.Functions.DateDiffDay(x.DataConsulta, dataConsulta) == 0)
+>>>>>>> guilherme
                 .ToList();
         }
 
@@ -67,8 +74,13 @@ namespace WebAPI.Repositories
         {
             return ctx.Pacientes
                 .Include(x => x.IdNavigation)
+<<<<<<< HEAD
                 .Include(x => x.Endereco)
                 .FirstOrDefault(x => x.Id == Id);
+=======
+                .Include(X => X.Endereco)
+                .FirstOrDefault(x => x.Id == Id)!;
+>>>>>>> guilherme
         }
 
         public List<Consulta> BuscarRealizadas(Guid Id)

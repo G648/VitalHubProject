@@ -16,9 +16,13 @@ import ScheduleAppointment from '../../components/Dialogs/ScheduleAppointment';
 import { SeeMedicalDialog } from '../../components/Dialogs/SeeMedicalDialog';
 import * as Notifications from 'expo-notifications'
 import { userDecodeToken } from '../../utils/Auth';
+<<<<<<< HEAD
 import { Image } from 'react-native';
 import api, { QueryResource } from '../../service/service'
 
+=======
+import Toast from 'react-native-toast-message';
+>>>>>>> guilherme
 
 
 export const ScheduledButton = styled.TouchableOpacity`
@@ -135,14 +139,6 @@ const PatientHome = ({ navigation, role, jti }) => {
             return;
         }
 
-        //obter o token de envio de notificação
-        // const token = await Notifications.getExpoPushTokenAsync();
-
-        // console.log('====================================');
-        // console.log(token);
-        // console.log('====================================');
-
-        //agendar uma notificação para ser exibida após 5 segundos
         await Notifications.scheduleNotificationAsync({
             content: {
                 title: "Vital Hub",
@@ -161,7 +157,6 @@ const PatientHome = ({ navigation, role, jti }) => {
             const token = await userDecodeToken();
 
             if (token) {
-                console.log('Token de acesso recuperado:', token);
 
                 setEmailUser(token.email)
                 setNomeUser(token.name)

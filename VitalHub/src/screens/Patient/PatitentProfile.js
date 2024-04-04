@@ -5,7 +5,6 @@ import { ProfileImageModal } from '../../components/Dialogs/SeeMedicalDialog'
 import { DoctorContainerInfos, DoctorEmail, DoctorName, InfosColumn, InfosContainer } from '../Doctor/DoctorProfile'
 import { DataUser } from '../../components/Header/Header'
 import { InputStyle, ScrollViewContainer, TextLabel } from '../Doctor/MedicalRecord'
-import { Calendar } from 'react-native-calendars'
 import { Button } from '../../components/Button/Button'
 import { UnderlinedLink } from '../../components/Links/Style'
 import { APP_COLORS } from '../../utils/App_colors'
@@ -14,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 export default function PatitentProfile({
+  navigation
 }) {
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
@@ -251,6 +251,17 @@ export default function PatitentProfile({
             onPress={handleSave}
           />
         )}
+
+        <Button
+          width={"100%"}
+          activeOpacity={.6}
+          backgroundColor={APP_COLORS.secondary}
+          border={APP_COLORS.secondary}
+          color={APP_COLORS.white}
+          title={"Sair"}
+          marginTop={15}
+          onPress={removeToken}
+        />
 
         <UnderlinedLink
           textIntput={"Cancelar"}

@@ -5,8 +5,6 @@ import moment from "moment";
 import { StyleSheet } from "react-native";
 import { useState } from 'react';
 
-
-
 export const StyledCalendarStrip = styled(CalendarStrip)`
   height: 100px;
   width: 90%;
@@ -14,8 +12,12 @@ export const StyledCalendarStrip = styled(CalendarStrip)`
   padding: 0px;
 `
 
+<<<<<<< HEAD
 export const CalendarHome = () => {
     const [dataConsulta, setDataConsulta] = useState([])
+=======
+export const CalendarHome = ({dataConsulta, setDataConsulta}) => {
+>>>>>>> guilherme
 
     //define padrão pt-br para calendário
     moment.updateLocale("pt-br", {
@@ -52,7 +54,12 @@ export const CalendarHome = () => {
     const endingDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     return (
         <StyledCalendarStrip
+<<<<<<< HEAD
             onDateSelected={date => setDataConsulta( moment(date).format('YYYY-MM-DD'))}
+=======
+            // selectedDate={dataConsulta}
+            onDateSelected={date => setDataConsulta(moment(date).format('YYYY-MM-DD'))}
+>>>>>>> guilherme
 
             // animação e seleção de cada data
             calendarAnimation={{ type: "sequence", duration: 30 }}
@@ -62,8 +69,6 @@ export const CalendarHome = () => {
             iconLeftStyle={styles.iconsStyle}
             iconRightStyle={styles.iconsStyle}
 
-            // deixa uma marcação default - data atual
-            selectedDate={currentDate}
             // dia que começamos a visualizar a barra
             startingDate={moment()}
 

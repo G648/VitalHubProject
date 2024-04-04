@@ -3352,11 +3352,19 @@
   "project": {
     "version": "1.0.0",
     "restore": {
+<<<<<<< HEAD
       "projectUniqueName": "C:\\Users\\53144094889\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\WebAPI.csproj",
       "projectName": "WebAPI",
       "projectPath": "C:\\Users\\53144094889\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\WebAPI.csproj",
       "packagesPath": "C:\\Users\\53144094889\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\53144094889\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\obj\\",
+=======
+      "projectUniqueName": "C:\\Users\\45845444845\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\WebAPI.csproj",
+      "projectName": "WebAPI",
+      "projectPath": "C:\\Users\\45845444845\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\WebAPI.csproj",
+      "packagesPath": "C:\\Users\\45845444845\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\45845444845\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\obj\\",
+>>>>>>> guilherme
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\53144094889\\AppData\\Roaming\\NuGet\\NuGet.Config",
