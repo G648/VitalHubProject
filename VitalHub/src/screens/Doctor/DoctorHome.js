@@ -12,10 +12,9 @@ import { CardSituation } from "../../utils/AppSituationCard";
 import CancelDialogs from "../../components/Dialogs/CalcelDialogs";
 import { SeeMedicalDialog } from "../../components/Dialogs/SeeMedicalDialog";
 import { userDecodeToken } from "../../utils/Auth";
-import api, { GetDoctorAppointment } from "../../service/service";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import api from "../../service/service";
 
-const DoctorHome = ({ navigation, jti }) => {
+const DoctorHome = ({ navigation }) => {
   const [selectedButton, setSelectedButton] = useState(CardSituation.scheduled);
   const [filteredData, setFilteredData] = useState(MockData);
   const [isModalCancel, setIsModalCancel] = useState(false);
@@ -23,7 +22,9 @@ const DoctorHome = ({ navigation, jti }) => {
   const [selectedUserData, setSelectedUserData] = useState({});
   const [emailUser, setEmailUser] = useState("");
   const [nomeUser, setNomeUser] = useState("");
-  const [listDoctorAppointment, setListDoctorAppointment] = useState([]);
+  const [dataConsulta, setDataConsulta] = useState([]);
+
+  console.log(dataConsulta);
 
   const handleCardPress = (selectedSituation, userData) => {
     selectedSituation == "Agendadas"
@@ -35,27 +36,22 @@ const DoctorHome = ({ navigation, jti }) => {
   async function GetDoctorAppointmentFunction() {
     try {
       const data = await userDecodeToken();
-      console.log(data);
-      if (data.role == "Medico") {
-        const token = await AsyncStorage.getItem("token");
 
-        api.interceptors.request.use(
-            (config) => {
-                config.headers.Authorization = `Bearer ${token}`;
-                return config;
-            },
-            (error) => {
-                return Promise.reject(error);
-            }
-        );
+      // console.log(data.jti);
+      // console.log(data.role);
 
-        const retorno = await api.get(GetDoctorAppointment)
+      const url = data.role == "Medico" ? "Medicos" : "Pacientes";
 
-        console.log(retorno.data);
-        setListDoctorAppointment(retorno.data);
-      }
+      const retorno = await api.get(
+        `/api/${url}/BuscarPorData?date=${dataConsulta}&id=${data.jti}`);
+
+      // console.log(retorno.data);
+
+      // console.log(retorno.data);
+      setDataConsulta(retorno.data);
+      
     } catch (error) {
-      console.log("erro", error);
+      // console.log("erro", error);
     }
   }
 
@@ -79,8 +75,11 @@ const DoctorHome = ({ navigation, jti }) => {
 
   useEffect(() => {
     profileLoad();
-    GetDoctorAppointmentFunction();
-  });
+
+    if (dataConsulta != "") {
+      GetDoctorAppointmentFunction();
+    }
+  }, [dataConsulta]);
 
   useEffect(() => {
     let newData = [];
@@ -113,7 +112,10 @@ const DoctorHome = ({ navigation, jti }) => {
     <Container>
       <Header textValue={"Bem vindo!"} nameDoctor={nomeUser} />
 
-      <CalendarHome />
+      <CalendarHome
+        dataConsulta={dataConsulta}
+        setDataConsulta={setDataConsulta}
+      />
 
       <ContainerView>
         <Button
