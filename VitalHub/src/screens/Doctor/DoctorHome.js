@@ -13,6 +13,7 @@ import CancelDialogs from "../../components/Dialogs/CalcelDialogs";
 import { SeeMedicalDialog } from "../../components/Dialogs/SeeMedicalDialog";
 import { userDecodeToken } from "../../utils/Auth";
 import api from "../../service/service";
+import moment from "moment";
 
 const DoctorHome = ({ navigation }) => {
   const [selectedButton, setSelectedButton] = useState(CardSituation.scheduled);
@@ -22,7 +23,7 @@ const DoctorHome = ({ navigation }) => {
   const [selectedUserData, setSelectedUserData] = useState({});
   const [emailUser, setEmailUser] = useState("");
   const [nomeUser, setNomeUser] = useState("");
-  const [dataConsulta, setDataConsulta] = useState([]);
+  const [dataConsulta, setDataConsulta] = useState(new Date());
 
   console.log(dataConsulta);
 
@@ -37,21 +38,16 @@ const DoctorHome = ({ navigation }) => {
     try {
       const data = await userDecodeToken();
 
-      // console.log(data.jti);
-      // console.log(data.role);
-
       const url = data.role == "Medico" ? "Medicos" : "Pacientes";
+      
 
       const retorno = await api.get(
-        `/api/${url}/BuscarPorData?date=${dataConsulta}&id=${data.jti}`);
+        `/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`
+      );
 
-      // console.log(retorno.data);
-
-      // console.log(retorno.data);
-      setDataConsulta(retorno.data);
-      
+      setConsulta(retorno.data);
     } catch (error) {
-      // console.log("erro", error);
+      console.log("erro", error);
     }
   }
 
@@ -62,6 +58,8 @@ const DoctorHome = ({ navigation }) => {
       if (token) {
         setEmailUser(token.email);
         setNomeUser(token.name);
+
+        // setDataConsulta(moment().format("YYYY-MM-DD"));
       } else {
         console.log("Não foi possível recuperar o token de acesso.");
       }
@@ -75,7 +73,9 @@ const DoctorHome = ({ navigation }) => {
 
   useEffect(() => {
     profileLoad();
+  });
 
+  useEffect(() => {
     if (dataConsulta != "") {
       GetDoctorAppointmentFunction();
     }
@@ -113,7 +113,6 @@ const DoctorHome = ({ navigation }) => {
       <Header textValue={"Bem vindo!"} nameDoctor={nomeUser} />
 
       <CalendarHome
-        dataConsulta={dataConsulta}
         setDataConsulta={setDataConsulta}
       />
 
@@ -167,7 +166,7 @@ const DoctorHome = ({ navigation }) => {
         data={filteredData}
         renderItem={({ item }) => (
           <CardUser
-            imageUser={{ uri: item.imagem }}
+            imageUser={{ uri: item.imagem }}  
             nameUser={item.nome}
             ageUser={item.idade}
             descriptionUser={item.situacao}
