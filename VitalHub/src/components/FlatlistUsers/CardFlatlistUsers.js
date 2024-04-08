@@ -170,7 +170,7 @@ export function CardUser({
                         {nameUser}
                     </ProfileName>
 
-                    <ProfileData
+                     <ProfileData
                         marginLeftInfoUser={marginLeftInfoUser}
                     >
                         <TextAge>{ageUser}</TextAge>
