@@ -8,11 +8,7 @@ import { CardUser } from '../../components/FlatlistUsers/CardFlatlistUsers'
 import { APP_COLORS } from '../../utils/App_colors'
 import { Button } from '../../components/Button/Button'
 import { UnderlinedLink } from '../../components/Links/Style'
-<<<<<<< HEAD
 import api, { ClinicResource } from '../../service/service'
-=======
-import api, { ClinicListAll } from '../../service/service'
->>>>>>> guilherme
 
 export const ContainerScrollView = styled.ScrollView`
     width: 90%;
@@ -22,7 +18,6 @@ export const ContainerScrollView = styled.ScrollView`
 export default function ChooseClinic({ navigation }) {
 
     const [selectedCard, setSelectedCard] = useState(null);
-<<<<<<< HEAD
     const [clinicList, setClinicList] = useState([])
 
     const getClinic = async () => {
@@ -32,33 +27,16 @@ export default function ChooseClinic({ navigation }) {
           })
           .catch(error => console.log(error));
       }
-=======
-    const [listClinic, setListClinic] = useState([])
-
-    async function GetClinic() {
-        await api.get(ClinicListAll)
-        .then(response => {setListClinic(response.data)})
-        .catch(error => console.log(error));
-    }
->>>>>>> guilherme
 
     const handleCardPress = (id) => {
         setSelectedCard(id);
     };
 
     useEffect(() => {
-<<<<<<< HEAD
         getClinic()
       }, [])
 
     console.log(clinicList);
-=======
-        GetClinic()
-    }, [])
-
-
-    console.log(listClinic);
->>>>>>> guilherme
     return (
         <Container>
             <Title
@@ -70,24 +48,15 @@ export default function ChooseClinic({ navigation }) {
             <ContainerScrollView>
                 <FlatlistInfos
                     width={'100%'}
-<<<<<<< HEAD
                     data={clinicList}
                     keyExtractor={(item) => item.id}
-=======
-                    data={listClinic}
-                    keyExtractor={(item) => item.id} 
->>>>>>> guilherme
                     renderItem={({ item }) => {
                         return (
                             <CardUser
                                 imageUser={require('../../assets/Images/Group.png')}
                                 nameUser={item.nomeFantasia}
                                 descriptionUser={item.endereco.logradouro}
-<<<<<<< HEAD
                                 schedulingTime={item.horarioFuncionamento}
-=======
-                                schedulingTime={'14:00'}
->>>>>>> guilherme
                                 iconName={"calendar"}
                                 iconSize={20}
                                 bgColor={item.situation}

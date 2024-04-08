@@ -10,10 +10,6 @@ import { ComeBack } from '../../../components/GoBackPage/GoBackPage';
 import { APP_COLORS } from '../../../utils/App_colors';
 import api, { LoginResource } from '../../../service/service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-<<<<<<< HEAD
-=======
-import Toast from 'react-native-toast-message';
->>>>>>> guilherme
 
 
 const Login = ({ navigation }) => {
@@ -22,13 +18,8 @@ const Login = ({ navigation }) => {
   const [errors, setErrors] = useState({})
   const [isFormValid, setIsFormValid] = useState(false);
   const [submitData, setSubmitData] = useState({
-<<<<<<< HEAD
     email: "ry@ry.com",
     senha: "123456"
-=======
-    email: "",
-    senha: ""
->>>>>>> guilherme
   })
 
   const [loading, setLoading] = useState(false)
@@ -36,7 +27,6 @@ const Login = ({ navigation }) => {
   async function handleSelectUser() {
 
     setLoading(true)
-<<<<<<< HEAD
 
     try {
       const response = await api.post(LoginResource, submitData)
@@ -47,46 +37,16 @@ const Login = ({ navigation }) => {
         navigation.navigate("DoctorHome"); // Adicione a página correspondente para outro tipo de usuário
       } else {
         navigation.navigate("HomePatient");
-=======
-
-    if (!isFormValid) {
-
-      // Form is valid, perform the submission logic 
-      console.log('Form submitted successfully!');
-    } else {
-
-      // Form is invalid, display error messages 
-      showErrorToastMessage()
-    }
-
-    try {
-      const response = await api.post(LoginResource, submitData)
-
-      await AsyncStorage.setItem("token", JSON.stringify(response.data))
-
-      if (selectUser === "Paciente") {
-        navigation.navigate("HomePatient");
-      } else {
-        navigation.navigate("DoctorHome"); // Adicione a página correspondente para outro tipo de usuário
->>>>>>> guilherme
       }
 
     } catch (error) {
 
-<<<<<<< HEAD
       console.log(error);
-=======
-      showValidationLogin()
-      console.log(`teste ${error}`);
->>>>>>> guilherme
 
     } finally {
 
       setLoading(false)
-<<<<<<< HEAD
       
-=======
->>>>>>> guilherme
     }
   }
 
@@ -198,14 +158,9 @@ const Login = ({ navigation }) => {
         activeOpacity={1}
         title={!loading ? "Entrar".toUpperCase() : <ActivityIndicator size='small' color="#fff" />}
         marginTop={15}
-<<<<<<< HEAD
         buttonOppacity={{ opacity: isFormValid ? 1 : .5 }}
         disabled={!isFormValid}
         backgroundColor={APP_COLORS.secondary}
-=======
-        disabled={!isFormValid}
-        backgroundColor={isFormValid ? APP_COLORS.secondary : APP_COLORS.grayV6}
->>>>>>> guilherme
         onPress={() => handleSelectUser()}
       />
 

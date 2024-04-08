@@ -10,11 +10,7 @@ namespace WebAPI.Interfaces
         public Medico AtualizarPerfil(Guid Id, MedicoViewModel medico);
         public void Cadastrar(Usuario medico);
         public List<Medico> ListarPorClinica(Guid id);
-<<<<<<< HEAD
         public List<Consulta> BuscarPorData(DateTime dataConsulta, Guid idMedico);
-=======
 
-        public List<Consulta> BuscarPorData(DateTime dataConsulta, Guid id);
->>>>>>> guilherme
     }
 }

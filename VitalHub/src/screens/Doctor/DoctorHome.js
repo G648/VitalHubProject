@@ -37,21 +37,21 @@ const DoctorHome = ({ navigation }) => {
     try {
       const data = await userDecodeToken();
 
-      // console.log(data.jti);
-      // console.log(data.role);
+      console.log(data.jti);
+      console.log(data.role);
 
       const url = data.role == "Medico" ? "Medicos" : "Pacientes";
 
       const retorno = await api.get(
-        `/api/${url}/BuscarPorData?date=${dataConsulta}&id=${data.jti}`);
+        `/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`);
 
-      // console.log(retorno.data);
+      console.log(retorno.data);
 
-      // console.log(retorno.data);
+      console.log(retorno.data);
       setDataConsulta(retorno.data);
       
     } catch (error) {
-      // console.log("erro", error);
+      console.log("erro", error);
     }
   }
 

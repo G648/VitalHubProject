@@ -12,12 +12,7 @@ export const StyledCalendarStrip = styled(CalendarStrip)`
   padding: 0px;
 `
 
-<<<<<<< HEAD
-export const CalendarHome = () => {
-    const [dataConsulta, setDataConsulta] = useState([])
-=======
-export const CalendarHome = ({dataConsulta, setDataConsulta}) => {
->>>>>>> guilherme
+export const CalendarHome = ({ setDataConsulta }) => {
 
     //define padrão pt-br para calendário
     moment.updateLocale("pt-br", {
@@ -54,12 +49,8 @@ export const CalendarHome = ({dataConsulta, setDataConsulta}) => {
     const endingDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     return (
         <StyledCalendarStrip
-<<<<<<< HEAD
-            onDateSelected={date => setDataConsulta( moment(date).format('YYYY-MM-DD'))}
-=======
-            // selectedDate={dataConsulta}
+            selectedDate={currentDate}
             onDateSelected={date => setDataConsulta(moment(date).format('YYYY-MM-DD'))}
->>>>>>> guilherme
 
             // animação e seleção de cada data
             calendarAnimation={{ type: "sequence", duration: 30 }}

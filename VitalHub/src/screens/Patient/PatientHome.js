@@ -16,13 +16,10 @@ import ScheduleAppointment from '../../components/Dialogs/ScheduleAppointment';
 import { SeeMedicalDialog } from '../../components/Dialogs/SeeMedicalDialog';
 import * as Notifications from 'expo-notifications'
 import { userDecodeToken } from '../../utils/Auth';
-<<<<<<< HEAD
 import { Image } from 'react-native';
-import api, { QueryResource } from '../../service/service'
+import api from '../../service/service'
+import moment from 'moment'
 
-=======
-import Toast from 'react-native-toast-message';
->>>>>>> guilherme
 
 
 export const ScheduledButton = styled.TouchableOpacity`
@@ -55,67 +52,42 @@ const PatientHome = ({ navigation, role, jti }) => {
     const [selectedInput, setSelectedInput] = useState("");
     const [emailUser, setEmailUser] = useState('');
     const [nomeUser, setNomeUser] = useState('');
-    const [queryList, setQueryList] = useState([])
-    const [dataConsulta, setDataConsulta] = useState([])
-    const [Consultas, setConsultas] = useState([])
-    const [userLogin, setUserLogin] = useState("")
-
-    // const getQuery = async () => {
-    //     const token = await userDecodeToken();
-    //     await api.get(`/api/Consultas`, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //           }
-    //     })
-    //       .then(response => {
-    //         setQueryList(response.data)
-    //       })
-    //       .catch(error => console.log(error));
-    //   }
+    const [dataConsulta, setDataConsulta] = useState('')
+    const [consultas, setConsultas] = useState([])
 
 
+    async function ListarConsultas() {
+        try {
+            const data = await userDecodeToken()
+            const url = (data.role == 'Medico' ? "Medicos" : "Pacientes")
+            console.log(url);
+            console.log(data);
+            
+            const response = await api.get(
+                `/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`);
 
-    //   const url = (userLogin.role == 'Medico' ? "Medico" : "Paciente")
-    // async function ListarConsultas() {
-    //     await api.get(`/api/BuscarPorData?data=${dataConsulta}&id=${userLogin.jti}`, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         }
-    //     })
-    //         .then(response => {
-    //             setConsultas(response.data);
-    //         }).catch(error => {
-    //             console.log(error);
-    //         })
-    // }
+            setConsultas(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.log("erro", error);
+        }
+    }
 
-    // useEffect(() => {
-    //     if (dataConsulta != '') {
-    //         ListarConsultas()
-    //     }
-    // }, [dataConsulta])
-
-
-
-
-
+    
     const handleCardPress = (selectedSituation, userData) => {
         selectedSituation == "Agendadas" ? setIsModalCancel(true) : navigation.navigate('MedicalRecordPage', { userData: userData })
         setSelectedUserData(userData)
     };
-
+    
     const handleCardPressInfoDoctor = (selectedSituation, userData) => {
         selectedSituation == "Realizadas" ? setisModalMedical(true) : setisModalMedical(true)
         setSelectedUserData(userData)
     }
-
-    useEffect(() => {
-        getQuery()
-    }, [])
-
+    
+    
     //solicitar as permissões de notificação ao iniciar o app
     Notifications.requestPermissionsAsync();
-
+    
     //Definir como as notificações devem ser tratadas quando recebidas
     Notifications.setNotificationHandler({
         handleNotification: async () => ({
@@ -124,11 +96,11 @@ const PatientHome = ({ navigation, role, jti }) => {
             shouldSetBadge: false, //configura número de notificações no ícone do app
         }),
     })
-
+    
     async function handleCallNotifications() {
         const { status: existingStatus } = await Notifications.getPermissionsAsync(); //obter o status da permissão
         let finalStatus = existingStatus;
-
+        
         //   return;
         if (existingStatus !== 'granted') {
             const { status } = await Notifications.requestPermissionsAsync();
@@ -138,7 +110,15 @@ const PatientHome = ({ navigation, role, jti }) => {
             alert('Failed to get push token for push notification!');
             return;
         }
-
+        
+        //obter o token de envio de notificação
+        // const token = await Notifications.getExpoPushTokenAsync();
+        
+        // console.log('====================================');
+        // console.log(token);
+        // console.log('====================================');
+        
+        //agendar uma notificação para ser exibida após 5 segundos
         await Notifications.scheduleNotificationAsync({
             content: {
                 title: "Vital Hub",
@@ -148,19 +128,22 @@ const PatientHome = ({ navigation, role, jti }) => {
             },
             trigger: null
         })
-
+        
         setIsModalCancel(false)
     }
-
+    
     async function profileLoad() {
         try {
             const token = await userDecodeToken();
-
+            
             if (token) {
-
+                console.log('Token de acesso recuperado:', token);
+                
                 setEmailUser(token.email)
                 setNomeUser(token.name)
 
+                setDataConsulta( moment().format('YYYY-MM-DD') )
+                
             } else {
                 console.log('Não foi possível recuperar o token de acesso.');
             }
@@ -171,9 +154,14 @@ const PatientHome = ({ navigation, role, jti }) => {
 
     useEffect(() => {
         profileLoad();
-    })
+    }, []);
 
-
+    useEffect(() => {
+        if (dataConsulta != '') {
+            ListarConsultas()
+        }
+    }, [dataConsulta]);
+    
     useEffect(() => {
         let newData = [];
 
@@ -203,7 +191,10 @@ const PatientHome = ({ navigation, role, jti }) => {
                 nameDoctor={nomeUser}
             />
 
-            <CalendarHome />
+            <CalendarHome
+                dataConsulta={dataConsulta}
+                setDataConsulta={setDataConsulta}
+            />
 
             <ContainerView>
                 <Button
@@ -236,13 +227,13 @@ const PatientHome = ({ navigation, role, jti }) => {
             </ContainerView>
 
             <FlatlistInfos
-                data={queryList}
+                data={consultas}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => {
                     <CardUser
                         imageUser={item.imagem}
                         nameUser={item.medicoClinica.medico.idNavigation.nome}
-                        ageUser={`${item.idade} anos`}
+                        ageUser={item.medicoClinica.medico.crm}
                         descriptionUser={item.prioridade.prioridade}
                         iconName={"clockcircle"}
                         bgColor={item.situation}
