@@ -54,8 +54,8 @@ export const CalendarHome = ({ setDataConsulta }) => {
   );
   return (
     <StyledCalendarStrip
-      onDateSelected={(date) =>
-        setDataConsulta(moment(date).format("YYYY-MM-DD"))
+      onDateSelected={ date =>
+        setDataConsulta(date)
       }
       selectedDate={currentDate}
       // animação e seleção de cada data

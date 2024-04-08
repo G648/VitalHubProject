@@ -34,23 +34,7 @@ const DoctorHome = ({ navigation }) => {
     setSelectedUserData(userData);
   };
 
-  async function GetDoctorAppointmentFunction() {
-    try {
-      const data = await userDecodeToken();
-
-      const url = data.role == "Medico" ? "Medicos" : "Pacientes";
-      
-
-      const retorno = await api.get(
-        `/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`
-      );
-
-      setConsulta(retorno.data);
-    } catch (error) {
-      console.log("erro", error);
-    }
-  }
-
+  
   async function profileLoad() {
     try {
       const token = await userDecodeToken();
@@ -59,7 +43,7 @@ const DoctorHome = ({ navigation }) => {
         setEmailUser(token.email);
         setNomeUser(token.name);
 
-        // setDataConsulta(moment().format("YYYY-MM-DD"));
+        setDataConsulta(moment().format("YYYY-MM-DD"));
       } else {
         console.log("Não foi possível recuperar o token de acesso.");
       }
@@ -68,6 +52,26 @@ const DoctorHome = ({ navigation }) => {
         "Erro ao recuperar o token de acesso do AsyncStorage:",
         error
       );
+    }
+  };
+
+  console.log(dataConsulta);
+
+  async function GetDoctorAppointmentFunction() {
+    try {
+      const data = await userDecodeToken();
+
+      const url = data.role == "Medico" ? "Medicos" : "Pacientes";
+      
+      console.log(`/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`)
+
+      const retorno = await api.get(
+        `/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`
+      );
+
+      setConsulta(retorno.data);
+    } catch (error) {
+      console.log("erro", error);
     }
   }
 
