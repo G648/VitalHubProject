@@ -56,38 +56,22 @@ namespace WebAPI.Repositories
 
         public List<Consulta> BuscarPorData(DateTime dataConsulta, Guid id)
         {
-<<<<<<< HEAD
-
-            //.Where(x  => x.PacienteId == idPaciente && x.DataConsulta == dataConsulta)
-            return ctx.Consultas
-                .Include(x => x.Prioridade)
-                 .Include (x => x.Situacao)
-                 .Where(x => x.PacienteId == id && EF.Functions.DateDiffDay(x.DataConsulta, dataConsulta) == 0).ToList();
-=======
             return ctx.Consultas
                 .Include(x => x.Situacao)
                 .Include(x => x.Prioridade)
                 .Include(x => x.MedicoClinica!.Medico!.IdNavigation)
                 //.Where(x => x.PacienteId == idPaciente && EF.Functions.DateDiffDay(x.DataConsulta, dataConsulta) == 0)
-                .Where(x  => x.PacienteId == idPaciente && EF.Functions.DateDiffDay(x.DataConsulta, dataConsulta) == 0)
-
-                .ToList();
->>>>>>> origin/demetrio
+                .Where(x  => x.PacienteId == id && EF.Functions.DateDiffDay(x.DataConsulta, dataConsulta) == 0).ToList();
         }
 
         public Paciente BuscarPorId(Guid Id)
         {
             return ctx.Pacientes
                 .Include(x => x.IdNavigation)
-<<<<<<< HEAD
                 .Include(X => X.Endereco)
-                .FirstOrDefault(x => x.Id == Id)!;
-=======
-
                 .Include(x => x.Endereco)
                 .FirstOrDefault(x => x.Id == Id);
 
->>>>>>> origin/demetrio
         }
 
         public List<Consulta> BuscarRealizadas(Guid Id)

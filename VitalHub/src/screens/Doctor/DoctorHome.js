@@ -34,32 +34,7 @@ const DoctorHome = ({ navigation }) => {
     setSelectedUserData(userData);
   };
 
-<<<<<<< HEAD
   
-=======
-  async function GetDoctorAppointmentFunction() {
-    try {
-      const data = await userDecodeToken();
-
-      console.log(data.jti);
-      console.log(data.role);
-
-      const url = data.role == "Medico" ? "Medicos" : "Pacientes";
-
-      const retorno = await api.get(
-        `/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`);
-
-      console.log(retorno.data);
-
-      console.log(retorno.data);
-      setDataConsulta(retorno.data);
-      
-    } catch (error) {
-      console.log("erro", error);
-    }
-  }
-
->>>>>>> origin/demetrio
   async function profileLoad() {
     try {
       const token = await userDecodeToken();

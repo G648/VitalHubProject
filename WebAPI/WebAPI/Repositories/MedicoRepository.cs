@@ -117,18 +117,10 @@ namespace WebAPI.Repositories
                  .Include(x => x.Paciente!.IdNavigation)
                  .Include(x => x.MedicoClinica!.Medico!.Especialidade)
                  .Include(x => x.MedicoClinica!.Medico!.IdNavigation)
-<<<<<<< HEAD
                  .Where(x => x.MedicoClinica!.MedicoId == idMedico && EF.Functions.DateDiffDay(x.DataConsulta, dataConsulta) == 0)
                  .ToList();
         }
-
-
-=======
-
-                 .Where(x => x.MedicoClinica!.MedicoId == idMedico && EF.Functions.DateDiffDay(x.DataConsulta, dataConsulta) == 0)
-                //.Where(x  => x.PacienteId == idPaciente && x.DataConsulta == dataConsulta)
-                .ToList();
         }
->>>>>>> origin/demetrio
+
     }
-}
+
