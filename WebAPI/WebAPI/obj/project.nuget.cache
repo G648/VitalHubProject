@@ -1,8 +1,14 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "nH5c0MMLXoMUWF5C06ihK71YuSKH3YAHBZdOOdkeliliE7bjsepqfzKWrqTsfTHeA0vDiFbGmWAopw7ciAG44Q==",
   "success": true,
   "projectFilePath": "C:\\Users\\45845444845\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\WebAPI.csproj",
+=======
+  "dgSpecHash": "xWyAN3v7/OgYgTFG0WGepWX5AL23hICmaBBjNyzumSjrODB6AUJjTSHOkyhyMgoGr1qC2WZv1v8172LNhCKc1g==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\53144094889\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\WebAPI.csproj",
+>>>>>>> origin/demetrio
   "expectedPackageFiles": [
     "C:\\Users\\45845444845\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\45845444845\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
@@ -79,7 +85,11 @@
       "code": "Undefined",
       "level": "Warning",
       "warningLevel": 1,
+<<<<<<< HEAD
       "message": "Problema ao ler o arquivo de cache C:\\Users\\45845444845\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\obj\\project.nuget.cache: Invalid property identifier character: <. Path 'version', line 3, position 0."
+=======
+      "message": "Problema ao ler o arquivo de cache C:\\Users\\53144094889\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\obj\\project.nuget.cache: Invalid property identifier character: <. Path 'version', line 3, position 0."
+>>>>>>> origin/demetrio
     },
     {
       "code": "NU1902",

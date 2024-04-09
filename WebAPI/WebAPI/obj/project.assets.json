@@ -3353,11 +3353,19 @@
   "project": {
     "version": "1.0.0",
     "restore": {
+<<<<<<< HEAD
       "projectUniqueName": "C:\\Users\\45845444845\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\WebAPI.csproj",
       "projectName": "WebAPI",
       "projectPath": "C:\\Users\\45845444845\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\WebAPI.csproj",
       "packagesPath": "C:\\Users\\45845444845\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\45845444845\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\obj\\",
+=======
+      "projectUniqueName": "C:\\Users\\53144094889\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\WebAPI.csproj",
+      "projectName": "WebAPI",
+      "projectPath": "C:\\Users\\53144094889\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\WebAPI.csproj",
+      "packagesPath": "C:\\Users\\53144094889\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\53144094889\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\obj\\",
+>>>>>>> origin/demetrio
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -3453,7 +3461,11 @@
       "code": "Undefined",
       "level": "Warning",
       "warningLevel": 1,
+<<<<<<< HEAD
       "message": "Problema ao ler o arquivo de cache C:\\Users\\45845444845\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\obj\\project.nuget.cache: Invalid property identifier character: <. Path 'version', line 3, position 0."
+=======
+      "message": "Problema ao ler o arquivo de cache C:\\Users\\53144094889\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\obj\\project.nuget.cache: Invalid property identifier character: <. Path 'version', line 3, position 0."
+>>>>>>> origin/demetrio
     },
     {
       "code": "NU1902",

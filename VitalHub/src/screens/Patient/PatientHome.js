@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from "react";
+<<<<<<< HEAD
 import { CardSituation } from "../../utils/AppSituationCard";
 import { Container } from "../../components/Container/Style";
 import { Header } from "../../components/Header/Header";
 import { CalendarHome } from "../../components/Calendar/Calendar";
+=======
+import { Header } from "../../components/Header/Header";
+import { CalendarHome } from "../../components/Calendar/Calendar";
+import { Container } from "../../components/Container/Style";
+>>>>>>> origin/demetrio
 import { ContainerView } from "../../components/Buttons/Buttons";
 import { Button } from "../../components/Button/Button";
 import { APP_COLORS } from "../../utils/App_colors";
 import { FlatlistInfos } from "../../components/FlatlistUsers/FlatlistUsers";
 import { CardUser } from "../../components/FlatlistUsers/CardFlatlistUsers";
+<<<<<<< HEAD
 import { DoctorData } from "../../utils/MockDataDoctor";
 import CancelDialogs from "../../components/Dialogs/CalcelDialogs";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -205,11 +212,57 @@ const PatientHome = ({ navigation, role, jti }) => {
       default:
         newData = DoctorData;
         break;
+=======
+import { MockData } from "../../utils/MockData";
+import { CardSituation } from "../../utils/AppSituationCard";
+import CancelDialogs from "../../components/Dialogs/CalcelDialogs";
+import { SeeMedicalDialog } from "../../components/Dialogs/SeeMedicalDialog";
+import { userDecodeToken } from "../../utils/Auth";
+import api from "../../service/service";
+import { Text } from "react-native";
+
+const DoctorHome = ({ navigation }) => {
+    const [selectedButton, setSelectedButton] = useState(CardSituation.scheduled);
+    const [filteredData, setFilteredData] = useState(MockData);
+    const [isModalCancel, setIsModalCancel] = useState(false);
+    const [isModalMedical, setisModalMedical] = useState(false);
+    const [selectedUserData, setSelectedUserData] = useState({});
+    const [emailUser, setEmailUser] = useState("");
+    const [nomeUser, setNomeUser] = useState("");
+    const [dataConsulta, setDataConsulta] = useState('');
+
+    const [consultas, setConsultas] = useState([])
+
+    const handleCardPress = (selectedSituation, userData) => {
+        selectedSituation == "Agendadas"
+            ? setIsModalCancel(true)
+            : setisModalMedical(true);
+        setSelectedUserData(userData);
+    };
+
+    async function GetPatientAppointmentFunction() {
+        try {
+            const data = await userDecodeToken()
+            const url = (data.role == 'Medico' ? "Medicos" : "Pacientes")
+            // console.log(url);
+            console.log(`/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`);
+
+            const response = await api.get(
+                `/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`);
+
+            setConsultas(response.data);
+            console.log(response.data);
+            // console.log(consultas);
+        } catch (error) {
+            console.log("erro", error);
+        }
+>>>>>>> origin/demetrio
     }
 
     setFilteredData(newData);
   }, [selectedButton]);
 
+<<<<<<< HEAD
   return (
     <Container>
       <Header textValue={"Bem vindo!"} nameDoctor={nomeUser} />
@@ -329,6 +382,29 @@ const PatientHome = ({ navigation, role, jti }) => {
         widtContainerInfoUser={180}
         marginBottomName={"15px"}
       />
+=======
+            if (token) {
+                setEmailUser(token.email);
+                setNomeUser(token.name);
+            } else {
+                console.log("Não foi possível recuperar o token de acesso.");
+            }
+        } catch (error) {
+            console.error(
+                "Erro ao recuperar o token de acesso do AsyncStorage:",
+                error
+            );
+        }
+    }
+
+    useEffect(() => {
+        profileLoad();
+
+        if (dataConsulta != "") {
+            GetPatientAppointmentFunction();
+        }
+    }, [dataConsulta]);
+>>>>>>> origin/demetrio
 
       <ScheduledButton
         activeOpacity={0.8}
@@ -337,6 +413,7 @@ const PatientHome = ({ navigation, role, jti }) => {
         <FontAwesome5 name="stethoscope" size={32} color={APP_COLORS.white} />
       </ScheduledButton>
 
+<<<<<<< HEAD
       {isModalScheduleVisible && (
         <ScheduleAppointment
           widthModal={"100%"}
@@ -361,3 +438,154 @@ const PatientHome = ({ navigation, role, jti }) => {
 };
 
 export default PatientHome;
+=======
+        switch (selectedButton) {
+            case "Agendadas":
+                newData = MockData.filter(
+                    (item) => item.situation === CardSituation.scheduled
+                );
+                break;
+            case "Realizadas":
+                newData = MockData.filter(
+                    (item) => item.situation === CardSituation.carriedOut
+                );
+                break;
+            case "Canceladas":
+                newData = MockData.filter(
+                    (item) => item.situation === CardSituation.canceled
+                );
+                break;
+            default:
+                newData = MockData;
+                break;
+        }
+
+        setFilteredData(newData);
+    }, [selectedButton]);
+
+    return (
+        <Container>
+            <Header textValue={"Bem vindo!"} nameDoctor={nomeUser} />
+
+            <CalendarHome
+                dataConsulta={dataConsulta}
+                setDataConsulta={setDataConsulta}
+            />
+
+            <ContainerView>
+                <Button
+                    width={"32%"}
+                    activeOpacity={0.8}
+                    title={"Agendadas"}
+                    border={APP_COLORS.secondaryV2}
+                    color={selectedButton == "Agendadas" ? "white" : APP_COLORS.secondary}
+                    backgroundColor={
+                        selectedButton === "Agendadas"
+                            ? APP_COLORS.secondary
+                            : "transparent"
+                    }
+                    onPress={() => setSelectedButton("Agendadas")}
+                />
+                <Button
+                    width={"32%"}
+                    activeOpacity={0.8}
+                    title={"Realizadas"}
+                    border={APP_COLORS.secondaryV2}
+                    color={
+                        selectedButton == "Realizadas" ? "white" : APP_COLORS.secondary
+                    }
+                    backgroundColor={
+                        selectedButton === "Realizadas"
+                            ? APP_COLORS.secondary
+                            : "transparent"
+                    }
+                    onPress={() => setSelectedButton("Realizadas")}
+                />
+                <Button
+                    width={"32%"}
+                    activeOpacity={0.8}
+                    title={"Canceladas"}
+                    border={APP_COLORS.secondaryV2}
+                    color={
+                        selectedButton == "Canceladas" ? "white" : APP_COLORS.secondary
+                    }
+                    backgroundColor={
+                        selectedButton === "Canceladas"
+                            ? APP_COLORS.secondary
+                            : "transparent"
+                    }
+                    onPress={() => setSelectedButton("Canceladas")}
+                />
+            </ContainerView>
+
+            <FlatlistInfos
+                data={consultas}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+
+                        <CardUser
+                            imageUser={'ola'}
+                            nameUser={item.medicoClinica.medico.idNavigation.nome}
+                            ageUser={item.medicoClinica.medico.crm}
+                            descriptionUser={item.prioridade.prioridade}
+                            iconName={"clockcircle"}
+                            bgColor={item.situation}
+                            schedulingTime={'14:00'}
+                            key={item.id}
+                            situation={item.situation}
+                            onPress={() => handleCardPress(selectedButton, item)}
+                            onPressBorder={() => item.situation === "Agendadas" ? handleCardPressInfoDoctor(selectedButton, item) : null}
+                        />
+
+                )}
+                style={{ flex: 1 }}
+                showsVerticalScrollIndicator={false}
+            />
+
+            {/* Renderiza o Dialogs quando isModalVisible for true */}
+            {isModalCancel && (
+                <CancelDialogs
+                    isVisible={isModalCancel}
+                    bgColor={APP_COLORS.grayV6}
+                    titleContent={"Cancelar consulta"}
+                    customContent={
+                        "Ao cancelar essa consulta, abrirá uma possível disponibilidade no seu horário, deseja mesmo cancelar essa consulta?"
+                    }
+                    fontSizeText={"22px"}
+                    fontSizeTextParagraf={"15px"}
+                    onPressConfirm={() => {
+                        setIsModalCancel(false);
+                    }}
+                    onPressCancel={() => {
+                        setIsModalCancel(false);
+                    }}
+                    showCancelButton={true}
+                />
+            )}
+
+            <SeeMedicalDialog
+                isVisible={isModalMedical}
+                showCancelButton={true}
+                onPressCancel={() => setisModalMedical(false)}
+                imageUser={{ uri: selectedUserData.imagem }}
+                heightImageUser={250}
+                widthImageUser={320}
+                nameUser={selectedUserData.nome}
+                ageUser={`${selectedUserData.idade} anos`}
+                emailuser={selectedUserData.email}
+                titleButton={"Inserir prontuário"}
+                onPress={() => {
+                    navigation.navigate("MedicalRecord");
+                    setisModalMedical(false);
+                    //enviar os dados para a página de medicalRecords
+                    navigation.navigate("MedicalRecord", { userData: selectedUserData });
+                }}
+                widtContainerInfoUser={280}
+                marginBottomName={"30px"}
+            />
+        </Container>
+    );
+};
+
+export default DoctorHome;
+>>>>>>> origin/demetrio
