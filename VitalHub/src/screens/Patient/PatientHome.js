@@ -13,7 +13,8 @@ import CancelDialogs from "../../components/Dialogs/CalcelDialogs";
 import { SeeMedicalDialog } from "../../components/Dialogs/SeeMedicalDialog";
 import { userDecodeToken } from "../../utils/Auth";
 import api from "../../service/service";
-import { Text } from "react-native";
+import { Alert, Text } from "react-native";
+import moment from "moment";
 
 const DoctorHome = ({ navigation }) => {
     const [selectedButton, setSelectedButton] = useState(CardSituation.scheduled);
@@ -28,25 +29,63 @@ const DoctorHome = ({ navigation }) => {
     const [consultas, setConsultas] = useState([])
 
     const handleCardPress = (selectedSituation, userData) => {
-        selectedSituation == "Agendadas"
+        selectedSituation == "Pendentes"
             ? setIsModalCancel(true)
             : setisModalMedical(true);
         setSelectedUserData(userData);
     };
 
+    function getMissingQuery() {
+        try {
+            const date = new Date();
+            // const today = date.getDate();
+            // setDataConsulta(response.data)
+            // console.log(date);
+            // console.log(dataConsulta);
+
+            if (moment(date).isAfter(dataConsulta)) {
+                console.log("sim");
+                (item) => item.situation === CardSituation.carriedOut
+            }
+            else {
+                console.log("no");
+                
+            }
+            // return today;
+        } catch (error) {
+            console.log("error", error);
+            return null;
+        }
+    }
+
+    // function getAge() {
+    //     try {
+    //         const date = new Date();
+
+    //         if (moment(date).isAfter(dataConsulta)) {
+    //             console.log("sim");
+    //         }
+    //         else {
+    //             console.log("no");
+    //         }
+    //         // return today;
+    //     } catch (error) {
+    //         console.log("error", error);
+    //         return null;
+    //     }
+    // }
+
+
     async function GetPatientAppointmentFunction() {
         try {
             const data = await userDecodeToken()
             const url = (data.role == 'Medico' ? "Medicos" : "Pacientes")
-            // console.log(url);
-            console.log(`/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`);
 
             const response = await api.get(
                 `/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`);
 
             setConsultas(response.data);
             console.log(response.data);
-            // console.log(consultas);
         } catch (error) {
             console.log("erro", error);
         }
@@ -71,6 +110,10 @@ const DoctorHome = ({ navigation }) => {
     }
 
     useEffect(() => {
+        getMissingQuery();
+    })
+
+    useEffect(() => {
         profileLoad();
 
         if (dataConsulta != "") {
@@ -79,31 +122,31 @@ const DoctorHome = ({ navigation }) => {
     }, [dataConsulta]);
 
     useEffect(() => {
-        let newData = [];
-
+        let newData = [consultas];
+    
         switch (selectedButton) {
-            case "Agendadas":
-                newData = MockData.filter(
-                    (item) => item.situation === CardSituation.scheduled
-                );
-                break;
-            case "Realizadas":
-                newData = MockData.filter(
-                    (item) => item.situation === CardSituation.carriedOut
-                );
-                break;
-            case "Canceladas":
-                newData = MockData.filter(
-                    (item) => item.situation === CardSituation.canceled
-                );
-                break;
-            default:
-                newData = MockData;
-                break;
+          case "Agendadas":
+            
+              (item) => item.situation === CardSituation.scheduled
+            
+            break;
+          case "Realizadas":
+            
+              (item) => item.situation === CardSituation.carriedOut
+            
+            break;
+          case "Canceladas":
+            
+              (item) => item.situation === CardSituation.canceled
+            
+            break;
+          default:
+            newData = consultas;
+            break;
         }
-
+    
         setFilteredData(newData);
-    }, [selectedButton]);
+      }, [selectedButton]);
 
     return (
         <Container>
@@ -120,13 +163,13 @@ const DoctorHome = ({ navigation }) => {
                     activeOpacity={0.8}
                     title={"Agendadas"}
                     border={APP_COLORS.secondaryV2}
-                    color={selectedButton == "Agendadas" ? "white" : APP_COLORS.secondary}
+                    color={selectedButton == "Pendentes" ? "white" : APP_COLORS.secondary}
                     backgroundColor={
-                        selectedButton === "Agendadas"
+                        selectedButton === "Pendentes"
                             ? APP_COLORS.secondary
                             : "transparent"
                     }
-                    onPress={() => setSelectedButton("Agendadas")}
+                    onPress={() => setSelectedButton("Pendentes")}
                 />
                 <Button
                     width={"32%"}
@@ -134,14 +177,14 @@ const DoctorHome = ({ navigation }) => {
                     title={"Realizadas"}
                     border={APP_COLORS.secondaryV2}
                     color={
-                        selectedButton == "Realizadas" ? "white" : APP_COLORS.secondary
+                        selectedButton == "Realizados" ? "white" : APP_COLORS.secondary
                     }
                     backgroundColor={
-                        selectedButton === "Realizadas"
+                        selectedButton === "Realizados"
                             ? APP_COLORS.secondary
                             : "transparent"
                     }
-                    onPress={() => setSelectedButton("Realizadas")}
+                    onPress={() => setSelectedButton("Realizados")}
                 />
                 <Button
                     width={"32%"}
@@ -149,14 +192,14 @@ const DoctorHome = ({ navigation }) => {
                     title={"Canceladas"}
                     border={APP_COLORS.secondaryV2}
                     color={
-                        selectedButton == "Canceladas" ? "white" : APP_COLORS.secondary
+                        selectedButton == "Cancelados" ? "white" : APP_COLORS.secondary
                     }
                     backgroundColor={
-                        selectedButton === "Canceladas"
+                        selectedButton === "Cancelados"
                             ? APP_COLORS.secondary
                             : "transparent"
                     }
-                    onPress={() => setSelectedButton("Canceladas")}
+                    onPress={() => setSelectedButton("Cancelados")}
                 />
             </ContainerView>
 
@@ -165,19 +208,19 @@ const DoctorHome = ({ navigation }) => {
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
 
-                        <CardUser
-                            imageUser={'ola'}
-                            nameUser={item.medicoClinica.medico.idNavigation.nome}
-                            ageUser={item.medicoClinica.medico.crm}
-                            descriptionUser={item.prioridade.prioridade}
-                            iconName={"clockcircle"}
-                            bgColor={item.situation}
-                            schedulingTime={'14:00'}
-                            key={item.id}
-                            situation={item.situation}
-                            onPress={() => handleCardPress(selectedButton, item)}
-                            onPressBorder={() => item.situation === "Agendadas" ? handleCardPressInfoDoctor(selectedButton, item) : null}
-                        />
+                    <CardUser
+                        imageUser={'ola'}
+                        nameUser={item.medicoClinica.medico.idNavigation.nome}
+                        ageUser={item.medicoClinica.medico.crm}
+                        descriptionUser={item.prioridade.prioridade}
+                        iconName={"clockcircle"}
+                        bgColor={item.situacao.situacao}
+                        schedulingTime={'14:00'}
+                        key={item.id}
+                        situation={item.situacao.situacao}
+                        onPress={() => handleCardPress(selectedButton, item)}
+                        onPressBorder={() => item.situation === "Pendentes" ? handleCardPressInfoDoctor(selectedButton, item) : null}
+                    />
 
                 )}
                 style={{ flex: 1 }}

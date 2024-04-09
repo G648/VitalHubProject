@@ -24,7 +24,7 @@ const DoctorHome = ({ navigation }) => {
   const [nomeUser, setNomeUser] = useState("");
   const [dataConsulta, setDataConsulta] = useState([]);
 
-  console.log(dataConsulta);
+  const [consultas, setConsultas] = useState([])
 
   const handleCardPress = (selectedSituation, userData) => {
     selectedSituation == "Agendadas"
@@ -37,19 +37,13 @@ const DoctorHome = ({ navigation }) => {
     try {
       const data = await userDecodeToken();
 
-      console.log(data.jti);
-      console.log(data.role);
-
       const url = data.role == "Medico" ? "Medicos" : "Pacientes";
 
       const retorno = await api.get(
         `/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`);
 
-      console.log(retorno.data);
-
-      console.log(retorno.data);
-      setDataConsulta(retorno.data);
-      
+      setConsultas(retorno.data);
+      console.log(retorno.data);      
     } catch (error) {
       console.log("erro", error);
     }
@@ -164,13 +158,14 @@ const DoctorHome = ({ navigation }) => {
       </ContainerView>
 
       <FlatlistInfos
-        data={filteredData}
+        data={consultas}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <CardUser
             imageUser={{ uri: item.imagem }}
-            nameUser={item.nome}
-            ageUser={item.idade}
-            descriptionUser={item.situacao}
+            nameUser={item.paciente.idNavigation.nome}
+            ageUser={item.paciente.idNavigation.email}
+            descriptionUser={item.prioridade.prioridade}
             iconName={"clockcircle"}
             bgColor={item.situation}
             schedulingTime={"14:00"}
