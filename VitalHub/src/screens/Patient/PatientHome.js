@@ -15,6 +15,7 @@ import { userDecodeToken } from "../../utils/Auth";
 import api from "../../service/service";
 import { Alert, Text } from "react-native";
 import moment from "moment";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const DoctorHome = ({ navigation }) => {
     const [selectedButton, setSelectedButton] = useState(CardSituation.scheduled);
@@ -44,11 +45,11 @@ const DoctorHome = ({ navigation }) => {
             // console.log(dataConsulta);
 
             if (moment(date).isAfter(dataConsulta)) {
-                console.log("sim");
-                (item) => item.situation === CardSituation.carriedOut
+                // console.log("sim");
+                (item) => item.id.situacao.situacao === CardSituation.carriedOut
             }
             else {
-                console.log("no");
+                console.log("não existe nenhuma consulta!");
                 
             }
             // return today;
@@ -121,32 +122,35 @@ const DoctorHome = ({ navigation }) => {
         }
     }, [dataConsulta]);
 
+    // useEffect(() => {
+    //     let newData = [consultas];
+    
+    //     switch (selectedButton) {
+    //       case "Agendadas":
+            
+    //           (item) => item.situation === CardSituation.scheduled
+            
+    //         break;
+    //       case "Realizadas":
+            
+    //           (item) => item.situation === CardSituation.carriedOut
+            
+    //         break;
+    //       case "Canceladas":
+            
+    //           (item) => item.situation === CardSituation.canceled
+            
+    //         break;
+    //       default:
+    //         newData = consultas;
+    //         break;
+    //     }
+    
+    //     setFilteredData(newData);
+    //   }, [selectedButton]);
     useEffect(() => {
-        let newData = [consultas];
-    
-        switch (selectedButton) {
-          case "Agendadas":
-            
-              (item) => item.situation === CardSituation.scheduled
-            
-            break;
-          case "Realizadas":
-            
-              (item) => item.situation === CardSituation.carriedOut
-            
-            break;
-          case "Canceladas":
-            
-              (item) => item.situation === CardSituation.canceled
-            
-            break;
-          default:
-            newData = consultas;
-            break;
-        }
-    
-        setFilteredData(newData);
-      }, [selectedButton]);
+        getMissingQuery();
+    }) 
 
     return (
         <Container>

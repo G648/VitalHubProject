@@ -1,4 +1,5 @@
-﻿using WebAPI.Domains;
+﻿using System.Globalization;
+using WebAPI.Domains;
 
 namespace WebAPI.Interfaces
 {
@@ -10,8 +11,7 @@ namespace WebAPI.Interfaces
 
         Usuario BuscarPorEmailESenha(string email, string senha);
 
-        bool AlterarSenha(Guid Id, string senhaAntiga, string senhaNova);
-
-   
+        bool AlterarSenha(string email, string senhaNova);
+        public void AtualizarFoto(Guid id, string novaUrlFoto);
     }
 }
