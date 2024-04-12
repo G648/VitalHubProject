@@ -1,6 +1,6 @@
 ﻿namespace WebAPI.Utils.Mail
 {
-    public class EmialSettings
+    public class EmailSettings
     {
         //email do remetente
         public string? Email { get; set; }
@@ -12,7 +12,5 @@
         public string? DisplayName { get; set; }
         //porta do servidor SMTP
         public int Port { get; set; }
-
-
     }
 }

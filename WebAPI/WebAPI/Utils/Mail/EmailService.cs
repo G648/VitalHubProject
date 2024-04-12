@@ -7,12 +7,12 @@ using MimeKit;
 
 namespace WebAPI.Utils.Mail
 {
-    public class MailService : IMailService
+    public class EmailService : IEmailService
     {
         //Variável privada com as configs do email
         private readonly EmailSettings emailSettings;
 
-        public MailService(IOptions<EmailSettings> options)
+        public EmailService(IOptions<EmailSettings> options)
         {
             //obtem as configs do email e armazena na variável privada
             emailSettings = options.Value;
@@ -29,7 +29,7 @@ namespace WebAPI.Utils.Mail
                 email.Sender = MailboxAddress.Parse(emailSettings.Email);
 
                 //adiciona o destinatário do email
-                email.To.Add(MailboxAddress.Parse(emailRequest.ToEmail));
+                email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
 
                 //define o assunto do email
                 email.Subject = mailRequest.Subject;
