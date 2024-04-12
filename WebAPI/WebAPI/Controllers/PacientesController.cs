@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using WebAPI.Domains;
 using WebAPI.Interfaces;
 using WebAPI.Repositories;
+using WebAPI.Utils.BlobStorage;
 using WebAPI.Utils.Mail;
 using WebAPI.ViewModels;
 
@@ -48,14 +49,24 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(PacienteViewModel pacienteModel)
+        public async Task<IActionResult> Post([FromForm] PacienteViewModel pacienteModel)
         {
+            try { 
+            
             Usuario user = new Usuario();
 
             user.Nome = pacienteModel.Nome;
             user.Email = pacienteModel.Email;
             user.TipoUsuarioId = pacienteModel.IdTipoUsuario;
-            user.Foto = pacienteModel.Foto;
+
+
+            var connectionString = "";
+
+            var containerName = "";
+
+            user.Foto = await AzureBlobStorageHelper.UploadImageBlobAsync(pacienteModel.Arquivo!, connectionString, containerName);
+
+
             user.Senha = pacienteModel.Senha;
 
             user.Paciente = new Paciente();
@@ -75,7 +86,13 @@ namespace WebAPI.Controllers
 
             await _emailSendingService.SendWelcomeEmail(user.Email!, user.Nome!);
 
-            return Ok();
+            return Ok(user);
+
+            } 
+            catch (Exception e)  
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpGet("BuscarPorData")]

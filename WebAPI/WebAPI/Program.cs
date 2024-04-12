@@ -1,7 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using System.Reflection;
+using WebAPI.Contexts;
 using WebAPI.Utils.Mail;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -99,6 +101,9 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
+builder.Services.AddDbContext<VitalContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlDataBase")));
 
 // Configure EmailSettings
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(nameof(EmailSettings)));
