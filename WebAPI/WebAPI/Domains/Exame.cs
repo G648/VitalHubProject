@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 
 namespace WebAPI.Domains;
@@ -6,8 +6,6 @@ namespace WebAPI.Domains;
 public partial class Exame
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-
-    public string? Titulo { get; set; }
 
     public string? Descricao { get; set; }
 
