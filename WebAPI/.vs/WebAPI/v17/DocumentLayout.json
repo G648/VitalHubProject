@@ -58,8 +58,7 @@
               "RelativeToolTip": "WebAPI\\appsettings.json",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-04-12T13:08:48.531Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-12T13:08:48.531Z"
             },
             {
               "$type": "Document",
@@ -71,8 +70,7 @@
               "RelativeToolTip": "WebAPI\\Program.cs",
               "ViewState": "AQIAAEUAAAAAAAAAAAAAAHcAAAASAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-12T13:06:48.935Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-12T13:06:48.935Z"
             },
             {
               "$type": "Document",
@@ -84,8 +82,7 @@
               "RelativeToolTip": "WebAPI\\Controllers\\RecuperarSenhaController.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-12T12:50:05.504Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-12T12:50:05.504Z"
             },
             {
               "$type": "Document",
@@ -97,8 +94,7 @@
               "RelativeToolTip": "WebAPI\\Controllers\\MedicosController.cs",
               "ViewState": "AQIAADAAAAAAAAAAAAAYwEYAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-12T12:14:11.519Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-12T12:14:11.519Z"
             },
             {
               "$type": "Document",
@@ -110,8 +106,7 @@
               "RelativeToolTip": "WebAPI\\Utils\\BlobStorage\\AzureBlobStorageHelper.cs",
               "ViewState": "AQIAAB8AAAAAAAAAAAAQwAsAAAAyAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-12T10:59:28.083Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-12T10:59:28.083Z"
             },
             {
               "$type": "Document",
@@ -123,8 +118,7 @@
               "RelativeToolTip": "WebAPI\\ViewModels\\PacienteViewModel.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAB4AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-12T11:27:07.551Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-12T11:27:07.551Z"
             },
             {
               "$type": "Document",
@@ -134,7 +128,7 @@
               "RelativeDocumentMoniker": "WebAPI\\Controllers\\PacientesController.cs",
               "ToolTip": "C:\\Users\\53144094889\\Desktop\\VitalHubProject\\WebAPI\\WebAPI\\Controllers\\PacientesController.cs",
               "RelativeToolTip": "WebAPI\\Controllers\\PacientesController.cs",
-              "ViewState": "AQIAAHYAAAAAAAAAAAAwwD0AAAAAAAAA",
+              "ViewState": "AQIAAHYAAAAAAAAAAAAwwHwAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-04-12T11:30:36.1Z",
               "EditorCaption": ""

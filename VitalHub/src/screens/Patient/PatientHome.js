@@ -36,28 +36,28 @@ const DoctorHome = ({ navigation }) => {
         setSelectedUserData(userData);
     };
 
-    function getMissingQuery() {
-        try {
-            const date = new Date();
-            // const today = date.getDate();
-            // setDataConsulta(response.data)
-            // console.log(date);
-            // console.log(dataConsulta);
+    // function getMissingQuery() {
+    //     try {
+    //         const date = new Date();
+    //         // const today = date.getDate();
+    //         // setDataConsulta(response.data)
+    //         // console.log(date);
+    //         // console.log(dataConsulta);
 
-            if (moment(date).isAfter(dataConsulta)) {
-                // console.log("sim");
-                (item) => item.id.situacao.situacao === CardSituation.carriedOut
-            }
-            else {
-                console.log("não existe nenhuma consulta!");
-                
-            }
-            // return today;
-        } catch (error) {
-            console.log("error", error);
-            return null;
-        }
-    }
+    //         if (moment(date).isAfter(dataConsulta)) {
+    //             // console.log("sim");
+    //             (item) => item.id.situacao.situacao === CardSituation.carriedOut
+    //         }
+    //         else {
+    //             console.log("não existe nenhuma consulta!");
+
+    //         }
+    //         // return today;
+    //     } catch (error) {
+    //         console.log("error", error);
+    //         return null;
+    //     }
+    // }
 
     // function getAge() {
     //     try {
@@ -110,9 +110,9 @@ const DoctorHome = ({ navigation }) => {
         }
     }
 
-    useEffect(() => {
-        getMissingQuery();
-    })
+    // useEffect(() => {
+    //     getMissingQuery();
+    // })
 
     useEffect(() => {
         profileLoad();
@@ -123,34 +123,34 @@ const DoctorHome = ({ navigation }) => {
     }, [dataConsulta]);
 
     // useEffect(() => {
-    //     let newData = [consultas];
-    
+    //     // let newData = [consultas];
+
+    //     data={consultas}
+
     //     switch (selectedButton) {
     //       case "Agendadas":
-            
+
     //           (item) => item.situation === CardSituation.scheduled
-            
+
     //         break;
     //       case "Realizadas":
-            
+
     //           (item) => item.situation === CardSituation.carriedOut
-            
+
     //         break;
     //       case "Canceladas":
-            
+
     //           (item) => item.situation === CardSituation.canceled
-            
+
     //         break;
     //       default:
     //         newData = consultas;
     //         break;
     //     }
-    
+
     //     setFilteredData(newData);
     //   }, [selectedButton]);
-    useEffect(() => {
-        getMissingQuery();
-    }) 
+
 
     return (
         <Container>
@@ -210,23 +210,58 @@ const DoctorHome = ({ navigation }) => {
             <FlatlistInfos
                 data={consultas}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
+                renderItem={({ item }) => {
 
-                    <CardUser
-                        imageUser={'ola'}
-                        nameUser={item.medicoClinica.medico.idNavigation.nome}
-                        ageUser={item.medicoClinica.medico.crm}
-                        descriptionUser={item.prioridade.prioridade}
-                        iconName={"clockcircle"}
-                        bgColor={item.situacao.situacao}
-                        schedulingTime={'14:00'}
-                        key={item.id}
-                        situation={item.situacao.situacao}
-                        onPress={() => handleCardPress(selectedButton, item)}
-                        onPressBorder={() => item.situation === "Pendentes" ? handleCardPressInfoDoctor(selectedButton, item) : null}
-                    />
+                    if (selectedButton === 'Pendentes' && item.situacao.situacao === "Pendentes") {
+                        return (
+                            <CardUser
+                                imageUser={'sadhfjnghajwkne'}
+                                nameUser={item.medicoClinica.medico.idNavigation.nome}
+                                ageUser={item.medicoClinica.medico.crm}
+                                descriptionUser={item.prioridade.prioridade}
+                                iconName={"clockcircle"}
+                                bgColor={item.situacao.situacao}
+                                schedulingTime={'14:00'}
+                                key={item.id}
+                                situation={item.situacao.situacao}
+                                onPress={() => handleCardPress(selectedButton, item)}
+                                onPressBorder={() => item.situation === "Pendentes" ? handleCardPressInfoDoctor(selectedButton, item) : null}
+                            />)
+                    }
+                    else if (selectedButton === 'Realizados' && item.situacao.situacao === "Realizados") {
+                        return (
+                            <CardUser
+                                imageUser={'sadhfjnghajwkne'}
+                                nameUser={item.medicoClinica.medico.idNavigation.nome}
+                                ageUser={item.medicoClinica.medico.crm}
+                                descriptionUser={item.prioridade.prioridade}
+                                iconName={"clockcircle"}
+                                bgColor={item.situacao.situacao}
+                                schedulingTime={'14:00'}
+                                key={item.id}
+                                situation={item.situacao.situacao}
+                                onPress={() => handleCardPress(selectedButton, item)}
+                                onPressBorder={() => item.situation === "Realizados" ? handleCardPressInfoDoctor(selectedButton, item) : null}
+                            />)
+                    }
+                    else if (selectedButton === 'Cancelados' && item.situacao.situacao === "Cancelados") {
+                        return (
+                            <CardUser
+                                imageUser={'sadhfjnghajwkne'}
+                                nameUser={item.medicoClinica.medico.idNavigation.nome}
+                                ageUser={item.medicoClinica.medico.crm}
+                                descriptionUser={item.prioridade.prioridade}
+                                iconName={"clockcircle"}
+                                bgColor={item.situacao.situacao}
+                                schedulingTime={'14:00'}
+                                key={item.id}
+                                situation={item.situacao.situacao}
+                                onPress={() => handleCardPress(selectedButton, item)}
+                                onPressBorder={() => item.situation === "Cancelados" ? handleCardPressInfoDoctor(selectedButton, item) : null}
+                            />)
+                    }
 
-                )}
+                }}
                 style={{ flex: 1 }}
                 showsVerticalScrollIndicator={false}
             />
