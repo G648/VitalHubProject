@@ -24,6 +24,18 @@ export default function RecoverPassword({ navigation }) {
   const [password, setPassword] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [strength, setStrength] = useState("");
+  const [senha, setSenha] = useState('')
+
+  async function AtualizarSenha() {
+    await api.put(`/Usuario/AlterarSenha/?email=${route.params.emailRecuperacao}`,{
+      senhaNova : senha
+    })
+    .then(() => {
+      navigation.replace("Login");
+    }).catch(error => {
+      console.log(error)
+    })
+  }
 
   const validatePassword = (input) => {
     let newSuggestions = [];
@@ -133,13 +145,15 @@ export default function RecoverPassword({ navigation }) {
         <InputValues
           placeholder="Confirmar senha"
           secureTextEntry={true}
-          onChangeText={(txt) =>
-            setPassword({
-              txt,
-            })
-          }
+          // onChangeText={(txt) =>
+          //   setPassword({
+          //     txt,
+          //   })
+          // }
           width="100%"
           isRecoveryPassword={true}
+          value={senha}
+          onChangeText={(txt) => setSenha(txt)}
         />
 
         <Button
@@ -149,7 +163,7 @@ export default function RecoverPassword({ navigation }) {
           color={APP_COLORS.white}
           height={48}
           title={"Confirmar nova senha"}
-          onPress={() => navigation.navigate("Login")}
+          onPress={() => AtualizarSenha()}
           marginTop={30}
           width={'100%'}
         />

@@ -241,8 +241,8 @@ const DoctorHome = ({ navigation }) => {
                                 schedulingTime={'14:00'}
                                 key={item.id}
                                 situation={item.situacao.situacao}
-                                // onPress={() => }
-                                onPress={() => {handleCardPress(selectedButton, item)}}
+                                // onPress={() => handleCardPress(selectedButton, item)}
+                                onPress={() => {}}
                                 onPressBorder={() => item.situation === "Realizados" ? handleCardPressInfoDoctor(selectedButton, item) : null}
                             />)
                     }
