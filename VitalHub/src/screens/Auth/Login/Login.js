@@ -196,7 +196,6 @@ const Login = ({ navigation }) => {
           )
         }
         marginTop={15}
-        buttonOppacity={{ opacity: isFormValid ? 1 : .5 }}
         disabled={!isFormValid}
         backgroundColor={isFormValid ? APP_COLORS.secondary : APP_COLORS.grayV6}
         onPress={() => handleSelectUser()}

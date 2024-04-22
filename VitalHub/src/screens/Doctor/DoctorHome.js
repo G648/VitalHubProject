@@ -13,7 +13,6 @@ import CancelDialogs from "../../components/Dialogs/CalcelDialogs";
 import { SeeMedicalDialog } from "../../components/Dialogs/SeeMedicalDialog";
 import { userDecodeToken } from "../../utils/Auth";
 import api from "../../service/service";
-import moment from "moment";
 
 const DoctorHome = ({ navigation }) => {
   const [selectedButton, setSelectedButton] = useState(CardSituation.scheduled);
@@ -23,9 +22,9 @@ const DoctorHome = ({ navigation }) => {
   const [selectedUserData, setSelectedUserData] = useState({});
   const [emailUser, setEmailUser] = useState("");
   const [nomeUser, setNomeUser] = useState("");
-  const [dataConsulta, setDataConsulta] = useState(new Date());
+  const [dataConsulta, setDataConsulta] = useState([]);
 
-  console.log(dataConsulta);
+  const [consultas, setConsultas] = useState([])
 
   const handleCardPress = (selectedSituation, userData) => {
     selectedSituation == "Agendadas"
@@ -34,7 +33,22 @@ const DoctorHome = ({ navigation }) => {
     setSelectedUserData(userData);
   };
 
-  
+  async function GetDoctorAppointmentFunction() {
+    try {
+      const data = await userDecodeToken();
+
+      const url = data.role == "Medico" ? "Medicos" : "Pacientes";
+
+      const retorno = await api.get(
+        `/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`);
+
+      setConsultas(retorno.data);
+      console.log(retorno.data);      
+    } catch (error) {
+      console.log("erro", error);
+    }
+  }
+
   async function profileLoad() {
     try {
       const token = await userDecodeToken();
@@ -42,8 +56,6 @@ const DoctorHome = ({ navigation }) => {
       if (token) {
         setEmailUser(token.email);
         setNomeUser(token.name);
-
-        setDataConsulta(moment().format("YYYY-MM-DD"));
       } else {
         console.log("Não foi possível recuperar o token de acesso.");
       }
@@ -53,33 +65,11 @@ const DoctorHome = ({ navigation }) => {
         error
       );
     }
-  };
-
-  console.log(dataConsulta);
-
-  async function GetDoctorAppointmentFunction() {
-    try {
-      const data = await userDecodeToken();
-
-      const url = data.role == "Medico" ? "Medicos" : "Pacientes";
-      
-      console.log(`/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`)
-
-      const retorno = await api.get(
-        `/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`
-      );
-
-      setConsulta(retorno.data);
-    } catch (error) {
-      console.log("erro", error);
-    }
   }
 
   useEffect(() => {
     profileLoad();
-  });
 
-  useEffect(() => {
     if (dataConsulta != "") {
       GetDoctorAppointmentFunction();
     }
@@ -117,6 +107,7 @@ const DoctorHome = ({ navigation }) => {
       <Header textValue={"Bem vindo!"} nameDoctor={nomeUser} />
 
       <CalendarHome
+        dataConsulta={dataConsulta}
         setDataConsulta={setDataConsulta}
       />
 
@@ -167,13 +158,14 @@ const DoctorHome = ({ navigation }) => {
       </ContainerView>
 
       <FlatlistInfos
-        data={filteredData}
+        data={consultas}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <CardUser
-            imageUser={{ uri: item.imagem }}  
-            nameUser={item.nome}
-            ageUser={item.idade}
-            descriptionUser={item.situacao}
+            imageUser={{ uri: item.imagem }}
+            nameUser={item.paciente.idNavigation.nome}
+            ageUser={item.paciente.idNavigation.email}
+            descriptionUser={item.prioridade.prioridade}
             iconName={"clockcircle"}
             bgColor={item.situation}
             schedulingTime={"14:00"}

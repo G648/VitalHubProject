@@ -1,4 +1,7 @@
-﻿namespace WebAPI.ViewModels
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+namespace WebAPI.ViewModels
 {
     public class MedicoViewModel
     {
@@ -6,11 +9,7 @@
 
         public string? Email { get; set; }
 
-        public DateTime DataNascimento { get; set; }
-
         public string? Senha { get; set; }
-
-        public string? Foto { get; set; }
 
         public string? Cep { get; set; }
 
@@ -25,5 +24,10 @@
         public string? Crm { get; set; }
 
         public Guid? IdTipoUsuario { get; set; }
+
+        [NotMapped]
+        [JsonIgnore]
+        public IFormFile? Arquivo { get; set; }
+        public string? Foto { get; set; }
     }
 }

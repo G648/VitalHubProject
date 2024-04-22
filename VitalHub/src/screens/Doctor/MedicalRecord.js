@@ -20,6 +20,7 @@ export const ScrollViewContainer = styled.ScrollView`
     width: 90%;
     height: 100%;
     top: -10%;
+    
 `
 
 export const TextLabel = styled.Text`

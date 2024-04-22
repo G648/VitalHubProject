@@ -8,7 +8,7 @@ import { CardUser } from '../../components/FlatlistUsers/CardFlatlistUsers'
 import { APP_COLORS } from '../../utils/App_colors'
 import { Button } from '../../components/Button/Button'
 import { UnderlinedLink } from '../../components/Links/Style'
-import api, { ClinicListAll } from '../../service/service'
+import api, { ClinicResource } from '../../service/service'
 
 export const ContainerScrollView = styled.ScrollView`
     width: 90%;
@@ -18,24 +18,25 @@ export const ContainerScrollView = styled.ScrollView`
 export default function ChooseClinic({ navigation }) {
 
     const [selectedCard, setSelectedCard] = useState(null);
-    const [listClinic, setListClinic] = useState([])
+    const [clinicList, setClinicList] = useState([])
 
-    async function GetClinic() {
-        await api.get(ClinicListAll)
-        .then(response => {setListClinic(response.data)})
-        .catch(error => console.log(error));
-    }
+    const getClinic = async () => {
+        await api.get(ClinicResource)
+          .then(response => {
+            setClinicList(response.data)
+          })
+          .catch(error => console.log(error));
+      }
 
     const handleCardPress = (id) => {
         setSelectedCard(id);
     };
 
     useEffect(() => {
-        GetClinic()
-    }, [])
+        getClinic()
+      }, [])
 
-
-    console.log(listClinic);
+    console.log(clinicList);
     return (
         <Container>
             <Title
@@ -47,15 +48,15 @@ export default function ChooseClinic({ navigation }) {
             <ContainerScrollView>
                 <FlatlistInfos
                     width={'100%'}
-                    data={listClinic}
-                    keyExtractor={(item) => item.id} 
+                    data={clinicList}
+                    keyExtractor={(item) => item.id}
                     renderItem={({ item }) => {
                         return (
                             <CardUser
                                 imageUser={require('../../assets/Images/Group.png')}
                                 nameUser={item.nomeFantasia}
                                 descriptionUser={item.endereco.logradouro}
-                                schedulingTime={'14:00'}
+                                schedulingTime={item.horarioFuncionamento}
                                 iconName={"calendar"}
                                 iconSize={20}
                                 bgColor={item.situation}

@@ -11,5 +11,6 @@ namespace WebAPI.Interfaces
         public void Cadastrar(Usuario medico);
         public List<Medico> ListarPorClinica(Guid id);
         public List<Consulta> BuscarPorData(DateTime dataConsulta, Guid idMedico);
+
     }
 }
