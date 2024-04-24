@@ -25,12 +25,15 @@ export const InputValidation = styled.TextInput.attrs(
 `
 
 export function InputValidator({
-
+    onChangeText,
+    caretHidden
 }) {
     return(
             <InputValidation
                 keyboardType="numeric"
                 maxLength={1}
+                onChangeText={onChangeText}
+                caretHidden={caretHidden}
             />        
     )
 }

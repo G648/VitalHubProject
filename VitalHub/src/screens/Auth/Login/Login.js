@@ -16,9 +16,11 @@ import { userDecodeToken } from "../../../utils/Auth";
 const Login = ({ navigation }) => {
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
+
+
   const [submitData, setSubmitData] = useState({
-    email: "",
-    senha: "",
+    email: "gabrieldemetrio571@gmail.com",
+    senha: "123456",
   });
 
   const [loading, setLoading] = useState(false);
@@ -26,6 +28,8 @@ const Login = ({ navigation }) => {
   async function LoadUserParams() {
     try {
       const token = await userDecodeToken();
+
+      console.log(token);
 
       if (token) {
         console.log("Token de acesso recuperado:", token);
@@ -62,6 +66,7 @@ const Login = ({ navigation }) => {
 
     try {
       const response = await api.post(LoginResource, submitData);
+      console.log(response)
 
       await AsyncStorage.setItem("token", JSON.stringify(response.data));
 

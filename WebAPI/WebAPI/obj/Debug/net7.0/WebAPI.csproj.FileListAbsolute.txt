@@ -439,3 +439,9 @@ C:\Users\45845444845\Desktop\VitalHubProject3\WebAPI\WebAPI\obj\Debug\net7.0\sco
 C:\Users\45845444845\Desktop\VitalHubProject3\WebAPI\WebAPI\obj\Debug\net7.0\WebAPI.csproj.CopyComplete
 C:\Users\45845444845\Desktop\VitalHubProject3\WebAPI\WebAPI\obj\Debug\net7.0\WebAPI.genruntimeconfig.cache
 C:\Users\45845444845\Desktop\VitalHubProject3\WebAPI\WebAPI\obj\Debug\net7.0\ref\WebAPI.dll
+<<<<<<< HEAD
+=======
+C:\Users\53144094889\Desktop\VitalHubProject\WebAPI\WebAPI\bin\Debug\net7.0\Microsoft.Azure.CognitiveServices.Vision.ComputerVision.dll
+C:\Users\53144094889\Desktop\VitalHubProject\WebAPI\WebAPI\bin\Debug\net7.0\Microsoft.Rest.ClientRuntime.dll
+C:\Users\53144094889\Desktop\VitalHubProject\WebAPI\WebAPI\bin\Debug\net7.0\Microsoft.Rest.ClientRuntime.Azure.dll
+>>>>>>> main

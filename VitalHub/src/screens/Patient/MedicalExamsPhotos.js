@@ -60,7 +60,7 @@ export const BoxButons = styled.View`
     left: 2.5%;
     `
 
-export default function MedicalExamsPhotos() {
+export default function MedicalExamsPhotos(getMediaLibrary = false) {
 
     const cameraRef = useRef(null)
     const [photo, setPhoto] = useState(null)
@@ -68,6 +68,8 @@ export default function MedicalExamsPhotos() {
     const [captureMode, setCaptureMode] = useState('photo')
     const [isRecording, setIsRecording] = useState(false)
     const [typeCamera, setTypeCamera] = useState(Camera.Constants.Type.back)
+
+    const [lastestPhoto, setLastestPhoto] = useState(null)
 
     async function CapturePhoto() {
         if (cameraRef) {
@@ -109,6 +111,12 @@ export default function MedicalExamsPhotos() {
         }
     }
 
+    async function GetLastPhoto(){
+        const assets = await MediaLibrary.getAssetsAsync({sortBy : [[MediaLIbrary.SortBy.creationTime, false]], first : 1})
+
+        console.log(assets);
+    }
+
     useEffect(() => {
         (async () => {
             //acesso a camera
@@ -123,9 +131,16 @@ export default function MedicalExamsPhotos() {
 
     }, [])
 
+    useEffect(()=> {
+        if(getMediaLibrary){
+            GetLastPhoto();
+        }
+    })
+
     return (
         <Container>
             <CameraView
+                getMediaLibrary={true}
                 ref={cameraRef}
                 type={typeCamera}
                 ratio={'16:9'}

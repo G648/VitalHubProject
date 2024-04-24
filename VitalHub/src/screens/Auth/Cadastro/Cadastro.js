@@ -1,14 +1,31 @@
-import React from "react"
+import React, { useState } from "react"
 import { Container } from "../../../components/Container/Style";
 import { Logo } from "../../../components/Logo/Style";
 import { Title } from "../../../components/Title/Style";
 import { ParagrafText } from "../../../components/Paragraf/Paragraf";
-import { Input } from "../../../components/Input/Input";
+import { Input, InputValues } from "../../../components/Input/Input";
 import { Button } from "../../../components/Button/Button";
 import { APP_COLORS } from "../../../utils/App_colors";
 import { ComeBack } from "../../../components/GoBackPage/GoBackPage";
+import api from "../../../service/service";
 
 const Cadastro = ({ navigation }) => {
+
+    const [email, setEmail] = useState("gabrieldemetrio571@gmail.com");
+
+    console.log(email);
+
+    async function EnviarEmail() {
+        await api.post(`/RecuperarSenha?email=${email}`)
+            .then(() => {
+                navigation.replace("VerificaEmail", { emailRecuperacao: email });
+            }).catch(error => {
+                console.log(error)
+            })
+
+        navigation.navigate("VerificaEmail", {emailRecuperacao: "gabrieldemetrio571@gmail.com"})
+    };
+
     return (
         <Container>
             <ComeBack
@@ -30,8 +47,10 @@ const Cadastro = ({ navigation }) => {
                 textValue={"Digite abaixo seu email cadastrado que enviaremos um link para recuperação de senha"}
             />
 
-            <Input
-                placeholder="Usuário ou Email"
+            <InputValues
+                value={email}
+                onChangeText={(txt) => setEmail(txt)}
+
             />
 
             <Button
@@ -40,7 +59,7 @@ const Cadastro = ({ navigation }) => {
                 marginTop={60}
                 color={APP_COLORS.white}
                 title={"Continuar".toUpperCase()}
-                onPress={() => { navigation.navigate('VerificaEmail') }}
+                onPress={() =>EnviarEmail()}
                 activeOpacity={.8}
             />
 

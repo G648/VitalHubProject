@@ -1,7 +1,7 @@
 import { View, Text, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Container } from '../../components/Container/Style'
-import { ProfileImageModal } from '../../components/Dialogs/SeeMedicalDialog'
+import { ButtonCamera, ContentInputSmall, ProfileImageModal } from '../../components/Dialogs/SeeMedicalDialog'
 import { DoctorContainerInfos, DoctorEmail, DoctorName, InfosColumn, InfosContainer } from '../Doctor/DoctorProfile'
 import { DataUser } from '../../components/Header/Header'
 import { InputStyle, ScrollViewContainer, TextLabel } from '../Doctor/MedicalRecord'
@@ -10,6 +10,7 @@ import { UnderlinedLink } from '../../components/Links/Style'
 import { APP_COLORS } from '../../utils/App_colors'
 import { userDecodeToken } from '../../utils/Auth'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { MaterialCommunityIcons } from "@expo/vector-icons"
 
 
 export default function PatitentProfile({
@@ -114,7 +115,14 @@ export default function PatitentProfile({
         resizeMode='cover'
       />
 
+
+
       <DoctorContainerInfos>
+        <ContentInputSmall>
+          <ButtonCamera onPress={() => navigation.navigate("MedicalExamsPhotos")}>
+            <MaterialCommunityIcons name="camera-plus" size={20} color="fbfbfb"></MaterialCommunityIcons>
+          </ButtonCamera>
+        </ContentInputSmall>
         <DataUser>
           <DoctorName>
             {nomeUser}

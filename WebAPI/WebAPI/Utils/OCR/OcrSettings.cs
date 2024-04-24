@@ -9,6 +9,10 @@ namespace WebAPI.Utils.OCR
 
         private readonly string _endpoint = "https://vitalhubvision.cognitiveservices.azure.com/"; //URL do enpoint criado no blob storage
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
         public async Task<string> RecognizeTextAsync(Stream imageStream)
         {
             try

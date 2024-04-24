@@ -16,12 +16,12 @@ export const Input = styled.TextInput.attrs({
   font-family: "MontserratAlternates_600SemiBold";
 `;
 
-export function InputValues({ secureTextEntry, isRecoveryPassword, ...props }) {
+export function InputValues({ secureTextEntry, isRecoveryPassword, value, ...props }) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <>
-      <Input secureTextEntry={secureTextEntry && !showPassword} {...props} />
+      <Input secureTextEntry={secureTextEntry && !showPassword} {...props} value={value} />
       {secureTextEntry && (
         <Entypo
           name={showPassword ? "eye" : "eye-with-line"}
