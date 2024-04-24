@@ -19,9 +19,11 @@ const Login = ({ navigation }) => {
 
 
   const [submitData, setSubmitData] = useState({
-    email: "gabrieldemetrio571@gmail.com",
-    senha: "123456",
+    email: "",
+    senha: "",
   });
+
+  console.log(submitData);
 
   const [loading, setLoading] = useState(false);
 
@@ -56,6 +58,7 @@ const Login = ({ navigation }) => {
   async function handleSelectUser() {
     setLoading(true);
 
+
     if (!isFormValid) {
       // Form is valid, perform the submission logic
       console.log("Form submitted successfully!");
@@ -72,9 +75,13 @@ const Login = ({ navigation }) => {
 
       await LoadUserParams();
     } catch (error) {
+
       showValidationLogin();
+
       console.log(`teste ${error}`);
+
     } finally {
+
       setLoading(false);
     }
   }

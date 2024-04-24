@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 
 
-export default function PatitentProfile({
+export default function  PatitentProfile({
   navigation
 }) {
   const [date, setDate] = useState(new Date())

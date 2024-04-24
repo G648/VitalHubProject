@@ -70,18 +70,18 @@ export const ClockCard = styled.View`
     padding: 4px 23px;
     gap: 6px ;
     border-radius: 5px ;
-    background-color: ${(props) => props.situation == CardSituation.scheduled ? scheduledBgColor : defaultBgColor} ;
+    background-color: ${(props) => props.situation == "Pendentes" ? scheduledBgColor : defaultBgColor} ;
 `
 
 export const ClockIcon = styled(AntDesign)`
     color: ${(props) =>
-        props.situation === CardSituation.scheduled ? scheduledIconColor : defaultIconColor
+        props.situation === "Pendentes" ? scheduledIconColor : defaultIconColor
     };
 `;
 
 export const ClockTime = styled.Text`
     color: ${(props) =>
-        props.situation === CardSituation.scheduled ? scheduledTextColor : defaultTextColor
+        props.situation === "Pendentes" ? scheduledTextColor : defaultTextColor
     };
     font-family: "Quicksand_600SemiBold";
     font-size: 16px;
@@ -94,7 +94,7 @@ export const ButtonCard = styled.TouchableOpacity`
 export const ButtonText = styled.Text`
     font-family: 'MontserratAlternates_500Medium';
     color: ${(props) =>
-        props.situation === CardSituation.scheduled ? APP_COLORS.red : APP_COLORS.secondaryV1
+        props.situation === "Pendentes" ? APP_COLORS.red : APP_COLORS.secondaryV1
     };
     margin-right: 10px;
 `
@@ -204,18 +204,19 @@ export function CardUser({
                             activeOpacity={.6}
                             onPress={onPress}
                         >
-                            {situation == CardSituation.scheduled ? (
+                            {situation === "Pendentes" ? (
                                 <ButtonText
                                     situation={situation}
                                 >
                                     {"Cancelar"}
                                 </ButtonText>
-                            ) : situation == CardSituation.carriedOut ? (
+                            ) : situation === "Realizados" ? (
                                 <ButtonText>
                                     {"Ver Prontuário"}
                                 </ButtonText>
                             ) : (
                                 <>
+
                                 </>
                             )}
                         </ButtonCard>
