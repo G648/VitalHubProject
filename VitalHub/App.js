@@ -22,6 +22,8 @@ import MedicalRecordPage from './src/screens/Patient/MedicalRecordPage';
 import MedicalExamsPhotos from './src/screens/Patient/MedicalExamsPhotos';
 import Toast from 'react-native-toast-message';
 import RecoverPassword from './src/screens/Auth/RecoverPassword/RecoverPassword';
+import PatitentProfile from './src/screens/Patient/PatitentProfile';
+import DoctorProfile from './src/screens/Doctor/DoctorProfile';
 
 
 export default function App() {
@@ -157,6 +159,17 @@ export default function App() {
             name='VerificaEmail'
             component={VerificaEmail}
             options={{ title: 'VerificaEmail' }}
+          />
+
+          <Stack.Screen
+            name='PatitentProfile'
+            component={PatitentProfile}
+            options={{ title: 'PatitentProfile' }}
+          />
+          <Stack.Screen
+            name='DoctorProfile'
+            component={DoctorProfile}
+            options={{ title: 'DoctorProfile' }}
           />
 
 

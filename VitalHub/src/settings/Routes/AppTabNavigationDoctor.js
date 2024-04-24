@@ -5,11 +5,12 @@ import DoctorProfile from '../../screens/Doctor/DoctorProfile';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { APP_COLORS } from '../../utils/App_colors';
 import styled from 'styled-components/native';
+import PatitentProfile from '../../screens/Patient/PatitentProfile';
 
 const Tab = createBottomTabNavigator();
 
 export const ContainerBottomTabNavigation = styled.View`
-    background-color: ${({isFocused}) => isFocused ? APP_COLORS.SecondaryLight : APP_COLORS.whitev1};
+    background-color: ${({ isFocused }) => isFocused ? APP_COLORS.SecondaryLight : APP_COLORS.whitev1};
     align-items:center;
     padding: 10px;
     flex-direction: row;
@@ -18,44 +19,50 @@ export const ContainerBottomTabNavigation = styled.View`
 `
 
 export const TextBottomTabNavigation = styled.Text`
-    color: ${({isFocused}) => !isFocused ? APP_COLORS.secondaryV1 : null};
+    color: ${({ isFocused }) => !isFocused ? APP_COLORS.secondaryV1 : null};
 `
 
-export function BottomTabNavigation() {
+export function BottomTabNavigation({ navigation, route }) {
+    const routeParams = route.params;
+
     return (
-            <Tab.Navigator
-                initialRouteName="Agenda"
+        <Tab.Navigator
+            initialRouteName={ routeParams != undefined ? routeParams.screen : "Agenda"}
 
-                screenOptions={({route}) => ({
-                    headerShown:false,
-                    tabBarIcon: ({focused, color, size}) => {
-                        let iconName;
+            screenOptions={({ route }) => ({
+                headerShown: false,
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
 
-                        if (route.name == 'Agenda') {
-                            iconName = focused ? "calendar-check" : "calendar-check"
-                        }else if (route.name == 'Perfil') {
-                            iconName = focused ? "circle-user" : "circle-user"
-                        }
+                    if (route.name == 'Agenda') {
+                        iconName = focused ? "calendar-check" : "calendar-check"
+                    } else if (route.name == 'Perfil') {
+                        iconName = focused ? "circle-user" : "circle-user"
+                    }
 
-                        return(
-                            <ContainerBottomTabNavigation
-                                isFocused={focused}
-                            >
-                                <FontAwesome6 name={iconName} size={size} color={color} />
-                                {focused ? <TextBottomTabNavigation> {route.name} </TextBottomTabNavigation> : null}
+                    return (
+                        <ContainerBottomTabNavigation
+                            isFocused={focused}
+                        >
+                            <FontAwesome6 name={iconName} size={size} color={color} />
+                            {focused ? <TextBottomTabNavigation> {route.name} </TextBottomTabNavigation> : null}
 
-                            </ContainerBottomTabNavigation>
-                        )
-                    },
-                    tabBarActiveTintColor: APP_COLORS.secondaryV2,
-                    tabBarInactiveTintColor: APP_COLORS.grayV2,
-                    tabBarShowLabel:false,
-                    tabBarStyle: {flex: .08}
-                })}
-            >
-                <Tab.Screen name="Agenda" component={DoctorHome} />
-                <Tab.Screen name="Perfil" component={DoctorProfile} />
-            </Tab.Navigator>
+                        </ContainerBottomTabNavigation>
+                    )
+                },
+                tabBarActiveTintColor: APP_COLORS.secondaryV2,
+                tabBarInactiveTintColor: APP_COLORS.grayV2,
+                tabBarShowLabel: false,
+                tabBarStyle: { flex: .08 }
+            })}
+        >
+            <Tab.Screen name="Agenda" component={DoctorHome} />
+            <Tab.Screen name="Perfil" >
+                {
+                    (props) => <DoctorProfile navigation={navigation} route = {route}/>
+                }
+            </Tab.Screen>
+        </Tab.Navigator>
 
     )
 }

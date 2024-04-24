@@ -23,6 +23,35 @@ export default function PatitentProfile({
   const [emailUser, setEmailUser] = useState('');
   const [nomeUser, setNomeUser] = useState('');
 
+  useEffect(() => {
+    if (uriCameraCapture) {
+      AlterarFotoPerfil()
+    }
+  }, uriCameraCapture)
+
+  async function AlterarFotoPerfil() {
+    const formData = new FormData();
+    formData.append("Arquivo", 
+    {
+      uri: uriCameraCapture,
+      name: `image.${ uriCameraCapture.Split(".")[1] }`,
+      type: `image/${ uriCameraCapture.Split(".")[1] }`
+    })
+
+    await api.put(`/Usuario/AlterarFotoPerfil?id=${idUser}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    }).then(response => {
+      console.log(response);
+    }).catch(error => {
+
+      console.log(error);
+    }
+    ) //chamar o id com o userDecode
+
+  }
+
   const toggleEdit = () => {
     setIsEditable(prevState => !prevState); // Alterna entre editável e não editável
   };
