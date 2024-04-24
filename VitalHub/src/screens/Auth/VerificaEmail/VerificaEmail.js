@@ -9,6 +9,7 @@ import { APP_COLORS } from "../../../utils/App_colors"
 import { ContainerValidator, InputValidator } from "../../../components/InputValidationEmail/InputValidationEmail"
 import { Button } from "../../../components/Button/Button"
 import { UnderlinedLink } from "../../../components/Links/Style"
+import api from "../../../service/service"
 
 
 export const VerificaEmail = ({ navigation, route }) => {

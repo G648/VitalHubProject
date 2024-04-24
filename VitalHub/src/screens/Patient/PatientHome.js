@@ -224,8 +224,8 @@ const DoctorHome = ({ navigation }) => {
                                 schedulingTime={'14:00'}
                                 key={item.id}
                                 situation={item.situacao.situacao}
-                                onPress={() => handleCardPress(selectedButton, item)}
-                                // onPress={console.log("ta clicando")}
+                                // onPress={() => item.situation === "Pendentes" && handleCardPress(selectedButton, item)}
+                                onPress={console.log("ta clicando")}
                                 onPressBorder={() => item.situation === "Pendentes" ? handleCardPressInfoDoctor(selectedButton, item) : null}
                             />)
                     }
@@ -242,7 +242,8 @@ const DoctorHome = ({ navigation }) => {
                                 key={item.id}
                                 situation={item.situacao.situacao}
                                 // onPress={() => handleCardPress(selectedButton, item)}
-                                onPress={() => {}}
+                                // onPress={() => {}}
+                                onPress={console.log("ta clicando")}
                                 onPressBorder={() => item.situation === "Realizados" ? handleCardPressInfoDoctor(selectedButton, item) : null}
                             />)
                     }

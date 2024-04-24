@@ -11,7 +11,7 @@ import api from "../../../service/service";
 
 const Cadastro = ({ navigation }) => {
 
-    const [email, setEmail] = useState("gabriel10demetrio@gmail.com");
+    const [email, setEmail] = useState("gabrieldemetrio571@gmail.com");
 
     console.log(email);
 
@@ -23,7 +23,7 @@ const Cadastro = ({ navigation }) => {
                 console.log(error)
             })
 
-        navigation.navigate("VerificaEmail", {emailRecuperacao: "gabriel10demetrio@gmail.com"})
+        navigation.navigate("VerificaEmail", {emailRecuperacao: "gabrieldemetrio571@gmail.com"})
     };
 
     return (
