@@ -27,6 +27,26 @@ export default function MedicalRecordPage({ navigation }) {
         setIsEditable(false); // Define todos os inputs como não editáveis ao salvar
     };
 
+    async function InserirExame() {
+        const formData = new FormData();
+        formData.append("ConsultaId", prontuarioUpdate.id)
+        formData.append("Arquivo", {
+            uri : uriCameraCapture,
+            name : `image.${uriCameraCapture.split('.').pop()}`,
+            type : `image/${uriCameraCapture.split('.').pop()}`
+        })
+
+        await api.post(`Exame/cadastrar`, formData, {
+            header : {
+                "Content-Type" : "multipart/form-data"
+            }
+        }).then(response => {
+            setDescricaoExame( descricaoExame + "\n" + response.data.descricao )
+        }).catch(error => {
+            console.log(error);
+        })
+    }
+
     return (
         <Container>
             <ProfileImageModal

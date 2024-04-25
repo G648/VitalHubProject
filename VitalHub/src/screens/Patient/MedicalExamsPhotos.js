@@ -5,8 +5,27 @@ import styled from 'styled-components/native'
 import { UnderlinedLink } from '../../components/Links/Style'
 import { APP_COLORS } from '../../utils/App_colors'
 import { FontAwesome } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons';
 import { Alert, Image, Modal, TouchableOpacity, View } from 'react-native'
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { userDecodeToken } from "../../utils/Auth";
 import * as MediaLibrary from 'expo-media-library'
+import * as ImagePicker from 'expo-image-picker';
+
+export const OlderPicture = styled.Image`
+    width: 50px;
+    height: 50px;
+    border-radius: 15px;
+    background-color: black;
+`
+export const BtnGallery = styled.TouchableOpacity`
+`
+
+export const Options = styled.View`
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+`
 
 export const CameraView = styled(Camera)`
     flex: 1;
@@ -23,6 +42,8 @@ export const ViewFlip = styled.View`
 `
 
 export const BtnCamera = styled.TouchableOpacity`
+    width: 65%;
+    height: 65px;
     margin: 20px;
     padding: 20px;
     border-radius: 15px;
@@ -60,7 +81,7 @@ export const BoxButons = styled.View`
     left: 2.5%;
     `
 
-export default function MedicalExamsPhotos(getMediaLibrary = false) {
+export default function MedicalExamsPhotos(navigation, route, getMediaLibrary = false) {
 
     const cameraRef = useRef(null)
     const [photo, setPhoto] = useState(null)
@@ -71,6 +92,7 @@ export default function MedicalExamsPhotos(getMediaLibrary = false) {
 
     const [lastestPhoto, setLastestPhoto] = useState(null)
 
+    console.log(lastestPhoto);
     async function CapturePhoto() {
         if (cameraRef) {
             const photo = await cameraRef.current.takePictureAsync()
@@ -111,10 +133,35 @@ export default function MedicalExamsPhotos(getMediaLibrary = false) {
         }
     }
 
-    async function GetLastPhoto(){
-        const assets = await MediaLibrary.getAssetsAsync({sortBy : [[MediaLIbrary.SortBy.creationTime, false]], first : 1})
+    async function GetLastPhoto() {
+        const { assets } = await MediaLibrary.getAssetsAsync({ sortBy: [[MediaLibrary.SortBy.creationTime, false]], first: 1 })
+        if (assets.length > 0) {
+            setLastestPhoto(assets[0].uri)
+        }
+    }
 
-        console.log(assets);
+    async function SelectImageGallery() {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 1
+        });
+
+        if (!result.canceled) {
+            setPhoto(result.assets[0].uri)
+            setOpenModal(true)
+        }
+    }
+
+    async function onPressToSend() {
+        const retornoStorage = await AsyncStorage.getItem("token");
+        console.log(retornoStorage);
+        const token = await userDecodeToken();
+        console.log("Role do usuário:", token.role);
+
+        setOpenModal(false);
+
+        token.role === "Paciente" ? navigation.replace("PatientProfile") : navigation.replace("DoctorProfile");
+
     }
 
     useEffect(() => {
@@ -131,8 +178,8 @@ export default function MedicalExamsPhotos(getMediaLibrary = false) {
 
     }, [])
 
-    useEffect(()=> {
-        if(getMediaLibrary){
+    useEffect(() => {
+        if (getMediaLibrary) {
             GetLastPhoto();
         }
     })
@@ -161,27 +208,38 @@ export default function MedicalExamsPhotos(getMediaLibrary = false) {
                         }
                     />
                 </ViewFlip>
+                <Options>
+                    <BtnGallery onPress={() => SelectImageGallery()}>
+                        {
+                            lastestPhoto != null ?
+                                (
+                                    <OlderPicture
+                                        source={{ uri: lastestPhoto }}
+                                    />
+                                ) : null
+                        }
+                    </BtnGallery>
 
-                <BtnCamera
-                    onPress={() => {
-                        if (captureMode === 'photo') {
-                            CapturePhoto();
-                        } else {
-                            isRecording ? cameraRef.current.stopRecording() : TakeVideo();
+                    <BtnCamera
+                        onPress={() => {
+                            if (captureMode === 'photo') {
+                                CapturePhoto();
+                            } else {
+                                isRecording ? cameraRef.current.stopRecording() : TakeVideo();
+
+                            }
+                        }}
+                        activeOpacity={.8}
+                    >
+                        {captureMode === 'photo' ? (
+                            <FontAwesome name="camera" size={24} color="black" />
+                        ) : (
+                            isRecording ? <FontAwesome name="stop" size={24} color="black" /> : <FontAwesome name="video-camera" size={24} color="black" />
+                        )
 
                         }
-                    }}
-                    activeOpacity={.8}
-                >
-                    {captureMode === 'photo' ? (
-                        <FontAwesome name="camera" size={24} color="black" />
-                    ) : (
-                        isRecording ? <FontAwesome name="stop" size={24} color="black" /> : <FontAwesome name="video-camera" size={24} color="black" />
-                    )
-
-                    }
-                </BtnCamera>
-
+                    </BtnCamera>
+                </Options>
 
                 <Modal animationType='slide' transparent={false} visible={openModal}>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 30 }}>
@@ -206,6 +264,11 @@ export default function MedicalExamsPhotos(getMediaLibrary = false) {
                         >
                             <FontAwesome name="trash" size={30} color="red" />
                         </BtnCancel>
+                        <BtnSave
+                            onPress={() => onPressToSend()}
+                        >
+                            <AntDesign name="upload" size={24} color="black" />
+                        </BtnSave>
                         <BtnSave
                             // style={styles.btnSave}
                             onPress={() => SavePhoto()}
