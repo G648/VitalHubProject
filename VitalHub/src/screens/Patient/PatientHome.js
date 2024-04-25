@@ -7,22 +7,38 @@ import { Button } from "../../components/Button/Button";
 import { APP_COLORS } from "../../utils/App_colors";
 import { FlatlistInfos } from "../../components/FlatlistUsers/FlatlistUsers";
 import { CardUser } from "../../components/FlatlistUsers/CardFlatlistUsers";
-import { MockData } from "../../utils/MockData";
 import { CardSituation } from "../../utils/AppSituationCard";
 import CancelDialogs from "../../components/Dialogs/CalcelDialogs";
 import { SeeMedicalDialog } from "../../components/Dialogs/SeeMedicalDialog";
 import { userDecodeToken } from "../../utils/Auth";
 import api from "../../service/service";
-import { Alert, Text } from "react-native";
-import moment from "moment";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { Text } from "react-native";
+import styled from "styled-components";
+import { FontAwesome5 } from "@expo/vector-icons";
+import ScheduleAppointment from "../../components/Dialogs/ScheduleAppointment";
+
+export const ScheduledButton = styled.TouchableOpacity`
+  background-color: ${APP_COLORS.primary};
+  width: 60px;
+  height: 60px;
+  color: ${APP_COLORS.white};
+  border-radius: 8px;
+  elevation: 9px;
+  position: absolute;
+  bottom: 2%; /* Ajuste conforme necessário */
+  left: 80%;
+  align-items: center;
+  justify-content: center;
+`;
 
 const DoctorHome = ({ navigation }) => {
   const [selectedButton, setSelectedButton] = useState(CardSituation.scheduled);
-  const [filteredData, setFilteredData] = useState(MockData);
   const [isModalCancel, setIsModalCancel] = useState(false);
   const [isModalMedical, setisModalMedical] = useState(false);
   const [selectedUserData, setSelectedUserData] = useState({});
+  const [isModalScheduleVisible, setIsModalScheduleVisible] = useState(false);
+  const [selectedInput, setSelectedInput] = useState("");
+  const [queryList, setQueryList] = useState([]);
   const [emailUser, setEmailUser] = useState("");
   const [nomeUser, setNomeUser] = useState("");
   const [dataConsulta, setDataConsulta] = useState("");
@@ -30,6 +46,7 @@ const DoctorHome = ({ navigation }) => {
 
   const handleCardPress = (selectedSituation, userData) => {
     console.log("está cliclando");
+    console.log(userData);
 
     selectedSituation == "Pendentes"
       ? setIsModalCancel(true)
@@ -60,7 +77,7 @@ const DoctorHome = ({ navigation }) => {
 
     const horaConsulta = moment(date).format("HH:mm");
 
-    return <Text> {horaConsulta} </Text>
+    return <Text> {horaConsulta} </Text>;
   }
 
   async function GetPatientAppointmentFunction() {
@@ -170,7 +187,7 @@ const DoctorHome = ({ navigation }) => {
           ) {
             return (
               <CardUser
-                imageUser={"sadhfjnghajwkne"}
+                // imageUser={}
                 nameUser={item.medicoClinica.medico.idNavigation.nome}
                 ageUser={item.medicoClinica.medico.crm}
                 descriptionUser={verifyPriorityLevels(
@@ -186,7 +203,6 @@ const DoctorHome = ({ navigation }) => {
                     ? handleCardPress(selectedButton, item)
                     : null
                 }
-                
               />
             );
           } else if (
@@ -227,13 +243,13 @@ const DoctorHome = ({ navigation }) => {
                 )}
                 iconName={"clockcircle"}
                 key={item.id}
-                // bgColor={item.situacao.situacao}
-                // iconColor={item.situacao.situacao}
+                bgColor={item.situacao.situacao}
+                iconColor={item.situacao.situacao}
                 schedulingTime={FormatData(item.dataConsulta)}
                 situation={item.situacao.situacao}
                 onPressBorder={() =>
                   item.situacao.situacao === "Cancelados"
-                    ? handleCardPress(selectedButton, item)
+                    ? handleCardPress(selectedButton, JSON.parse(item))
                     : null
                 }
               />
@@ -272,9 +288,9 @@ const DoctorHome = ({ navigation }) => {
         imageUser={{ uri: selectedUserData.imagem }}
         heightImageUser={250}
         widthImageUser={320}
-        nameUser={consultas.nome}
+        // nameUser={selectedUserData.medicoClinica.medico.idNavigation.nome}
         ageUser={`${consultas.idade} anos`}
-        emailuser={selectedUserData.email}
+        emailuser={selectedUserData.dataConsulta}
         titleButton={"Inserir prontuário"}
         onPress={() => {
           navigation.navigate("MedicalRecord");
@@ -285,6 +301,33 @@ const DoctorHome = ({ navigation }) => {
         widtContainerInfoUser={280}
         marginBottomName={"30px"}
       />
+
+      <ScheduledButton
+        activeOpacity={0.8}
+        onPress={() => setIsModalScheduleVisible(true)}
+      >
+        <FontAwesome5 name="stethoscope" size={32} color={APP_COLORS.white} />
+      </ScheduledButton>
+
+      {isModalScheduleVisible && (
+        <ScheduleAppointment
+          widthModal={"100%"}
+          heightModal={600}
+          titleContent={"Agendar consulta"}
+          justifyContentModal={"flex-end"}
+          fontSizeText={25}
+          placeholder={"tipo de consulta"}
+          mockdata={consultas}
+          save={"value"}
+          setSelectedType={setSelectedInput}
+          onSelected={selectedInput}
+          cancelDialog={() => setIsModalScheduleVisible(false)}
+          onClick={() => {
+            navigation.navigate("ChooseClinic");
+            setIsModalScheduleVisible(false);
+          }}
+        />
+      )}
     </Container>
   );
 };

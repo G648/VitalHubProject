@@ -13,10 +13,11 @@ import CancelDialogs from "../../components/Dialogs/CalcelDialogs";
 import { SeeMedicalDialog } from "../../components/Dialogs/SeeMedicalDialog";
 import { userDecodeToken } from "../../utils/Auth";
 import api from "../../service/service";
+import { Text } from "react-native";
+import moment from "moment";
 
 const DoctorHome = ({ navigation }) => {
   const [selectedButton, setSelectedButton] = useState(CardSituation.scheduled);
-  const [filteredData, setFilteredData] = useState(MockData);
   const [isModalCancel, setIsModalCancel] = useState(false);
   const [isModalMedical, setisModalMedical] = useState(false);
   const [selectedUserData, setSelectedUserData] = useState({});
@@ -24,13 +25,48 @@ const DoctorHome = ({ navigation }) => {
   const [nomeUser, setNomeUser] = useState("");
   const [dataConsulta, setDataConsulta] = useState([]);
 
-  const [consultas, setConsultas] = useState([])
+  const [consultas, setConsultas] = useState([]);
 
   const handleCardPress = (selectedSituation, userData) => {
-    selectedSituation == "Agendadas"
+    selectedSituation == "Pendentes"
       ? setIsModalCancel(true)
       : setisModalMedical(true);
     setSelectedUserData(userData);
+
+    // console.log(selectedUserData);
+  };
+
+  const calcularIdade = (dataNascimento) => {
+    const hoje = moment();
+    const dataNasc = moment(dataNascimento);
+    const anos = hoje.diff(dataNasc, "years");
+    return anos;
+  };
+
+  function FormatData(date) {
+    const moment = require("moment");
+
+    const horaConsulta = moment(date).format("HH:mm");
+
+    return <Text> {horaConsulta} </Text>;
+  }
+
+  const verifyPriorityLevels = (priority) => {
+    switch (priority) {
+      case 1:
+        return <Text>Rotina</Text>;
+
+        break;
+      case 2:
+        return <Text>Exame</Text>;
+        break;
+      case 3:
+        return <Text> Urgência </Text>;
+        break;
+      default:
+        return <Text> Sem precêdencia</Text>;
+        break;
+    }
   };
 
   async function GetDoctorAppointmentFunction() {
@@ -40,10 +76,11 @@ const DoctorHome = ({ navigation }) => {
       const url = data.role == "Medico" ? "Medicos" : "Pacientes";
 
       const retorno = await api.get(
-        `/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`);
+        `/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`
+      );
 
       setConsultas(retorno.data);
-      console.log(retorno.data);      
+      console.log(retorno.data);
     } catch (error) {
       console.log("erro", error);
     }
@@ -75,36 +112,9 @@ const DoctorHome = ({ navigation }) => {
     }
   }, [dataConsulta]);
 
-  useEffect(() => {
-    let newData = [];
-
-    switch (selectedButton) {
-      case "Agendadas":
-        newData = MockData.filter(
-          (item) => item.situation === CardSituation.scheduled
-        );
-        break;
-      case "Realizadas":
-        newData = MockData.filter(
-          (item) => item.situation === CardSituation.carriedOut
-        );
-        break;
-      case "Canceladas":
-        newData = MockData.filter(
-          (item) => item.situation === CardSituation.canceled
-        );
-        break;
-      default:
-        newData = MockData;
-        break;
-    }
-
-    setFilteredData(newData);
-  }, [selectedButton]);
-
   return (
     <Container>
-      <Header textValue={"Bem vindo!"} nameDoctor={nomeUser} />
+      <Header textValue={"Bem vindo!"} nameDoctor={selectedUserData.idNavigation.nome} sourcePhoto={selectedUserData.idNavigation.foto}/>
 
       <CalendarHome
         dataConsulta={dataConsulta}
@@ -115,65 +125,132 @@ const DoctorHome = ({ navigation }) => {
         <Button
           width={"32%"}
           activeOpacity={0.8}
-          title={"Agendadas"}
+          title={"Pendentes"}
           border={APP_COLORS.secondaryV2}
-          color={selectedButton == "Agendadas" ? "white" : APP_COLORS.secondary}
+          color={selectedButton == "Pendentes" ? "white" : APP_COLORS.secondary}
           backgroundColor={
-            selectedButton === "Agendadas"
+            selectedButton === "Pendentes"
               ? APP_COLORS.secondary
               : "transparent"
           }
-          onPress={() => setSelectedButton("Agendadas")}
+          onPress={() => setSelectedButton("Pendentes")}
         />
         <Button
           width={"32%"}
           activeOpacity={0.8}
-          title={"Realizadas"}
+          title={"Realizados"}
           border={APP_COLORS.secondaryV2}
           color={
-            selectedButton == "Realizadas" ? "white" : APP_COLORS.secondary
+            selectedButton == "Realizados" ? "white" : APP_COLORS.secondary
           }
           backgroundColor={
-            selectedButton === "Realizadas"
+            selectedButton === "Realizados"
               ? APP_COLORS.secondary
               : "transparent"
           }
-          onPress={() => setSelectedButton("Realizadas")}
+          onPress={() => setSelectedButton("Realizados")}
         />
         <Button
           width={"32%"}
           activeOpacity={0.8}
-          title={"Canceladas"}
+          title={"Cancelados"}
           border={APP_COLORS.secondaryV2}
           color={
-            selectedButton == "Canceladas" ? "white" : APP_COLORS.secondary
+            selectedButton == "Cancelados" ? "white" : APP_COLORS.secondary
           }
           backgroundColor={
-            selectedButton === "Canceladas"
+            selectedButton === "Cancelados"
               ? APP_COLORS.secondary
               : "transparent"
           }
-          onPress={() => setSelectedButton("Canceladas")}
+          onPress={() => setSelectedButton("Cancelados")}
         />
       </ContainerView>
 
       <FlatlistInfos
         data={consultas}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <CardUser
-            imageUser={{ uri: item.imagem }}
-            nameUser={item.paciente.idNavigation.nome}
-            ageUser={item.paciente.idNavigation.email}
-            descriptionUser={item.prioridade.prioridade}
-            iconName={"clockcircle"}
-            bgColor={item.situation}
-            schedulingTime={"14:00"}
-            key={item.id}
-            situation={item.situation}
-            onPress={() => handleCardPress(selectedButton, item)}
-          />
-        )}
+        renderItem={({ item }) => {
+          if (
+            selectedButton === "Pendentes" &&
+            item.situacao.situacao === "Pendentes"
+          ) {
+            return (
+              <CardUser
+                imageUser={{ uri: item.imagem }}
+                nameUser={item.paciente.idNavigation.nome}
+                ageUser={
+                  calcularIdade(item.paciente.dataNascimento) + " anos" + "  •"
+                }
+                descriptionUser={verifyPriorityLevels(
+                  item.prioridade.prioridade
+                )}
+                iconName={"clockcircle"}
+                bgColor={item.situacao.situacao}
+                schedulingTime={FormatData(item.dataConsulta)}
+                key={item.id}
+                situation={item.situacao.situacao}
+                onPressBorder={() =>
+                  item.situacao.situacao === "Pendentes"
+                    ? handleCardPress(selectedButton, item)
+                    : null
+                }
+              />
+            );
+          } else if (
+            selectedButton === "Realizados" &&
+            item.situacao.situacao === "Realizados"
+          ) {
+            return (
+              <CardUser
+                imageUser={{ uri: item.imagem }}
+                nameUser={item.paciente.idNavigation.nome}
+                ageUser={
+                  calcularIdade(item.paciente.dataNascimento) + " anos" + "  •"
+                }
+                descriptionUser={verifyPriorityLevels(
+                  item.prioridade.prioridade
+                )}
+                iconName={"clockcircle"}
+                bgColor={item.situacao.situacao}
+                schedulingTime={FormatData(item.dataConsulta)}
+                key={item.id}
+                situation={item.situacao.situacao}
+                onPressBorder={() =>
+                  item.situacao.situacao === "Realizados"
+                    ? handleCardPress(selectedButton, item)
+                    : null
+                }
+              />
+            );
+          } else if (
+            selectedButton === "Cancelados" &&
+            item.situacao.situacao === "Cancelados"
+          ) {
+            return (
+              <CardUser
+                imageUser={{ uri: item.imagem }}
+                nameUser={item.paciente.idNavigation.nome}
+                ageUser={
+                  calcularIdade(item.paciente.dataNascimento) + " anos" + "  •"
+                }
+                descriptionUser={verifyPriorityLevels(
+                  item.prioridade.prioridade
+                )}
+                iconName={"clockcircle"}
+                bgColor={item.situacao.situacao}
+                schedulingTime={FormatData(item.dataConsulta)}
+                key={item.id}
+                situation={item.situacao.situacao}
+                onPressBorder={() =>
+                  item.situacao.situacao === "Cancelados"
+                    ? handleCardPress(selectedButton, item)
+                    : null
+                }
+              />
+            );
+          }
+        }}
         style={{ flex: 1 }}
         showsVerticalScrollIndicator={false}
       />
@@ -206,9 +283,11 @@ const DoctorHome = ({ navigation }) => {
         imageUser={{ uri: selectedUserData.imagem }}
         heightImageUser={250}
         widthImageUser={320}
-        nameUser={selectedUserData.nome}
-        ageUser={`${selectedUserData.idade} anos`}
-        emailuser={selectedUserData.email}
+        nameUser={selectedUserData.paciente.idNavigation.nome}
+        ageUser={`   ${calcularIdade(
+          selectedUserData.paciente.dataNascimento
+        )} anos`}
+        emailuser={selectedUserData.paciente.idNavigation.email}
         titleButton={"Inserir prontuário"}
         onPress={() => {
           navigation.navigate("MedicalRecord");

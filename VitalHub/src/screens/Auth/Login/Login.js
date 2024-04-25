@@ -16,8 +16,6 @@ import { userDecodeToken } from "../../../utils/Auth";
 const Login = ({ navigation }) => {
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
-
-
   const [submitData, setSubmitData] = useState({
     email: "",
     senha: "",
@@ -40,7 +38,7 @@ const Login = ({ navigation }) => {
         console.log("Role do usuário:", token.role);
 
         if (token.role === "Medico") {
-          navigation.navigate("DoctorHome"); // Adicione a página correspondente para outro tipo de usuário
+          navigation.navigate("DoctorHome");
         } else {
           navigation.navigate("HomePatient");
         }
