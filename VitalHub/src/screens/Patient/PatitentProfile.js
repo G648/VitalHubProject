@@ -11,10 +11,12 @@ import { APP_COLORS } from '../../utils/App_colors'
 import { userDecodeToken } from '../../utils/Auth'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { MaterialCommunityIcons } from "@expo/vector-icons"
+import api from "../../service/service";
 
 
 export default function PatitentProfile({
-  navigation
+  navigation, 
+  route
 }) {
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
@@ -22,6 +24,8 @@ export default function PatitentProfile({
   const [isEditable, setIsEditable] = useState(false); // Estado de edição dos inputs
   const [emailUser, setEmailUser] = useState('');
   const [nomeUser, setNomeUser] = useState('');
+  const [idUser, setIdUser] = useState('');
+  const [fotoUser, setFotoUser] = useState('');
 
   const toggleEdit = () => {
     setIsEditable(prevState => !prevState); // Alterna entre editável e não editável
@@ -72,6 +76,7 @@ export default function PatitentProfile({
 
         setNomeUser(token.name)
         setEmailUser(token.email)
+        setIdUser(token.jti)
 
       } else {
         console.log('Não foi possível recuperar o token de acesso.');
@@ -99,9 +104,38 @@ export default function PatitentProfile({
     }
   }
 
+  async function UpdatePhoto() {
+    const formData = new FormData();
+    formData.append("Arquivo", {
+        uri: route.params.photoUri,
+        name: `image.jpg`,
+        type: `image/jpg`
+    })
+
+    try {
+      console.log(route.params.photoUri);
+        await api.put(`/Usuario/AlterarFotoPerfil?id=${idUser}`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(() => {
+          fotoUser(route.params.photoUri)
+        })
+    } catch (error) {
+        console.log(`deu merda: ${error}`);
+    }
+
+}
+
   useEffect(() => {
     profileLoad();
-  })
+  },[])
+
+  useEffect(() => {
+    if(route.params && idUser != ''){
+      UpdatePhoto()
+    }
+  }, [route.params, idUser])
 
 
 

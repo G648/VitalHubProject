@@ -12,16 +12,18 @@ import { userDecodeToken } from "../../utils/Auth";
 import * as MediaLibrary from 'expo-media-library'
 import * as ImagePicker from 'expo-image-picker';
 
-export const OlderPicture = styled.Image`
+export const OlderPictures = styled.Image`
     width: 50px;
     height: 50px;
-    border-radius: 15px;
-    background-color: black;
-`
-export const BtnGallery = styled.TouchableOpacity`
+    border-radius: 10px;
+
 `
 
-export const Options = styled.View`
+export const Options = styled.TouchableOpacity`
+
+`
+
+export const BtnView = styled.View`
     align-items: center;
     justify-content: center;
     flex-direction: row;
@@ -44,6 +46,7 @@ export const ViewFlip = styled.View`
 export const BtnCamera = styled.TouchableOpacity`
     width: 65%;
     height: 65px;
+    
     margin: 20px;
     padding: 20px;
     border-radius: 15px;
@@ -81,7 +84,7 @@ export const BoxButons = styled.View`
     left: 2.5%;
     `
 
-export default function MedicalExamsPhotos(navigation, route, getMediaLibrary = false) {
+export default function MedicalExamsPhotos( {navigation}, route, getMediaLibrary = false) {
 
     const cameraRef = useRef(null)
     const [photo, setPhoto] = useState(null)
@@ -92,7 +95,6 @@ export default function MedicalExamsPhotos(navigation, route, getMediaLibrary = 
 
     const [lastestPhoto, setLastestPhoto] = useState(null)
 
-    console.log(lastestPhoto);
     async function CapturePhoto() {
         if (cameraRef) {
             const photo = await cameraRef.current.takePictureAsync()
@@ -135,6 +137,8 @@ export default function MedicalExamsPhotos(navigation, route, getMediaLibrary = 
 
     async function GetLastPhoto() {
         const { assets } = await MediaLibrary.getAssetsAsync({ sortBy: [[MediaLibrary.SortBy.creationTime, false]], first: 1 })
+
+        console.log(assets);
         if (assets.length > 0) {
             setLastestPhoto(assets[0].uri)
         }
@@ -152,16 +156,19 @@ export default function MedicalExamsPhotos(navigation, route, getMediaLibrary = 
         }
     }
 
-    async function onPressToSend() {
+    async function SendPhotoToProfile() {
         const retornoStorage = await AsyncStorage.getItem("token");
         console.log(retornoStorage);
         const token = await userDecodeToken();
         console.log("Role do usuário:", token.role);
-
-        setOpenModal(false);
-
-        token.role === "Paciente" ? navigation.replace("PatientProfile") : navigation.replace("DoctorProfile");
-
+    
+        let navigationTarget = token.role === "Medico" ? 'DoctorHome' : 'HomePatient';
+    
+        navigation.navigate(navigationTarget, {
+            photoUri: photo,
+            screen: token.role === "Medico" ? 'DoctorProfile' : 'PatientProfile',
+            onGoBack: () => setOpenModal(false) // Feche o modal após a navegação bem-sucedida
+        });
     }
 
     useEffect(() => {
@@ -178,11 +185,26 @@ export default function MedicalExamsPhotos(navigation, route, getMediaLibrary = 
 
     }, [])
 
+    // useEffect(() => {
+    //     if (getMediaLibrary) {
+    //         GetLastPhoto();
+    //     }
+    // })
+
+    useEffect(() => {
+        const fetchLastPhoto = async () => {
+            await GetLastPhoto();
+        };
+    
+        fetchLastPhoto();
+    }, []);
+
     useEffect(() => {
         if (getMediaLibrary) {
             GetLastPhoto();
         }
-    })
+    }, [photo]);
+    
 
     return (
         <Container>
@@ -208,18 +230,19 @@ export default function MedicalExamsPhotos(navigation, route, getMediaLibrary = 
                         }
                     />
                 </ViewFlip>
-                <Options>
-                    <BtnGallery onPress={() => SelectImageGallery()}>
+                <BtnView>
+
+                    <Options onPress={() => SelectImageGallery()}>
                         {
-                            lastestPhoto != null ?
-                                (
-                                    <OlderPicture
+                            lastestPhoto != null
+                                ? (
+                                    <OlderPictures
                                         source={{ uri: lastestPhoto }}
                                     />
                                 ) : null
                         }
-                    </BtnGallery>
 
+                    </Options>
                     <BtnCamera
                         onPress={() => {
                             if (captureMode === 'photo') {
@@ -239,7 +262,7 @@ export default function MedicalExamsPhotos(navigation, route, getMediaLibrary = 
 
                         }
                     </BtnCamera>
-                </Options>
+                </BtnView>
 
                 <Modal animationType='slide' transparent={false} visible={openModal}>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 30 }}>
@@ -265,7 +288,7 @@ export default function MedicalExamsPhotos(navigation, route, getMediaLibrary = 
                             <FontAwesome name="trash" size={30} color="red" />
                         </BtnCancel>
                         <BtnSave
-                            onPress={() => onPressToSend()}
+                            onPress={() => SendPhotoToProfile()}
                         >
                             <AntDesign name="upload" size={24} color="black" />
                         </BtnSave>
@@ -280,4 +303,4 @@ export default function MedicalExamsPhotos(navigation, route, getMediaLibrary = 
             </CameraView>
         </Container>
     )
-}
+} 

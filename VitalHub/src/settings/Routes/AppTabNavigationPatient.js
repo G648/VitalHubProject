@@ -21,10 +21,11 @@ export const TextBottomTabNavigation = styled.Text`
     color: ${({isFocused}) => !isFocused ? APP_COLORS.secondaryV1 : null};
 `
 
-export function BottomTabNavigationPatient() {
+export function BottomTabNavigationPatient({ navigation, route }) {
+    const routeParams = route.params;
     return (
             <Tab.Navigator
-                initialRouteName="Agenda"
+                initialRouteName={route.params != undefined ? routeParams.screen : "Home"}
 
                 screenOptions={({route}) => ({
                     headerShown:false,
@@ -54,7 +55,9 @@ export function BottomTabNavigationPatient() {
                 })}
             >
                 <Tab.Screen name="Agenda" component={PatientHome} />
-                <Tab.Screen name="Perfil" component={PatitentProfile} />
+                <Tab.Screen name="Perfil">
+                    {(props) => <PatitentProfile navigation={navigation} route={route}></PatitentProfile>}    
+                </Tab.Screen> 
             </Tab.Navigator>
 
     )
