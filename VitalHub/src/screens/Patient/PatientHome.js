@@ -35,24 +35,27 @@ const DoctorHome = ({ navigation }) => {
   const [selectedButton, setSelectedButton] = useState(CardSituation.scheduled);
   const [isModalCancel, setIsModalCancel] = useState(false);
   const [isModalMedical, setisModalMedical] = useState(false);
-  const [selectedUserData, setSelectedUserData] = useState({});
+  const [selectedUserData, setSelectedUserData] = useState(null);
   const [isModalScheduleVisible, setIsModalScheduleVisible] = useState(false);
   const [selectedInput, setSelectedInput] = useState("");
-  const [queryList, setQueryList] = useState([]);
   const [emailUser, setEmailUser] = useState("");
   const [nomeUser, setNomeUser] = useState("");
   const [dataConsulta, setDataConsulta] = useState("");
   const [consultas, setConsultas] = useState([]);
 
   const handleCardPress = (selectedSituation, userData) => {
-    console.log("está cliclando");
-    console.log(userData);
-
     selectedSituation == "Pendentes"
       ? setIsModalCancel(true)
       : setisModalMedical(true);
+      
     setSelectedUserData(userData);
+
+    console.log('selecionado')
+    console.log(userData);
   };
+
+  console.log(selectedUserData);
+  console.log(consultas);
 
   const verifyPriorityLevels = (priority) => {
     switch (priority) {
@@ -90,7 +93,6 @@ const DoctorHome = ({ navigation }) => {
       );
 
       setConsultas(response.data);
-      console.log(response.data);
     } catch (error) {
       console.log("erro", error);
     }
@@ -187,7 +189,7 @@ const DoctorHome = ({ navigation }) => {
           ) {
             return (
               <CardUser
-                // imageUser={}
+                imageUser={item.medicoClinica.medico.idNavigation.foto}
                 nameUser={item.medicoClinica.medico.idNavigation.nome}
                 ageUser={item.medicoClinica.medico.crm}
                 descriptionUser={verifyPriorityLevels(
@@ -211,7 +213,7 @@ const DoctorHome = ({ navigation }) => {
           ) {
             return (
               <CardUser
-                imageUser={"sadhfjnghajwkne"}
+                imageUser={item.medicoClinica.medico.idNavigation.foto}
                 nameUser={item.medicoClinica.medico.idNavigation.nome}
                 ageUser={item.medicoClinica.medico.crm}
                 descriptionUser={verifyPriorityLevels(
@@ -235,7 +237,7 @@ const DoctorHome = ({ navigation }) => {
           ) {
             return (
               <CardUser
-                imageUser={"sadhfjnghajwkne"}
+                imageUser={item.medicoClinica.medico.idNavigation.foto}
                 nameUser={item.medicoClinica.medico.idNavigation.nome}
                 ageUser={item.medicoClinica.medico.crm}
                 descriptionUser={verifyPriorityLevels(
@@ -283,23 +285,21 @@ const DoctorHome = ({ navigation }) => {
 
       <SeeMedicalDialog
         isVisible={isModalMedical}
-        showCancelButton={true}
-        onPressCancel={() => setisModalMedical(false)}
-        imageUser={{ uri: selectedUserData.imagem }}
+        imageUser={selectedUserData != null && selectedUserData.medicoClinica.medico.idNavigation.foto}
+        nameUser={selectedUserData != null && selectedUserData.medicoClinica.medico.idNavigation.nome}
+        ageUser={selectedUserData != null && selectedUserData.medicoClinica.medico.crm}
+        emailuser={selectedUserData != null && selectedUserData.medicoClinica.medico.especialidade.especialidade1}
         heightImageUser={250}
         widthImageUser={320}
-        // nameUser={selectedUserData.medicoClinica.medico.idNavigation.nome}
-        ageUser={`${consultas.idade} anos`}
-        emailuser={selectedUserData.dataConsulta}
-        titleButton={"Inserir prontuário"}
+        showCancelButton={true}
+        onPressCancel={() => setisModalMedical(false)}
+        titleButton={"Ver local da consulta".toUpperCase()}
         onPress={() => {
-          navigation.navigate("MedicalRecord");
           setisModalMedical(false);
-          //enviar os dados para a página de medicalRecords
-          navigation.navigate("MedicalRecord", { userData: selectedUserData });
+          navigation.navigate("MapViewLocation", {MapData: selectedUserData.medicoClinica.clinica.endereco});
         }}
-        widtContainerInfoUser={280}
-        marginBottomName={"30px"}
+        widtContainerInfoUser={180}
+        marginBottomName={"15px"}
       />
 
       <ScheduledButton

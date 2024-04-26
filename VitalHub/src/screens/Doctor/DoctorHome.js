@@ -80,7 +80,7 @@ const DoctorHome = ({ navigation }) => {
       );
 
       setConsultas(retorno.data);
-      console.log(retorno.data);
+
     } catch (error) {
       console.log("erro", error);
     }
@@ -112,9 +112,12 @@ const DoctorHome = ({ navigation }) => {
     }
   }, [dataConsulta]);
 
+  console.log("Consultas API" + consultas);
+  console.log("user data: " + selectedUserData);
+
   return (
     <Container>
-      <Header textValue={"Bem vindo!"} nameDoctor={selectedUserData.idNavigation.nome} sourcePhoto={selectedUserData.idNavigation.foto}/>
+      <Header textValue={"Bem vindo!"} nameDoctor={"qualquercoisa"} />
 
       <CalendarHome
         dataConsulta={dataConsulta}
@@ -178,7 +181,7 @@ const DoctorHome = ({ navigation }) => {
             return (
               <CardUser
                 imageUser={{ uri: item.imagem }}
-                nameUser={item.paciente.idNavigation.nome}
+                // nameUser={item.paciente.idNavigation.nome}
                 ageUser={
                   calcularIdade(item.paciente.dataNascimento) + " anos" + "  •"
                 }
@@ -204,7 +207,7 @@ const DoctorHome = ({ navigation }) => {
             return (
               <CardUser
                 imageUser={{ uri: item.imagem }}
-                nameUser={item.paciente.idNavigation.nome}
+                // nameUser={item.paciente.idNavigation.nome}
                 ageUser={
                   calcularIdade(item.paciente.dataNascimento) + " anos" + "  •"
                 }
@@ -230,7 +233,7 @@ const DoctorHome = ({ navigation }) => {
             return (
               <CardUser
                 imageUser={{ uri: item.imagem }}
-                nameUser={item.paciente.idNavigation.nome}
+                // nameUser={item.paciente.idNavigation.nome}
                 ageUser={
                   calcularIdade(item.paciente.dataNascimento) + " anos" + "  •"
                 }
@@ -276,18 +279,18 @@ const DoctorHome = ({ navigation }) => {
         />
       )}
 
-      <SeeMedicalDialog
+      {/* <SeeMedicalDialog
         isVisible={isModalMedical}
+        // imageUser={{ uri: selectedUserData.idNavigation.foto }}
         showCancelButton={true}
         onPressCancel={() => setisModalMedical(false)}
-        imageUser={{ uri: selectedUserData.imagem }}
         heightImageUser={250}
         widthImageUser={320}
-        nameUser={selectedUserData.paciente.idNavigation.nome}
+        // nameUser={selectedUserData.paciente.idNavigation.nome}
         ageUser={`   ${calcularIdade(
-          selectedUserData.paciente.dataNascimento
+          // selectedUserData.paciente.dataNascimento
         )} anos`}
-        emailuser={selectedUserData.paciente.idNavigation.email}
+        // emailuser={selectedUserData.paciente.idNavigation.email}
         titleButton={"Inserir prontuário"}
         onPress={() => {
           navigation.navigate("MedicalRecord");
@@ -297,7 +300,7 @@ const DoctorHome = ({ navigation }) => {
         }}
         widtContainerInfoUser={280}
         marginBottomName={"30px"}
-      />
+      /> */}
     </Container>
   );
 };

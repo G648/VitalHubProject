@@ -70,7 +70,7 @@ export const Header = ({
     return (
         <ContainerHeader>
             <BoxUser>
-                <ImageUser source={sourcePhoto} />
+                <ImageUser source={{uri: sourcePhoto}} />
                 
                 <DataUser>
                     <TextDefault>{textValue}</TextDefault>

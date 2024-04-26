@@ -158,7 +158,7 @@ export function CardUser({
                 <ProfileImage
                     width={widthImage}
                     height={heightImage}
-                    source={imageUser}
+                    source={{uri: imageUser}}
                     marginTop={marginTopImage}
                 />
 
