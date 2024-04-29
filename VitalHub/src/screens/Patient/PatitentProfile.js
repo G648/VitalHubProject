@@ -15,7 +15,7 @@ import api from "../../service/service";
 
 
 export default function PatitentProfile({
-  navigation, 
+  navigation,
   route
 }) {
   const [date, setDate] = useState(new Date())
@@ -107,32 +107,32 @@ export default function PatitentProfile({
   async function UpdatePhoto() {
     const formData = new FormData();
     formData.append("Arquivo", {
-        uri: route.params.photoUri,
-        name: `image.jpg`,
-        type: `image/jpg`
+      uri: route.params.photoUri,
+      name: `image.jpg`,
+      type: `image/jpg`
     })
 
     try {
       console.log(route.params.photoUri);
-        await api.put(`/Usuario/AlterarFotoPerfil?id=${idUser}`, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data"
-            }
-        }).then(() => {
-          fotoUser(route.params.photoUri)
-        })
+      await api.put(`/api/Usuario/AlterarFotoPerfil?id=${idUser}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      });
+      setFotoUser(route.params.photoUri);
+      console.log("Foto de perfil atualizada com sucesso!");
     } catch (error) {
-        console.log(`deu merda: ${error}`);
+      console.log("Erro ao tentar atualizar a foto de perfil:", error);
     }
 
-}
+  }
 
   useEffect(() => {
     profileLoad();
-  },[])
+  }, [])
 
   useEffect(() => {
-    if(route.params && idUser != ''){
+    if (route.params && idUser != '') {
       UpdatePhoto()
     }
   }, [route.params, idUser])
