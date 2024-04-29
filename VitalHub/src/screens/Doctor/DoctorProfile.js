@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Container, DataUser } from '../../components/Header/Header'
-import { ProfileImageModal } from '../../components/Dialogs/SeeMedicalDialog'
+import { ButtonCamera, ContentInputSmall, ProfileImageModal } from '../../components/Dialogs/SeeMedicalDialog'
 import styled from 'styled-components/native'
 import { APP_COLORS } from '../../utils/App_colors'
 import { InputStyle, ScrollViewContainer, TextLabel } from './MedicalRecord'
@@ -11,6 +11,8 @@ import { Button } from '../../components/Button/Button'
 import { UnderlinedLink } from '../../components/Links/Style'
 import { userDecodeToken } from '../../utils/Auth'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { MaterialCommunityIcons } from "@expo/vector-icons"
+import api from "../../service/service";
 
 export const DoctorContainerInfos = styled.View`
   width: 80%;
@@ -65,8 +67,9 @@ export const Especialidade = styled(Crm)`
 
 `
 
-export default function DoctorProfile({
+export default function PatitentProfile({
   navigation,
+  route,
   especialidade,
   crm,
   isDoctor
@@ -77,6 +80,10 @@ export default function DoctorProfile({
   const [isEditable, setIsEditable] = useState(false); // Estado de edição dos inputs
   const [emailUser, setEmailUser] = useState('');
   const [nomeUser, setNomeUser] = useState('');
+  const [idUser, setIdUser] = useState('');
+  const [fotoUser, setFotoUser] = useState('');
+
+  // const userData = route.params.userData;
 
   const toggleEdit = () => {
     setIsEditable(prevState => !prevState); // Alterna entre editável e não editável
@@ -117,6 +124,7 @@ export default function DoctorProfile({
 
 
 
+
   async function profileLoad() {
     try {
       const token = await userDecodeToken();
@@ -126,6 +134,7 @@ export default function DoctorProfile({
 
         setNomeUser(token.name)
         setEmailUser(token.email)
+        setIdUser(token.jti)
 
       } else {
         console.log('Não foi possível recuperar o token de acesso.');
@@ -153,36 +162,72 @@ export default function DoctorProfile({
     }
   }
 
+  async function UpdatePhoto() {
+    const formData = new FormData();
+    formData.append("Arquivo", {
+      uri: route.params.photoUri,
+      name: `image.jpg`,
+      type: `image/jpg`
+    })
+
+    try {
+      console.log(route.params.photoUri);
+      await api.put(`/api/Usuario/AlterarFotoPerfil?id=${idUser}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      });
+      setFotoUser(route.params.photoUri);
+      console.log("Foto de perfil atualizada com sucesso!");
+    } catch (error) {
+      console.log("Erro ao tentar atualizar a foto de perfil:", error);
+    }
+
+  }
+
   useEffect(() => {
     profileLoad();
-  })
+  }, [])
+
+  useEffect(() => {
+    if (route.params && idUser != '') {
+      UpdatePhoto()
+    }
+  }, [route.params, idUser])
+
 
 
 
   return (
     <Container>
       <ProfileImageModal
-        source={{ uri: "https://github.com/G648.png" }}
+        source={ route.params.userData.Foto }
         widthImageUser={"100%"}
         heightImageUser={300}
         resizeMode='cover'
-      />
+        />
+
+
 
       <DoctorContainerInfos>
+        <ContentInputSmall>
+          <ButtonCamera onPress={() => navigation.navigate("MedicalExamsPhotos")}>
+            <MaterialCommunityIcons name="camera-plus" size={20} color="fbfbfb"></MaterialCommunityIcons>
+          </ButtonCamera>
+        </ContentInputSmall>
         <DataUser>
           <DoctorName>
             {nomeUser}
           </DoctorName>
-
-          <ContainerInfoDoctor>
-            <Crm>
-              {crm}
-            </Crm>
-
-            <Especialidade>
-              {especialidade}
-            </Especialidade>
-          </ContainerInfoDoctor>
+        <ContainerInfoDoctor>
+          <Crm>
+            {crm}
+          </Crm>
+        
+          <Especialidade>
+            {especialidade}
+          </Especialidade>
+        </ContainerInfoDoctor>
 
           <DoctorEmail>
             {emailUser}
@@ -195,7 +240,7 @@ export default function DoctorProfile({
         showsVerticalScrollIndicator={false}
       >
         <TextLabel>
-          Data de nascimento
+          Especialidade
         </TextLabel>
 
         {open && (
@@ -210,12 +255,26 @@ export default function DoctorProfile({
           />
         )}
 
+{/* <DateTimePicker
+            data={consultas}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => {
+              mode = 'date'
+              display = 'inline'
+              value = { date }
+              onChange = { onChange }
+              editable = { isEditable }
+              isEditable = { isEditable }
+            }}
+          />
+        )} */}
+
         {!open && (
 
           <Pressable
             onPress={toggleDatePicker}>
             <InputStyle
-              placeholder='03/08/02'
+              placeholder={`${ route.params.userData.EspecialidadeId }`}
               value={dateOfBirth}
               onChangeText={setDateOfBirth}
               placeholderTextColor={APP_COLORS.primaryV1}
@@ -228,18 +287,18 @@ export default function DoctorProfile({
           </Pressable>
         )}
 
-        <Calendar
+        <Calendar 
           name="calendar"
           size={24}
           color={APP_COLORS.primaryV1}
         />
 
         <TextLabel>
-          CPF
+          CRM
         </TextLabel>
 
         <InputStyle
-          placeholder='859*********'
+          placeholder={`${ route.params.userData.CRM }`}
           placeholderTextColor={APP_COLORS.primaryV1}
           boxHeigth={'60px'}
           boxWidth={"100%"}
@@ -316,18 +375,16 @@ export default function DoctorProfile({
           />
         )}
 
-          <Button
-            marginTop={30}
-            width={"70%"}
-            activeOpacity={.6}
-            backgroundColor={APP_COLORS.secondary}
-            border={APP_COLORS.secondary}
-            color={APP_COLORS.white}
-            title={"Sair"}
-            // marginTop={-10}
-            onPress={() => removeToken()}
-          />
-        
+        <Button
+          width={"100%"}
+          activeOpacity={.6}
+          backgroundColor={APP_COLORS.secondary}
+          border={APP_COLORS.secondary}
+          color={APP_COLORS.white}
+          title={"Sair"}
+          marginTop={15}
+          onPress={removeToken}
+        />
 
         <UnderlinedLink
           textIntput={"Cancelar"}
