@@ -42,15 +42,16 @@ const DoctorHome = ({ navigation }) => {
   const [nomeUser, setNomeUser] = useState("");
   const [dataConsulta, setDataConsulta] = useState("");
   const [consultas, setConsultas] = useState([]);
+  const [agendamento, setAgendamento] = useState(null);
 
   const handleCardPress = (selectedSituation, userData) => {
     selectedSituation == "Pendentes"
       ? setIsModalCancel(true)
       : setisModalMedical(true);
-      
+
     setSelectedUserData(userData);
 
-    console.log('selecionado')
+    console.log("selecionado");
     console.log(userData);
   };
 
@@ -285,10 +286,21 @@ const DoctorHome = ({ navigation }) => {
 
       <SeeMedicalDialog
         isVisible={isModalMedical}
-        imageUser={selectedUserData != null && selectedUserData.medicoClinica.medico.idNavigation.foto}
-        nameUser={selectedUserData != null && selectedUserData.medicoClinica.medico.idNavigation.nome}
-        ageUser={selectedUserData != null && selectedUserData.medicoClinica.medico.crm}
-        emailuser={selectedUserData != null && selectedUserData.medicoClinica.medico.especialidade.especialidade1}
+        imageUser={
+          selectedUserData != null &&
+          selectedUserData.medicoClinica.medico.idNavigation.foto
+        }
+        nameUser={
+          selectedUserData != null &&
+          selectedUserData.medicoClinica.medico.idNavigation.nome
+        }
+        ageUser={
+          selectedUserData != null && selectedUserData.medicoClinica.medico.crm
+        }
+        emailuser={
+          selectedUserData != null &&
+          selectedUserData.medicoClinica.medico.especialidade.especialidade1
+        }
         heightImageUser={250}
         widthImageUser={320}
         showCancelButton={true}
@@ -296,7 +308,9 @@ const DoctorHome = ({ navigation }) => {
         titleButton={"Ver local da consulta".toUpperCase()}
         onPress={() => {
           setisModalMedical(false);
-          navigation.navigate("MapViewLocation", {MapData: selectedUserData.medicoClinica.clinica.endereco});
+          navigation.navigate("MapViewLocation", {
+            MapData: selectedUserData.medicoClinica.clinica.endereco,
+          });
         }}
         widtContainerInfoUser={180}
         marginBottomName={"15px"}
@@ -322,9 +336,15 @@ const DoctorHome = ({ navigation }) => {
           setSelectedType={setSelectedInput}
           onSelected={selectedInput}
           cancelDialog={() => setIsModalScheduleVisible(false)}
-          onClick={() => {
+          onClick={async () => {
+            await setIsModalScheduleVisible(false);
             navigation.navigate("ChooseClinic");
-            setIsModalScheduleVisible(false);
+            setAgendamento({
+              ...agendamento, //manter todas as alterações existentes dentro do state
+              prioridadeId: item.Id,
+              prioridadeLabel: item.tipo,
+              //alterar o tipo para rotina exame e urgência
+            });
           }}
         />
       )}
