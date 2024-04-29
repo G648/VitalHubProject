@@ -36,6 +36,7 @@ const DoctorHome = ({ navigation }) => {
         setSelectedUserData(userData);
     };
 
+<<<<<<< HEAD
     // function getMissingQuery() {
     //     try {
     //         const date = new Date();
@@ -58,6 +59,30 @@ const DoctorHome = ({ navigation }) => {
     //         return null;
     //     }
     // }
+=======
+    function getMissingQuery() {
+        try {
+            const date = new Date();
+            // const today = date.getDate();
+            // setDataConsulta(response.data)
+            // console.log(date);
+            // console.log(dataConsulta);
+
+            if (moment(date).isAfter(dataConsulta)) {
+                // console.log("sim");
+                (item) => item.id.situacao.situacao === CardSituation.carriedOut
+            }
+            else {
+                console.log("não existe nenhuma consulta!");
+                
+            }
+            // return today;
+        } catch (error) {
+            console.log("error", error);
+            return null;
+        }
+    }
+>>>>>>> origin/guilherme
 
     // function getAge() {
     //     try {
@@ -115,6 +140,10 @@ const DoctorHome = ({ navigation }) => {
     // })
 
     useEffect(() => {
+        getMissingQuery();
+    })
+
+    useEffect(() => {
         profileLoad();
 
         if (dataConsulta != "") {
@@ -123,6 +152,7 @@ const DoctorHome = ({ navigation }) => {
     }, [dataConsulta]);
 
     // useEffect(() => {
+<<<<<<< HEAD
     //     // let newData = [consultas];
 
     //     data={consultas}
@@ -142,15 +172,43 @@ const DoctorHome = ({ navigation }) => {
 
     //           (item) => item.situation === CardSituation.canceled
 
+=======
+    //     let newData = [consultas];
+    
+    //     switch (selectedButton) {
+    //       case "Agendadas":
+            
+    //           (item) => item.situation === CardSituation.scheduled
+            
+    //         break;
+    //       case "Realizadas":
+            
+    //           (item) => item.situation === CardSituation.carriedOut
+            
+    //         break;
+    //       case "Canceladas":
+            
+    //           (item) => item.situation === CardSituation.canceled
+            
+>>>>>>> origin/guilherme
     //         break;
     //       default:
     //         newData = consultas;
     //         break;
     //     }
+<<<<<<< HEAD
 
     //     setFilteredData(newData);
     //   }, [selectedButton]);
 
+=======
+    
+    //     setFilteredData(newData);
+    //   }, [selectedButton]);
+    useEffect(() => {
+        getMissingQuery();
+    }) 
+>>>>>>> origin/guilherme
 
     return (
         <Container>
@@ -212,6 +270,7 @@ const DoctorHome = ({ navigation }) => {
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => {
 
+<<<<<<< HEAD
                     if (selectedButton === 'Pendentes' && item.situacao.situacao === "Pendentes") {
                         return (
                             <CardUser
@@ -263,6 +322,21 @@ const DoctorHome = ({ navigation }) => {
                                 onPressBorder={() => item.situation === "Cancelados" ? handleCardPressInfoDoctor(selectedButton, item) : null}
                             />)
                     }
+=======
+                    <CardUser
+                        imageUser={'ola'}
+                        nameUser={item.medicoClinica.medico.idNavigation.nome}
+                        ageUser={item.medicoClinica.medico.crm}
+                        descriptionUser={item.prioridade.prioridade}
+                        iconName={"clockcircle"}
+                        bgColor={item.situacao.situacao}
+                        schedulingTime={'14:00'}
+                        key={item.id}
+                        situation={item.situacao.situacao}
+                        onPress={() => handleCardPress(selectedButton, item)}
+                        onPressBorder={() => item.situation === "Pendentes" ? handleCardPressInfoDoctor(selectedButton, item) : null}
+                    />
+>>>>>>> origin/guilherme
 
                 }}
                 style={{ flex: 1 }}
