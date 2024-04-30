@@ -1,4 +1,4 @@
-import { Pressable } from "react-native";
+import { ActivityIndicator, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Container } from "../../../components/Container/Style";
 import {
@@ -23,18 +23,23 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Button } from "../../../components/Button/Button";
 import { UnderlinedLink } from "../../../components/Links/Style";
 import axios from "axios";
+import { useRoute } from "@react-navigation/native";
+import api from "../../../service/service";
 
 export default function InfosCadastroUser({ navigation, route }) {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [isEditable, setIsEditable] = useState(false); // Estado de edição dos inputs
-  const [emailUser, setEmailUser] = useState("");
   const [nomeUser, setNomeUser] = useState("");
-  const [cep, setCep] = useState("")
-  const [infosEndereco, setInfosEndereco] = useState({})
-
-  const {email, senha} = route.params;
+  const [cep, setCep] = useState("");
+  const [infosEndereco, setInfosEndereco] = useState({});
+  const [image, setImage] = useState();
+  const [rg, setRg] = useState("")
+  const [cpf, setCpf] = useState("")
+  const [numero, setNumero] = useState()
+  const { email, senha } = route.params;
+  const { params } = useRoute();
 
   console.log(email, senha);
 
@@ -60,42 +65,79 @@ export default function InfosCadastroUser({ navigation, route }) {
     setOpen(!open);
   };
 
+  console.log(dateOfBirth);
+
   const onChange = ({ type }, selectedDate) => {
-    if (type == "set") {
+    if (type === "set") {
       const currentDate = selectedDate;
       setDate(currentDate);
-
-      if (Platform.OS === "android") {
-        toggleDatePicker();
-
-        setDateOfBirth(formatDate(currentDate));
-      }
-    } else {
-      toggleDatePicker();
+      setDateOfBirth(formatDate(currentDate));
     }
+    toggleDatePicker(); // Sempre feche o seletor de data após a seleção ser feita
   };
-
 
   async function GetCep() {
     try {
-        const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+      const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
 
-        setInfosEndereco(response.data)
+      setInfosEndereco(response.data);
 
-        console.log(infosEndereco);
+      console.log(infosEndereco);
     } catch (error) {
-        console.log("deu ruim " + error);
+      console.log("deu ruim " + error);
     }
+  }
+
+  async function SubmitForm() {
+    const form = new FormData();
+    var dateStr = (new Date(date)).toUTCString();
+    console.log(dateStr);
+    form.append("Arquivo", {
+      uri: image,
+      name: "image.jpg",
+      type: "image/jpg",
+    });
+    form.append("Rg", rg);
+    form.append("Cpf", cpf);
+    form.append("DataNascimento", dateStr)
+    form.append("Cep", cep)
+    form.append("Logradouro", infosEndereco.logradouro )
+    form.append("Numero", numero )
+    form.append("Cidade", infosEndereco.localidade )
+    form.append("Nome", nomeUser )
+    form.append("Email", email )
+    form.append("Senha", senha )
+    form.append("IdTipoUsuario", "AD755F08-904B-497A-A496-C5883F650E7D" )
+
+    console.log(form);
+
+    await api.post("/api/Pacientes" , form, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }).then(response => {
+      navigation.navigate("Login")
+    }).catch(error => {
+      console.log( error.request);
+    })
   }
 
   useEffect(() => {
     GetCep();
-  },[cep])
+  }, [cep]);
+
+  useEffect(() => {
+    console.log(params);
+    if (params.image) {
+      setImage(params.image);
+    }
+  }, [params]);
+
 
   return (
     <Container>
       <ProfileImageModal
-        source={{ uri: "foto profile api" }}
+        source={image ? { uri: image } : "deu ruim"}
         widthImageUser={"100%"}
         heightImageUser={300}
         resizeMode="cover"
@@ -129,8 +171,7 @@ export default function InfosCadastroUser({ navigation, route }) {
           boxHeigth={"60px"}
           boxWidth={"100%"}
           borderColor={APP_COLORS.primary}
-          editable={isEditable}
-          isEditable={isEditable}
+          isEditable={!isEditable}
           onChangeText={(txt) => setNomeUser(txt)}
         />
 
@@ -157,8 +198,8 @@ export default function InfosCadastroUser({ navigation, route }) {
               boxHeigth={"60px"}
               boxWidth={"100%"}
               borderColor={APP_COLORS.primary}
-              editable={isEditable}
               isEditable={isEditable}
+              editable={isEditable}
             />
           </Pressable>
         )}
@@ -171,8 +212,9 @@ export default function InfosCadastroUser({ navigation, route }) {
           boxHeigth={"60px"}
           boxWidth={"100%"}
           borderColor={APP_COLORS.primary}
-          editable={isEditable}
-          isEditable={isEditable}
+          isEditable={!isEditable}
+          onChangeText={(txt) => setRg(txt)}
+          value={rg}
         />
         <TextLabel>CPF</TextLabel>
 
@@ -182,8 +224,9 @@ export default function InfosCadastroUser({ navigation, route }) {
           boxHeigth={"60px"}
           boxWidth={"100%"}
           borderColor={APP_COLORS.primary}
-          editable={isEditable}
-          isEditable={isEditable}
+          isEditable={!isEditable}
+          onChangeText={(txt) => setCpf(txt)}
+          value={cpf}
         />
         <TextLabel>CEP</TextLabel>
 
@@ -193,9 +236,8 @@ export default function InfosCadastroUser({ navigation, route }) {
           boxHeigth={"60px"}
           boxWidth={"100%"}
           borderColor={APP_COLORS.primary}
-          editable={isEditable}
-          isEditable={isEditable}
-            onChangeText={(txt) => setCep(txt)}
+          isEditable={!isEditable}
+          onChangeText={(txt) => setCep(txt)}
         />
         <TextLabel>Logradouro</TextLabel>
 
@@ -205,8 +247,7 @@ export default function InfosCadastroUser({ navigation, route }) {
           boxHeigth={"60px"}
           boxWidth={"100%"}
           borderColor={APP_COLORS.primary}
-          editable={isEditable}
-          isEditable={isEditable}
+          isEditable={!isEditable}
           value={infosEndereco.logradouro}
         />
         <TextLabel>Numero</TextLabel>
@@ -217,8 +258,8 @@ export default function InfosCadastroUser({ navigation, route }) {
           boxHeigth={"60px"}
           boxWidth={"100%"}
           borderColor={APP_COLORS.primary}
-          editable={isEditable}
-          isEditable={isEditable}
+          isEditable={!isEditable}
+          onChangeText={(txt) => setNumero(txt)}
         />
         <TextLabel>Cidade</TextLabel>
 
@@ -228,8 +269,7 @@ export default function InfosCadastroUser({ navigation, route }) {
           boxHeigth={"60px"}
           boxWidth={"100%"}
           borderColor={APP_COLORS.primary}
-          editable={isEditable}
-          isEditable={isEditable}
+          isEditable={!isEditable}
           value={infosEndereco.localidade}
         />
 
@@ -240,9 +280,9 @@ export default function InfosCadastroUser({ navigation, route }) {
             backgroundColor={APP_COLORS.secondary}
             border={APP_COLORS.secondary}
             color={APP_COLORS.white}
-            title={"Editar"}
+            title={"Cadastrar"}
             // marginTop={30}
-            onPress={toggleEdit}
+            onPress={SubmitForm}
           />
         )}
 
@@ -253,9 +293,9 @@ export default function InfosCadastroUser({ navigation, route }) {
             backgroundColor={APP_COLORS.secondary}
             border={APP_COLORS.secondary}
             color={APP_COLORS.white}
-            title={"Salvar"}
+            title={"Cadastrar"}
             // marginTop={-10}
-            onPress={handleSave}
+            onPress={SubmitForm}
           />
         )}
 

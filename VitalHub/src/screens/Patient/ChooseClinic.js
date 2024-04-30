@@ -37,6 +37,9 @@ export default function ChooseClinic({ navigation }) {
       }, [])
 
     console.log(clinicList);
+
+
+    
     return (
         <Container>
             <Title
