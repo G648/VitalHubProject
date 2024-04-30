@@ -22,6 +22,7 @@ import MedicalRecordPage from './src/screens/Patient/MedicalRecordPage';
 import MedicalExamsPhotos from './src/screens/Patient/MedicalExamsPhotos';
 import Toast from 'react-native-toast-message';
 import RecoverPassword from './src/screens/Auth/RecoverPassword/RecoverPassword';
+import InfosCadastroUser from './src/screens/Auth/CadastroUser/InfosCadastroUser';
 
 
 export default function App() {
@@ -151,6 +152,12 @@ export default function App() {
             name='Cadastro'
             component={Cadastro}
             options={{ title: 'Cadastro' }}
+          />
+
+          <Stack.Screen
+            name='InfosCadastroUser'
+            component={InfosCadastroUser}
+            options={{title: 'InfosCadastroUser'}}
           />
 
           <Stack.Screen
