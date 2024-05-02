@@ -15,30 +15,17 @@ export const ContainerScrollView = styled.ScrollView`
     display:flex;
 `
 
-export default function ChooseClinic({ navigation }) {
+export default function ChooseClinic({ navigation, route }) {
 
     const [selectedCard, setSelectedCard] = useState(null);
-    const [clinicList, setClinicList] = useState([])
+    const {clinicas} = route.params
 
-    const getClinic = async () => {
-        await api.get(ClinicResource)
-          .then(response => {
-            setClinicList(response.data)
-          })
-          .catch(error => console.log(error));
-      }
+    console.log("clinas da tela antiga");
+    console.log(clinicas);
 
     const handleCardPress = (id) => {
         setSelectedCard(id);
     };
-
-    useEffect(() => {
-        getClinic()
-      }, [])
-
-    console.log(clinicList);
-
-
     
     return (
         <Container>
@@ -51,7 +38,7 @@ export default function ChooseClinic({ navigation }) {
             <ContainerScrollView>
                 <FlatlistInfos
                     width={'100%'}
-                    data={clinicList}
+                    data={clinicas}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => {
                         return (
