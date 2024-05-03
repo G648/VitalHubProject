@@ -41,15 +41,17 @@ export const ProfileName = styled.Text`
 `;
 
 export const ProfileData = styled.View`
-  flex-direction: row;
-  gap: 15px;
-  margin-bottom: -10px;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 10px;
+  margin-bottom: -50px;
   margin-left: ${({ marginLeftInfoUser = "0px" }) => marginLeftInfoUser};
 `;
 export const TextAge = styled.Text`
   font-size: 16px;
   color: ${defaultTextColor};
   font-family: "Quicksand_400Regular";
+  margin-left: 15px;
 `;
 export const TextBold = styled(TextAge)`
   font-family: "Quicksand_600SemiBold";
@@ -149,8 +151,7 @@ export function CardUser({
         <ProfileImage
           width={widthImage}
           height={heightImage}
-          // source={{uri: imageUser}}
-          source={imageUser}
+          source={{uri: imageUser}}
           marginTop={marginTopImage}
         />
 

@@ -38,11 +38,11 @@ export const TextConsultas = styled.Text`
 
 const DoctorHome = ({ navigation }) => {
   const [selectedButton, setSelectedButton] = useState(CardSituation.scheduled);
+  const [selectedButtonModal, setSelectedButtonModal] = useState("");
   const [isModalCancel, setIsModalCancel] = useState(false);
   const [isModalMedical, setisModalMedical] = useState(false);
   const [selectedUserData, setSelectedUserData] = useState(null);
   const [isModalScheduleVisible, setIsModalScheduleVisible] = useState(false);
-  const [selectedInput, setSelectedInput] = useState("");
   const [emailUser, setEmailUser] = useState("");
   const [nomeUser, setNomeUser] = useState("");
   const [dataConsulta, setDataConsulta] = useState("");
@@ -52,6 +52,8 @@ const DoctorHome = ({ navigation }) => {
   const [fotoUser, setFotoUser] = useState("");
   const [cidade, setCidade] = useState("");
   const [infosClinic, setInfosClinic] = useState({})
+
+  console.log(selectedButtonModal);
 
   console.log("CIDADEEEEEEEEEEEEEEEEEEEEEE");
   console.log(infosClinic);
@@ -130,26 +132,6 @@ const DoctorHome = ({ navigation }) => {
     }
   }
 
-  async function GetClinics() {
-    try {
-      const cidadeEncoded = encodeURIComponent(cidade).trim();
-      const response = await api.get(
-        `/api/Clinica/BuscarPorCidade?cidade=${cidadeEncoded}`
-      );
-
-        setInfosClinic(response.data);
-
-      console.log("CIDADES E CLINICAS");
-      console.log(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  useEffect(() => {
-    GetClinics();
-  },[]);
-
   useEffect(() => {
     profileLoad();
 
@@ -162,12 +144,17 @@ const DoctorHome = ({ navigation }) => {
     GetByIdUser();
   });
 
+
+  const handleButtonClick = (buttonName) => {
+    setSelectedButtonModal(buttonName);
+  };
+
   return (
     <Container>
       <Header
         sourcePhoto={fotoUser}
         textValue={"Bem vindo!"}
-        nameDoctor={"Dr. " + nomeUser}
+        nameDoctor={nomeUser}
       />
 
       <CalendarHome
@@ -373,21 +360,20 @@ const DoctorHome = ({ navigation }) => {
       {isModalScheduleVisible && (
         <ScheduleAppointment
           widthModal={"100%"}
-          heightModal={600}
+          heightModal={480}
           titleContent={"Agendar consulta"}
           justifyContentModal={"flex-end"}
           fontSizeText={25}
-          placeholder={"tipo de consulta"}
-          mockdata={consultas}
-          save={"value"}
-          setSelectedType={setSelectedInput}
-          onSelected={selectedInput}
+          selectedButton={selectedButtonModal}
+          handleTabSelected={handleButtonClick}
           onChangeText={(txt) => setCidade(txt)}
           cancelDialog={() => setIsModalScheduleVisible(false)}
           onClick={async () => {
             await setIsModalScheduleVisible(false);
-            navigation.push("ChooseClinic", {
+            navigation.navigate("ChooseClinic", {
               clinicas: infosClinic,
+              cidade: cidade,
+              botaoSelecionado: selectedButtonModal,
             });
             // setAgendamento({
             //   ...agendamento, //manter todas as alterações existentes dentro do state

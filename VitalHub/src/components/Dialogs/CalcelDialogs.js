@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal } from 'react-native'
+import { Modal, View } from 'react-native'
 import { styled } from 'styled-components/native'
 import { Title } from '../Title/Style'
 import { APP_COLORS } from '../../utils/App_colors'
@@ -58,7 +58,13 @@ export default function CancelDialogs({
     cancelButtonTitle,
     alignItemsContainer,
     paddingTitle,
-    isModalScheduling
+    isModalScheduling,
+    dataConsulta,
+    nomeMedico,
+    especialidadeMedico,
+    localConsulta,
+    tipoConsulta,
+    horaConsulta
 }) {
     return (
         <ModalContainer
@@ -91,28 +97,28 @@ export default function CancelDialogs({
                                 Data da consulta
                             </TextParagrafModal>
                             <TextModal fontSizeText={14}>
-                                1 de Novembro de 2023
+                                {dataConsulta }  às  { horaConsulta} horas
                             </TextModal>
                             <TextParagrafModal>
                                 Médico(a) da consulda
                             </TextParagrafModal>
                             <TextModal fontSizeText={14}>
-                                Dra Alessandra
+                                {nomeMedico}
                             </TextModal>
                             <TextModal fontSizeText={14} marginBottom={'-10px'}>
-                                Demartologa, Esteticista
+                                {especialidadeMedico}
                             </TextModal>
                             <TextParagrafModal>
                                 Local da consulta
                             </TextParagrafModal>
                             <TextModal fontSizeText={14}>
-                                São Paulo, SP
+                                {localConsulta}
                             </TextModal>
                             <TextParagrafModal>
                                 Tipo da consulta
                             </TextParagrafModal>
                             <TextModal fontSizeText={14}>
-                                Rotina
+                                {tipoConsulta}
                             </TextModal>
                         </ContainerScheduleInfos>
                     }
