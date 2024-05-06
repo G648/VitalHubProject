@@ -37,7 +37,7 @@ export const TextConsultas = styled.Text`
 `;
 
 const DoctorHome = ({ navigation }) => {
-  const [selectedButton, setSelectedButton] = useState(CardSituation.scheduled);
+  const [selectedButton, setSelectedButton] = useState("Pendentes");
   const [selectedButtonModal, setSelectedButtonModal] = useState("");
   const [isModalCancel, setIsModalCancel] = useState(false);
   const [isModalMedical, setisModalMedical] = useState(false);
@@ -47,16 +47,11 @@ const DoctorHome = ({ navigation }) => {
   const [nomeUser, setNomeUser] = useState("");
   const [dataConsulta, setDataConsulta] = useState("");
   const [consultas, setConsultas] = useState([]);
-  // const [agendamento, setAgendamento] = useState(null);
   const [idUser, setIdUser] = useState("");
   const [fotoUser, setFotoUser] = useState("");
   const [cidade, setCidade] = useState("");
-  const [infosClinic, setInfosClinic] = useState({})
-
-  console.log(selectedButtonModal);
-
-  console.log("CIDADEEEEEEEEEEEEEEEEEEEEEE");
-  console.log(infosClinic);
+  const [infosClinic, setInfosClinic] = useState({});
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
 
   const handleCardPress = (selectedSituation, userData) => {
     selectedSituation == "Pendentes"
@@ -74,8 +69,6 @@ const DoctorHome = ({ navigation }) => {
         return <Text>Exame</Text>;
       case 3:
         return <Text> Urgência </Text>;
-      default:
-        return <Text> Sem precêdencia</Text>;
     }
   };
 
@@ -144,6 +137,9 @@ const DoctorHome = ({ navigation }) => {
     GetByIdUser();
   });
 
+  useEffect(() => {
+    setIsButtonEnabled(selectedButtonModal !== "" && cidade !== "");
+  }, [selectedButtonModal, cidade]);
 
   const handleButtonClick = (buttonName) => {
     setSelectedButtonModal(buttonName);
@@ -369,20 +365,24 @@ const DoctorHome = ({ navigation }) => {
           onChangeText={(txt) => setCidade(txt)}
           cancelDialog={() => setIsModalScheduleVisible(false)}
           onClick={async () => {
-            await setIsModalScheduleVisible(false);
-            navigation.navigate("ChooseClinic", {
-              clinicas: infosClinic,
-              cidade: cidade,
-              botaoSelecionado: selectedButtonModal,
-            });
-            // setAgendamento({
-            //   ...agendamento, //manter todas as alterações existentes dentro do state
-            //   prioridadeId: item.Id,
-            //   prioridadeLabel: item.tipo,
-            //   //alterar o tipo para rotina exame e urgência
-            // });
+            // Verifica se o botão de continuar está habilitado antes de prosseguir
+            if (isButtonEnabled) {
+              setIsModalScheduleVisible(false);
+              navigation.navigate("ChooseClinic", {
+                clinicas: infosClinic,
+                cidade: cidade,
+                botaoSelecionado: selectedButtonModal,
+                pacienteId: idUser,
+              });
+              setCidade();
+              setSelectedButtonModal();
+            } else {
+              alert(
+                "Por favor, selecione um botão e informe a localização da clínica."
+              );
+            }
           }}
-          // setDefault={}
+          isButtonEnabled={isButtonEnabled}
         />
       )}
     </Container>

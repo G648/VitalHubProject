@@ -1,20 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   CenterContainer,
   ContainerTextBox,
   ModalContainer,
   TextModal,
 } from "./CalcelDialogs";
-import { InputStyle, TextLabel } from "../../screens/Doctor/MedicalRecord";
+import { TextLabel } from "../../screens/Doctor/MedicalRecord";
 import styled from "styled-components";
 import { SelectList } from "react-native-dropdown-select-list";
 import { APP_COLORS } from "../../utils/App_colors";
 import { ContainerView } from "../Buttons/Buttons";
 import { Button } from "../Button/Button";
 import { UnderlinedLink } from "../Links/Style";
-import { FontAwesome } from "@expo/vector-icons";
-import { applyMiddleware } from "redux";
-import api from "../../service/service";
 
 export const ViewSelectedList = styled.View`
   width: 100%;
@@ -55,10 +52,9 @@ export default function ScheduleAppointment({
   onChangeText,
   setDefault,
   handleTabSelected,
-  selectedButton
+  selectedButton,
+  isButtonEnabled,
 }) {
- 
-
   return (
     <ModalContainer
       visible={isVisible}
@@ -141,16 +137,30 @@ export default function ScheduleAppointment({
             onChangeText={onChangeText}
           />
 
-          <Button
-            backgroundColor={APP_COLORS.secondary}
-            border={APP_COLORS.secondary}
-            activeOpacity={0.8}
-            marginTop={60}
-            width={"100%"}
-            title={"Continuar"}
-            color={APP_COLORS.white}
-            onPress={onClick}
-          />
+          {isButtonEnabled ? (
+            <Button
+              backgroundColor={APP_COLORS.secondary}
+              border={APP_COLORS.secondary}
+              activeOpacity={0.8}
+              marginTop={60}
+              width={"100%"}
+              title={"Continuar"}
+              color={APP_COLORS.white}
+              onPress={onClick}
+            />
+          ) : (
+            <Button
+              backgroundColor={APP_COLORS.grayV6}
+              border={APP_COLORS.grayV6}
+              activeOpacity={0.8}
+              marginTop={60}
+              width={"100%"}
+              title={"Continuar"}
+              color={APP_COLORS.white}
+              onPress={onClick}
+              disabled={true}
+            />
+          )}
 
           <UnderlinedLink
             textIntput={"Cancelar"}

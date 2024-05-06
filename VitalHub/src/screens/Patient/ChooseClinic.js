@@ -19,14 +19,9 @@ export const ContainerScrollView = styled.ScrollView`
 export default function ChooseClinic({ navigation, route }) {
   const [selectedCard, setSelectedCard] = useState(null);
   const [infosClinic, setInfosClinic] = useState({});
-  const { clinicas, cidade, botaoSelecionado } = route.params;
+  const { clinicas, cidade, botaoSelecionado, pacienteId } = route.params;
 
-  console.log("clinas da tela antiga");
-  console.log(clinicas);
-  console.log(cidade);
-  console.log(botaoSelecionado);
-
-  console.log(selectedCard);
+  console.log(pacienteId);
 
   const handleCardPress = (id) => {
     setSelectedCard(id);
@@ -40,9 +35,6 @@ export default function ChooseClinic({ navigation, route }) {
       );
 
       setInfosClinic(response.data);
-
-      console.log("CIDADES E CLINICAS");
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -67,14 +59,15 @@ export default function ChooseClinic({ navigation, route }) {
             renderItem={({ item }) => {
               return (
                 <CardUser
-                //   imageUser={require("../../assets/Images/Group.png")}
+                  // imageUser={require("../../assets/Images/Group.png")}
                   nameUser={item.nomeFantasia}
                   descriptionUser={item.endereco.logradouro}
-                  schedulingTime={item.horarioFuncionamento}
+                  isDoctor={false}
+                  schedulingTime={"Seg - Sab"}
                   iconName={"calendar"}
                   iconSize={20}
                   bgColor={item.situation}
-                  clinicAvaliation={"5.0"}
+                  clinicAvaliation={"4.7"}
                   marginLeftInfoUser={"-15px"}
                   isClinic={true}
                   widthImage={60}
@@ -83,6 +76,7 @@ export default function ChooseClinic({ navigation, route }) {
                   isSelected={selectedCard === item.id}
                   onPressBorder={() => handleCardPress(item.id)}
                   marginBottomCard={0}
+                  starColor={true}
                 />
               );
             }}
@@ -100,12 +94,15 @@ export default function ChooseClinic({ navigation, route }) {
         color={APP_COLORS.white}
         width={"90%"}
         title={"Continuar"}
-        onPress={() => navigation.navigate("ChoseDoctor", {
+        onPress={() =>
+          navigation.navigate("ChoseDoctor", {
             cidade: cidade,
             clinicas: clinicas,
             botaoSelecionado: botaoSelecionado,
-            clinicaSelecionada: selectedCard
-        })}
+            clinicaSelecionada: selectedCard,
+            pacienteId: pacienteId,
+          })
+        }
       />
 
       <UnderlinedLink

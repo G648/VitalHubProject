@@ -14,6 +14,7 @@ import { Button } from "../../components/Button/Button";
 import CancelDialogs from "../../components/Dialogs/CalcelDialogs";
 import moment from "moment";
 import { ActivityIndicator } from "react-native";
+import api from "../../service/service";
 
 export default function ChooseDate({ navigation, route }) {
   const [currentDate, setCurrentDate] = useState("");
@@ -23,7 +24,7 @@ export default function ChooseDate({ navigation, route }) {
   const dataAtual = moment().format("YYYY-MM-DD");
   const [hora, setHora] = useState("");
 
-  console.log(dataSelecionada, hora);
+  //TODO:FazerRequisiçãode doutor para capturar o medicoClinicaId
 
   const {
     cidade,
@@ -32,8 +33,26 @@ export default function ChooseDate({ navigation, route }) {
     clinicaSelecionada,
     doutorSelecionado,
     nomeDoutor,
-    especialidadeDoutor
+    especialidadeDoutor,
+    pacienteId
   } = route.params;
+
+  const dataHoraSelecionada = dataAtual + " " + hora;
+
+  const parametros = {
+    situacaoId : "B2A29251-975A-46CA-8A41-D82AD95512DA",
+    cidade,
+    clinicas,
+    botaoSelecionado,
+    clinicaSelecionada,
+    doutorSelecionado,
+    nomeDoutor,
+    especialidadeDoutor,
+    dataHoraSelecionada,
+    pacienteId
+  };
+
+  console.log(parametros);
 
   useEffect(() => {
     var date = new Date().getDate(); //Current Date
@@ -42,7 +61,6 @@ export default function ChooseDate({ navigation, route }) {
 
     setCurrentDate(date + "/" + month + "/" + year);
   }, []);
-
 
   function formatarData(data) {
     // Formatar a data usando Moment.js
@@ -72,6 +90,16 @@ export default function ChooseDate({ navigation, route }) {
   }
 
   async function handleGoBackPage() {
+    try {
+      await api.post("/api/Consultas/Cadastrar", parametros, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
     await setIsModalScheduleVisible(false);
     navigation.navigate("HomePatient");
   }

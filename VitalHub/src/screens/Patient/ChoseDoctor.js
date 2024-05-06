@@ -19,7 +19,7 @@ export default function ChoseDoctor({ navigation, route }) {
   console.log(doctorName, doctorEspecialidade)
   console.log(doctorList);
 
-  const { cidade, clinicas, botaoSelecionado, clinicaSelecionada } =
+  const { cidade, clinicas, botaoSelecionado, clinicaSelecionada, pacienteId } =
     route.params;
 
   const getDoctor = async () => {
@@ -61,7 +61,7 @@ export default function ChoseDoctor({ navigation, route }) {
                 heightImage={100}
                 marginTopImage={1}
                 isSelected={selectedCard === item.id}
-                onPressBorder={() => handleCardPress(item.id)}
+                onPressBorder={() => handleCardPress(item.idNavigation.id)}
                 marginBottomCard={0}
                 isDoctor={true}
               />
@@ -89,6 +89,7 @@ export default function ChoseDoctor({ navigation, route }) {
             doutorSelecionado: selectedCard,
             nomeDoutor : doctorName,
             especialidadeDoutor:doctorEspecialidade,
+            pacienteId: pacienteId
           })
         }
       />
