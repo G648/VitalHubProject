@@ -1,30 +1,53 @@
-import { View, Text, Pressable } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { Container } from '../../components/Container/Style'
-import { ButtonCamera, ContentInputSmall, ProfileImageModal } from '../../components/Dialogs/SeeMedicalDialog'
-import { DoctorContainerInfos, DoctorEmail, DoctorName, InfosColumn, InfosContainer } from '../Doctor/DoctorProfile'
-import { DataUser } from '../../components/Header/Header'
-import { InputStyle, ScrollViewContainer, TextLabel } from '../Doctor/MedicalRecord'
-import { Button } from '../../components/Button/Button'
-import { UnderlinedLink } from '../../components/Links/Style'
-import { APP_COLORS } from '../../utils/App_colors'
-import { userDecodeToken } from '../../utils/Auth'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { View, Text, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Container } from "../../components/Container/Style";
+import {
+  ButtonCamera,
+  ContentInputSmall,
+  ProfileImageModal,
+} from "../../components/Dialogs/SeeMedicalDialog";
+import {
+  DoctorContainerInfos,
+  DoctorEmail,
+  DoctorName,
+  InfosColumn,
+  InfosContainer,
+} from "../Doctor/DoctorProfile";
+import { DataUser } from "../../components/Header/Header";
+import {
+  InputStyle,
+  ScrollViewContainer,
+  TextLabel,
+} from "../Doctor/MedicalRecord";
+import { Button } from "../../components/Button/Button";
+import { UnderlinedLink } from "../../components/Links/Style";
+import { APP_COLORS } from "../../utils/App_colors";
+import { userDecodeToken } from "../../utils/Auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import api from "../../service/service";
 
-
-export default function PatitentProfile({
-  navigation
-}) {
-  const [date, setDate] = useState(new Date())
-  const [open, setOpen] = useState(false)
-  const [dateOfBirth, setDateOfBirth] = useState("")
+export default function PatitentProfile({ navigation }) {
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
+  const [dateOfBirth, setDateOfBirth] = useState("");
   const [isEditable, setIsEditable] = useState(false); // Estado de edição dos inputs
-  const [emailUser, setEmailUser] = useState('');
-  const [nomeUser, setNomeUser] = useState('');
+  const [emailUser, setEmailUser] = useState("");
+  const [nomeUser, setNomeUser] = useState("");
+  const [rgUser, setRgUser] = useState("");
+  const [cpfUser, setCpfUser] = useState("");
+  const [dataNascimentoUser, setDataNascimentoUser] = useState("");
+  const [logradouroUser, setLogradouroUser] = useState("");
+  const [cepUser, setCepUser] = useState("");
+  const [idUser, setIdUser] = useState("");
+  const [cidadeUser, setCidadeUser] = useState("");
+  const [fotoUser, setFotoUser] = useState("")
+
+  console.log(rgUser, cpfUser, dataNascimentoUser, logradouroUser, cepUser);
 
   const toggleEdit = () => {
-    setIsEditable(prevState => !prevState); // Alterna entre editável e não editável
+    setIsEditable((prevState) => !prevState); // Alterna entre editável e não editável
   };
 
   const handleSave = () => {
@@ -32,65 +55,86 @@ export default function PatitentProfile({
   };
 
   const formatDate = (rawDate) => {
-    let date = new Date(rawDate)
+    let date = new Date(rawDate);
 
-    let year = date.getFullYear()
-    let month = date.getMonth() + 1
-    let day = date.getDate()
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
 
-    return `${day}/${month}/${year}`
-  }
+    if (day < 10 || month < 10) {
+
+      return `0${day}/0${month}/${year}`;
+    }
+
+  };
 
   const toggleDatePicker = () => {
     setOpen(!open);
-  }
+  };
 
   const onChange = ({ type }, selectedDate) => {
     if (type == "set") {
       const currentDate = selectedDate;
-      setDate(currentDate)
+      setDate(currentDate);
 
       if (Platform.OS === "android") {
-        toggleDatePicker()
+        toggleDatePicker();
 
         setDateOfBirth(formatDate(currentDate));
       }
     } else {
-      toggleDatePicker()
+      toggleDatePicker();
+    }
+  };
+
+  async function GetByIdUser() {
+    try {
+      const response = await api.get(`/api/Pacientes/BuscarPorId?id=${idUser}`);
+
+      setRgUser(response.data.rg);
+      setCpfUser(response.data.cpf);
+      setDataNascimentoUser(formatDate(response.data.dataNascimento));
+      setLogradouroUser(response.data.endereco.logradouro);
+      setCepUser(response.data.endereco.cep);
+      setCidadeUser(response.data.endereco.cidade);
+      setFotoUser(response.data.idNavigation.foto);
+
+      // console.log(response.data);
+    } catch (error) {
+      console.log("deu ruim na requição de usuario por ID");
+      console.log(error.request);
     }
   }
-
-
-
 
   async function profileLoad() {
     try {
       const token = await userDecodeToken();
 
       if (token) {
-        console.log('Token de acesso recuperado:', token);
+        console.log("Token de acesso recuperado:", token);
 
-        setNomeUser(token.name)
-        setEmailUser(token.email)
-
+        setNomeUser(token.name);
+        setEmailUser(token.email);
+        setIdUser(token.jti);
       } else {
-        console.log('Não foi possível recuperar o token de acesso.');
+        console.log("Não foi possível recuperar o token de acesso.");
       }
     } catch (error) {
-      console.error('Erro ao recuperar o token de acesso do AsyncStorage:', error);
+      console.error(
+        "Erro ao recuperar o token de acesso do AsyncStorage:",
+        error
+      );
     }
   }
 
   async function removeToken() {
     try {
-
-      const token = await AsyncStorage.removeItem('token');
+      const token = await AsyncStorage.removeItem("token");
 
       if (!token) {
-        navigation.navigate('Login')
-
+        navigation.navigate("Login");
       } else {
-        console.log('Não foi possível recuperar o token de acesso.');
+        console.log("Não foi possível recuperar o token de acesso.");
       }
 
       console.log(token);
@@ -101,53 +145,45 @@ export default function PatitentProfile({
 
   useEffect(() => {
     profileLoad();
-  })
-
-
-
+    GetByIdUser();
+  });
 
   return (
     <Container>
       <ProfileImageModal
-        source={{ uri: "https://github.com/G648.png" }}
+        source={{ uri: fotoUser }}
         widthImageUser={"100%"}
         heightImageUser={300}
-        resizeMode='cover'
+        resizeMode="cover"
       />
-
-
 
       <DoctorContainerInfos>
         <ContentInputSmall>
-          <ButtonCamera onPress={() => navigation.navigate("MedicalExamsPhotos")}>
-            <MaterialCommunityIcons name="camera-plus" size={20} color="fbfbfb"></MaterialCommunityIcons>
+          <ButtonCamera
+            onPress={() => navigation.navigate("MedicalExamsPhotos")}
+          >
+            <MaterialCommunityIcons
+              name="camera-plus"
+              size={20}
+              color="fbfbfb"
+            ></MaterialCommunityIcons>
           </ButtonCamera>
         </ContentInputSmall>
         <DataUser>
-          <DoctorName>
-            {nomeUser}
-          </DoctorName>
+          <DoctorName>{nomeUser}</DoctorName>
 
-          <DoctorEmail>
-            {emailUser}
-          </DoctorEmail>
+          <DoctorEmail>{emailUser}</DoctorEmail>
         </DataUser>
       </DoctorContainerInfos>
 
-      <ScrollViewContainer
-        width={"90%"}
-        showsVerticalScrollIndicator={false}
-      >
-        <TextLabel>
-          Data de nascimento
-        </TextLabel>
+      <ScrollViewContainer width={"90%"} showsVerticalScrollIndicator={false}>
+        <TextLabel>Data de nascimento</TextLabel>
 
         {open && (
-
           <DateTimePicker
-            mode='date'
-            display='inline'
-            value={date}
+            mode="date"
+            display="inline"
+            value={dataNascimentoUser}
             onChange={onChange}
             editable={isEditable}
             isEditable={isEditable}
@@ -155,15 +191,13 @@ export default function PatitentProfile({
         )}
 
         {!open && (
-
-          <Pressable
-            onPress={toggleDatePicker}>
+          <Pressable onPress={toggleDatePicker}>
             <InputStyle
-              placeholder='03/08/02'
-              value={dateOfBirth}
+              placeholder={dataNascimentoUser}
+              value={dataNascimentoUser}
               onChangeText={setDateOfBirth}
               placeholderTextColor={APP_COLORS.primaryV1}
-              boxHeigth={'60px'}
+              boxHeigth={"60px"}
               boxWidth={"100%"}
               borderColor={APP_COLORS.primary}
               editable={isEditable}
@@ -178,40 +212,35 @@ export default function PatitentProfile({
           color={APP_COLORS.primaryV1}
         /> */}
 
-        <TextLabel>
-          CPF
-        </TextLabel>
+        <TextLabel>CPF</TextLabel>
 
         <InputStyle
-          placeholder='859*********'
+          placeholder={cpfUser}
+          value={cpfUser}
           placeholderTextColor={APP_COLORS.primaryV1}
-          boxHeigth={'60px'}
+          boxHeigth={"60px"}
           boxWidth={"100%"}
           borderColor={APP_COLORS.primary}
           editable={isEditable}
           isEditable={isEditable}
         />
-        <TextLabel>
-          Endereço
-        </TextLabel>
+        <TextLabel>Endereço</TextLabel>
 
         <InputStyle
-          placeholder='Rua Vicenso Silva, 987'
+          value={logradouroUser}
           placeholderTextColor={APP_COLORS.primaryV1}
-          boxHeigth={'60px'}
+          boxHeigth={"60px"}
           boxWidth={"100%"}
           borderColor={APP_COLORS.primary}
           editable={isEditable}
           isEditable={isEditable}
         />
-
 
         <InfosContainer>
           <InfosColumn>
-            <TextLabel>
-              CEP
-            </TextLabel>
+            <TextLabel>CEP</TextLabel>
             <InputStyle
+              value={cepUser}
               boxWidth={"100%"}
               boxHeigth={"60px"}
               editable={isEditable}
@@ -220,10 +249,9 @@ export default function PatitentProfile({
           </InfosColumn>
 
           <InfosColumn>
-            <TextLabel>
-              Cidade
-            </TextLabel>
+            <TextLabel>Cidade</TextLabel>
             <InputStyle
+              value={cidadeUser}
               boxWidth={"100%"}
               boxHeigth={"60px"}
               editable={isEditable}
@@ -232,12 +260,10 @@ export default function PatitentProfile({
           </InfosColumn>
         </InfosContainer>
 
-
-
         {!isEditable && ( // Renderiza o botão de editar apenas quando os inputs não estiverem editáveis
           <Button
             width={"100%"}
-            activeOpacity={.6}
+            activeOpacity={0.6}
             backgroundColor={APP_COLORS.secondary}
             border={APP_COLORS.secondary}
             color={APP_COLORS.white}
@@ -250,7 +276,7 @@ export default function PatitentProfile({
         {isEditable && ( // Renderiza o botão de salvar apenas quando os inputs estiverem editáveis
           <Button
             width={"100%"}
-            activeOpacity={.6}
+            activeOpacity={0.6}
             backgroundColor={APP_COLORS.secondary}
             border={APP_COLORS.secondary}
             color={APP_COLORS.white}
@@ -262,7 +288,7 @@ export default function PatitentProfile({
 
         <Button
           width={"100%"}
-          activeOpacity={.6}
+          activeOpacity={0.6}
           backgroundColor={APP_COLORS.secondary}
           border={APP_COLORS.secondary}
           color={APP_COLORS.white}
@@ -274,14 +300,10 @@ export default function PatitentProfile({
         <UnderlinedLink
           textIntput={"Cancelar"}
           ColorText={APP_COLORS.secondaryV1}
-          buttonOpacity={.6}
+          buttonOpacity={0.6}
           onClick={handleSave}
-
         />
-
       </ScrollViewContainer>
-
     </Container>
-  )
+  );
 }
-

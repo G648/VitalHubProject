@@ -7,311 +7,386 @@ import { Button } from "../../components/Button/Button";
 import { APP_COLORS } from "../../utils/App_colors";
 import { FlatlistInfos } from "../../components/FlatlistUsers/FlatlistUsers";
 import { CardUser } from "../../components/FlatlistUsers/CardFlatlistUsers";
-import { MockData } from "../../utils/MockData";
 import { CardSituation } from "../../utils/AppSituationCard";
 import CancelDialogs from "../../components/Dialogs/CalcelDialogs";
 import { SeeMedicalDialog } from "../../components/Dialogs/SeeMedicalDialog";
 import { userDecodeToken } from "../../utils/Auth";
 import api from "../../service/service";
-import { Alert, Text } from "react-native";
-import moment from "moment";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { Text } from "react-native";
+import styled from "styled-components";
+import { FontAwesome5 } from "@expo/vector-icons";
+import ScheduleAppointment from "../../components/Dialogs/ScheduleAppointment";
+
+export const ScheduledButton = styled.TouchableOpacity`
+  background-color: ${APP_COLORS.primary};
+  width: 60px;
+  height: 60px;
+  color: ${APP_COLORS.white};
+  border-radius: 8px;
+  elevation: 9px;
+  position: absolute;
+  bottom: 2%; /* Ajuste conforme necessário */
+  left: 80%;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const TextConsultas = styled.Text`
+  color: ${APP_COLORS.grayV4};
+  font-family: "Quicksand_400Regular";
+`;
 
 const DoctorHome = ({ navigation }) => {
-    const [selectedButton, setSelectedButton] = useState(CardSituation.scheduled);
-    const [filteredData, setFilteredData] = useState(MockData);
-    const [isModalCancel, setIsModalCancel] = useState(false);
-    const [isModalMedical, setisModalMedical] = useState(false);
-    const [selectedUserData, setSelectedUserData] = useState({});
-    const [emailUser, setEmailUser] = useState("");
-    const [nomeUser, setNomeUser] = useState("");
-    const [dataConsulta, setDataConsulta] = useState('');
+  const [selectedButton, setSelectedButton] = useState("Pendentes");
+  const [selectedButtonModal, setSelectedButtonModal] = useState("");
+  const [isModalCancel, setIsModalCancel] = useState(false);
+  const [isModalMedical, setisModalMedical] = useState(false);
+  const [selectedUserData, setSelectedUserData] = useState(null);
+  const [isModalScheduleVisible, setIsModalScheduleVisible] = useState(false);
+  const [emailUser, setEmailUser] = useState("");
+  const [nomeUser, setNomeUser] = useState("");
+  const [dataConsulta, setDataConsulta] = useState("");
+  const [consultas, setConsultas] = useState([]);
+  const [idUser, setIdUser] = useState("");
+  const [fotoUser, setFotoUser] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [infosClinic, setInfosClinic] = useState({});
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
 
-    const [consultas, setConsultas] = useState([])
+  const handleCardPress = (selectedSituation, userData) => {
+    selectedSituation == "Pendentes"
+      ? setIsModalCancel(true)
+      : setisModalMedical(true);
 
-    const handleCardPress = (selectedSituation, userData) => {
-        selectedSituation == "Pendentes"
-            ? setIsModalCancel(true)
-            : setisModalMedical(true);
-        setSelectedUserData(userData);
-    };
+    setSelectedUserData(userData);
+  };
 
-    // function getMissingQuery() {
-    //     try {
-    //         const date = new Date();
-    //         // const today = date.getDate();
-    //         // setDataConsulta(response.data)
-    //         // console.log(date);
-    //         // console.log(dataConsulta);
-
-    //         if (moment(date).isAfter(dataConsulta)) {
-    //             // console.log("sim");
-    //             (item) => item.id.situacao.situacao === CardSituation.carriedOut
-    //         }
-    //         else {
-    //             console.log("não existe nenhuma consulta!");
-
-    //         }
-    //         // return today;
-    //     } catch (error) {
-    //         console.log("error", error);
-    //         return null;
-    //     }
-    // }
-
-    // function getAge() {
-    //     try {
-    //         const date = new Date();
-
-    //         if (moment(date).isAfter(dataConsulta)) {
-    //             console.log("sim");
-    //         }
-    //         else {
-    //             console.log("no");
-    //         }
-    //         // return today;
-    //     } catch (error) {
-    //         console.log("error", error);
-    //         return null;
-    //     }
-    // }
-
-
-    async function GetPatientAppointmentFunction() {
-        try {
-            const data = await userDecodeToken()
-            const url = (data.role == 'Medico' ? "Medicos" : "Pacientes")
-
-            const response = await api.get(
-                `/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`);
-
-            setConsultas(response.data);
-            console.log(response.data);
-        } catch (error) {
-            console.log("erro", error);
-        }
+  const verifyPriorityLevels = (priority) => {
+    switch (priority) {
+      case 1:
+        return <Text>Rotina</Text>;
+      case 2:
+        return <Text>Exame</Text>;
+      case 3:
+        return <Text> Urgência </Text>;
     }
+  };
 
-    async function profileLoad() {
-        try {
-            const token = await userDecodeToken();
+  function FormatData(date) {
+    const moment = require("moment");
 
-            if (token) {
-                setEmailUser(token.email);
-                setNomeUser(token.name);
-            } else {
-                console.log("Não foi possível recuperar o token de acesso.");
+    const horaConsulta = moment(date).format("HH:mm");
+
+    return <Text> {horaConsulta} </Text>;
+  }
+
+  async function GetPatientAppointmentFunction() {
+    try {
+      const data = await userDecodeToken();
+      const url = data.role == "Medico" ? "Medicos" : "Pacientes";
+
+      const response = await api.get(
+        `/api/${url}/BuscarPorData?data=${dataConsulta}&id=${data.jti}`
+      );
+
+      setConsultas(response.data);
+    } catch (error) {
+      console.log("erro", error);
+    }
+  }
+
+  async function GetByIdUser() {
+    try {
+      const response = await api.get(`/api/Pacientes/BuscarPorId?id=${idUser}`);
+
+      setFotoUser(response.data.idNavigation.foto);
+    } catch (error) {
+      console.log("deu ruim na requição de usuario por ID");
+      console.log(error.request);
+    }
+  }
+
+  async function profileLoad() {
+    try {
+      const token = await userDecodeToken();
+
+      if (token) {
+        setEmailUser(token.email);
+        setNomeUser(token.name);
+        setIdUser(token.jti);
+      } else {
+        console.log("Não foi possível recuperar o token de acesso.");
+      }
+    } catch (error) {
+      console.error(
+        "Erro ao recuperar o token de acesso do AsyncStorage:",
+        error
+      );
+    }
+  }
+
+  useEffect(() => {
+    profileLoad();
+
+    if (dataConsulta != "") {
+      GetPatientAppointmentFunction();
+    }
+  }, [dataConsulta]);
+
+  useEffect(() => {
+    GetByIdUser();
+  });
+
+  useEffect(() => {
+    setIsButtonEnabled(selectedButtonModal !== "" && cidade !== "");
+  }, [selectedButtonModal, cidade]);
+
+  const handleButtonClick = (buttonName) => {
+    setSelectedButtonModal(buttonName);
+  };
+
+  return (
+    <Container>
+      <Header
+        sourcePhoto={fotoUser}
+        textValue={"Bem vindo!"}
+        nameDoctor={nomeUser}
+      />
+
+      <CalendarHome
+        dataConsulta={dataConsulta}
+        setDataConsulta={setDataConsulta}
+      />
+
+      <ContainerView>
+        <Button
+          width={"32%"}
+          activeOpacity={0.8}
+          title={"Agendadas"}
+          border={APP_COLORS.secondaryV2}
+          color={selectedButton == "Pendentes" ? "white" : APP_COLORS.secondary}
+          backgroundColor={
+            selectedButton === "Pendentes"
+              ? APP_COLORS.secondary
+              : "transparent"
+          }
+          onPress={() => setSelectedButton("Pendentes")}
+        />
+        <Button
+          width={"32%"}
+          activeOpacity={0.8}
+          title={"Realizadas"}
+          border={APP_COLORS.secondaryV2}
+          color={
+            selectedButton == "Realizados" ? "white" : APP_COLORS.secondary
+          }
+          backgroundColor={
+            selectedButton === "Realizados"
+              ? APP_COLORS.secondary
+              : "transparent"
+          }
+          onPress={() => setSelectedButton("Realizados")}
+        />
+        <Button
+          width={"32%"}
+          activeOpacity={0.8}
+          title={"Canceladas"}
+          border={APP_COLORS.secondaryV2}
+          color={
+            selectedButton == "Cancelados" ? "white" : APP_COLORS.secondary
+          }
+          backgroundColor={
+            selectedButton === "Cancelados"
+              ? APP_COLORS.secondary
+              : "transparent"
+          }
+          onPress={() => setSelectedButton("Cancelados")}
+        />
+      </ContainerView>
+
+      {consultas.length > 0 ? (
+        <FlatlistInfos
+          data={consultas}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            if (
+              selectedButton === "Pendentes" &&
+              item.situacao.situacao === "Pendentes"
+            ) {
+              return (
+                <CardUser
+                  imageUser={item.medicoClinica.medico.idNavigation.foto}
+                  nameUser={item.medicoClinica.medico.idNavigation.nome}
+                  ageUser={item.medicoClinica.medico.crm}
+                  descriptionUser={verifyPriorityLevels(
+                    item.prioridade.prioridade
+                  )}
+                  iconName={"clockcircle"}
+                  bgColor={item.situacao.situacao}
+                  schedulingTime={FormatData(item.dataConsulta)}
+                  key={item.id}
+                  situation={item.situacao.situacao}
+                  onPressBorder={() =>
+                    item.situacao.situacao === "Pendentes"
+                      ? handleCardPress(selectedButton, item)
+                      : null
+                  }
+                />
+              );
+            } else if (
+              selectedButton === "Realizados" &&
+              item.situacao.situacao === "Realizados"
+            ) {
+              return (
+                <CardUser
+                  imageUser={item.medicoClinica.medico.idNavigation.foto}
+                  nameUser={item.medicoClinica.medico.idNavigation.nome}
+                  ageUser={item.medicoClinica.medico.crm}
+                  descriptionUser={verifyPriorityLevels(
+                    item.prioridade.prioridade
+                  )}
+                  iconName={"clockcircle"}
+                  bgColor={item.situacao.situacao}
+                  schedulingTime={FormatData(item.dataConsulta)}
+                  key={item.id}
+                  situation={item.situacao.situacao}
+                  onPressBorder={() =>
+                    item.situacao.situacao === "Realizados"
+                      ? handleCardPress(selectedButton, item)
+                      : null
+                  }
+                />
+              );
+            } else if (
+              selectedButton === "Cancelados" &&
+              item.situacao.situacao === "Cancelados"
+            ) {
+              return (
+                <CardUser
+                  imageUser={item.medicoClinica.medico.idNavigation.foto}
+                  nameUser={item.medicoClinica.medico.idNavigation.nome}
+                  ageUser={item.medicoClinica.medico.crm}
+                  descriptionUser={verifyPriorityLevels(
+                    item.prioridade.prioridade
+                  )}
+                  iconName={"clockcircle"}
+                  key={item.id}
+                  bgColor={item.situacao.situacao}
+                  iconColor={item.situacao.situacao}
+                  schedulingTime={FormatData(item.dataConsulta)}
+                  situation={item.situacao.situacao}
+                  onPressBorder={() =>
+                    item.situacao.situacao === "Cancelados"
+                      ? handleCardPress(selectedButton, JSON.parse(item))
+                      : null
+                  }
+                />
+              );
             }
-        } catch (error) {
-            console.error(
-                "Erro ao recuperar o token de acesso do AsyncStorage:",
-                error
-            );
+          }}
+          style={{ flex: 1 }}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <TextConsultas>
+          Nenhum agendamento encontrado para esta data!
+        </TextConsultas>
+      )}
+
+      {/* Renderiza o Dialogs quando  ModalVisible for true */}
+      {isModalCancel && (
+        <CancelDialogs
+          isVisible={isModalCancel}
+          bgColor={APP_COLORS.grayV6}
+          titleContent={"Cancelar consulta"}
+          customContent={
+            "Ao cancelar essa consulta, abrirá uma possível disponibilidade no seu horário, deseja mesmo cancelar essa consulta?"
+          }
+          fontSizeText={"22px"}
+          fontSizeTextParagraf={"15px"}
+          onPressConfirm={() => {
+            setIsModalCancel(false);
+          }}
+          onPressCancel={() => {
+            setIsModalCancel(false);
+          }}
+          showCancelButton={true}
+        />
+      )}
+
+      <SeeMedicalDialog
+        isVisible={isModalMedical}
+        imageUser={
+          selectedUserData != null &&
+          selectedUserData.medicoClinica.medico.idNavigation.foto
         }
-    }
-
-    // useEffect(() => {
-    //     getMissingQuery();
-    // })
-
-    useEffect(() => {
-        profileLoad();
-
-        if (dataConsulta != "") {
-            GetPatientAppointmentFunction();
+        nameUser={
+          selectedUserData != null &&
+          selectedUserData.medicoClinica.medico.idNavigation.nome
         }
-    }, [dataConsulta]);
+        ageUser={
+          selectedUserData != null && selectedUserData.medicoClinica.medico.crm
+        }
+        emailuser={
+          selectedUserData != null &&
+          selectedUserData.medicoClinica.medico.especialidade.especialidade1
+        }
+        heightImageUser={250}
+        widthImageUser={320}
+        showCancelButton={true}
+        onPressCancel={() => setisModalMedical(false)}
+        titleButton={"Ver local da consulta".toUpperCase()}
+        onPress={() => {
+          setisModalMedical(false);
+          navigation.navigate("MapViewLocation", {
+            MapData: selectedUserData.medicoClinica.clinica.endereco,
+          });
+        }}
+        widtContainerInfoUser={180}
+        marginBottomName={"15px"}
+      />
 
-    // useEffect(() => {
-    //     // let newData = [consultas];
+      <ScheduledButton
+        activeOpacity={0.8}
+        onPress={() => setIsModalScheduleVisible(true)}
+      >
+        <FontAwesome5 name="stethoscope" size={32} color={APP_COLORS.white} />
+      </ScheduledButton>
 
-    //     data={consultas}
-
-    //     switch (selectedButton) {
-    //       case "Agendadas":
-
-    //           (item) => item.situation === CardSituation.scheduled
-
-    //         break;
-    //       case "Realizadas":
-
-    //           (item) => item.situation === CardSituation.carriedOut
-
-    //         break;
-    //       case "Canceladas":
-
-    //           (item) => item.situation === CardSituation.canceled
-
-    //         break;
-    //       default:
-    //         newData = consultas;
-    //         break;
-    //     }
-
-    //     setFilteredData(newData);
-    //   }, [selectedButton]);
-
-
-    return (
-        <Container>
-            <Header textValue={"Bem vindo!"} nameDoctor={nomeUser} />
-
-            <CalendarHome
-                dataConsulta={dataConsulta}
-                setDataConsulta={setDataConsulta}
-            />
-
-            <ContainerView>
-                <Button
-                    width={"32%"}
-                    activeOpacity={0.8}
-                    title={"Agendadas"}
-                    border={APP_COLORS.secondaryV2}
-                    color={selectedButton == "Pendentes" ? "white" : APP_COLORS.secondary}
-                    backgroundColor={
-                        selectedButton === "Pendentes"
-                            ? APP_COLORS.secondary
-                            : "transparent"
-                    }
-                    onPress={() => setSelectedButton("Pendentes")}
-                />
-                <Button
-                    width={"32%"}
-                    activeOpacity={0.8}
-                    title={"Realizadas"}
-                    border={APP_COLORS.secondaryV2}
-                    color={
-                        selectedButton == "Realizados" ? "white" : APP_COLORS.secondary
-                    }
-                    backgroundColor={
-                        selectedButton === "Realizados"
-                            ? APP_COLORS.secondary
-                            : "transparent"
-                    }
-                    onPress={() => setSelectedButton("Realizados")}
-                />
-                <Button
-                    width={"32%"}
-                    activeOpacity={0.8}
-                    title={"Canceladas"}
-                    border={APP_COLORS.secondaryV2}
-                    color={
-                        selectedButton == "Cancelados" ? "white" : APP_COLORS.secondary
-                    }
-                    backgroundColor={
-                        selectedButton === "Cancelados"
-                            ? APP_COLORS.secondary
-                            : "transparent"
-                    }
-                    onPress={() => setSelectedButton("Cancelados")}
-                />
-            </ContainerView>
-
-            <FlatlistInfos
-                data={consultas}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => {
-
-                    if (selectedButton === 'Pendentes' && item.situacao.situacao === "Pendentes") {
-                        return (
-                            <CardUser
-                                imageUser={'sadhfjnghajwkne'}
-                                nameUser={item.medicoClinica.medico.idNavigation.nome}
-                                ageUser={item.medicoClinica.medico.crm}
-                                descriptionUser={item.prioridade.prioridade}
-                                iconName={"clockcircle"}
-                                bgColor={item.situacao.situacao}
-                                schedulingTime={'14:00'}
-                                key={item.id}
-                                situation={item.situacao.situacao}
-                                // onPress={() => item.situation === "Pendentes" && handleCardPress(selectedButton, item)}
-                                onPress={console.log("ta clicando")}
-                                onPressBorder={() => item.situation === "Pendentes" ? handleCardPressInfoDoctor(selectedButton, item) : null}
-                            />)
-                    }
-                    else if (selectedButton === 'Realizados' && item.situacao.situacao === "Realizados") {
-                        return (
-                            <CardUser
-                                imageUser={'sadhfjnghajwkne'}
-                                nameUser={item.medicoClinica.medico.idNavigation.nome}
-                                ageUser={item.medicoClinica.medico.crm}
-                                descriptionUser={item.prioridade.prioridade}
-                                iconName={"clockcircle"}
-                                bgColor={item.situacao.situacao}
-                                schedulingTime={'14:00'}
-                                key={item.id}
-                                situation={item.situacao.situacao}
-                                // onPress={() => handleCardPress(selectedButton, item)}
-                                // onPress={() => {}}
-                                onPress={console.log("ta clicando")}
-                                onPressBorder={() => item.situation === "Realizados" ? handleCardPressInfoDoctor(selectedButton, item) : null}
-                            />)
-                    }
-                    else if (selectedButton === 'Cancelados' && item.situacao.situacao === "Cancelados") {
-                        return (
-                            <CardUser
-                                imageUser={'sadhfjnghajwkne'}
-                                nameUser={item.medicoClinica.medico.idNavigation.nome}
-                                ageUser={item.medicoClinica.medico.crm}
-                                descriptionUser={item.prioridade.prioridade}
-                                iconName={"clockcircle"}
-                                bgColor={item.situacao.situacao}
-                                schedulingTime={'14:00'}
-                                key={item.id}
-                                situation={item.situacao.situacao}
-                                onPress={() => handleCardPress(selectedButton, item)}
-                                onPressBorder={() => item.situation === "Cancelados" ? handleCardPressInfoDoctor(selectedButton, item) : null}
-                            />)
-                    }
-
-                }}
-                style={{ flex: 1 }}
-                showsVerticalScrollIndicator={false}
-            />
-
-            {/* Renderiza o Dialogs quando isModalVisible for true */}
-            {isModalCancel && (
-                <CancelDialogs
-                    isVisible={isModalCancel}
-                    bgColor={APP_COLORS.grayV6}
-                    titleContent={"Cancelar consulta"}
-                    customContent={
-                        "Ao cancelar essa consulta, abrirá uma possível disponibilidade no seu horário, deseja mesmo cancelar essa consulta?"
-                    }
-                    fontSizeText={"22px"}
-                    fontSizeTextParagraf={"15px"}
-                    onPressConfirm={() => {
-                        setIsModalCancel(false);
-                    }}
-                    onPressCancel={() => {
-                        setIsModalCancel(false);
-                    }}
-                    showCancelButton={true}
-                />
-            )}
-
-            <SeeMedicalDialog
-                isVisible={isModalMedical}
-                showCancelButton={true}
-                onPressCancel={() => setisModalMedical(false)}
-                imageUser={{ uri: selectedUserData.imagem }}
-                heightImageUser={250}
-                widthImageUser={320}
-                nameUser={selectedUserData.nome}
-                ageUser={`${selectedUserData.idade} anos`}
-                emailuser={selectedUserData.email}
-                titleButton={"Inserir prontuário"}
-                onPress={() => {
-                    navigation.navigate("MedicalRecord");
-                    setisModalMedical(false);
-                    //enviar os dados para a página de medicalRecords
-                    navigation.navigate("MedicalRecord", { userData: selectedUserData });
-                }}
-                widtContainerInfoUser={280}
-                marginBottomName={"30px"}
-            />
-        </Container>
-    );
+      {isModalScheduleVisible && (
+        <ScheduleAppointment
+          widthModal={"100%"}
+          heightModal={480}
+          titleContent={"Agendar consulta"}
+          justifyContentModal={"flex-end"}
+          fontSizeText={25}
+          selectedButton={selectedButtonModal}
+          handleTabSelected={handleButtonClick}
+          onChangeText={(txt) => setCidade(txt)}
+          cancelDialog={() => setIsModalScheduleVisible(false)}
+          onClick={async () => {
+            // Verifica se o botão de continuar está habilitado antes de prosseguir
+            if (isButtonEnabled) {
+              setIsModalScheduleVisible(false);
+              navigation.navigate("ChooseClinic", {
+                clinicas: infosClinic,
+                cidade: cidade,
+                botaoSelecionado: selectedButtonModal,
+                pacienteId: idUser,
+              });
+              setCidade();
+              setSelectedButtonModal();
+            } else {
+              alert(
+                "Por favor, selecione um botão e informe a localização da clínica."
+              );
+            }
+          }}
+          isButtonEnabled={isButtonEnabled}
+        />
+      )}
+    </Container>
+  );
 };
 
 export default DoctorHome;

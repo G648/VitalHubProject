@@ -16,10 +16,8 @@ import { userDecodeToken } from "../../../utils/Auth";
 const Login = ({ navigation }) => {
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
-
-
   const [submitData, setSubmitData] = useState({
-    email: "gabrieldemetrio571@gmail.com",
+    email: "sousa@souzinha.com",
     senha: "123456",
   });
 
@@ -38,7 +36,7 @@ const Login = ({ navigation }) => {
         console.log("Role do usuário:", token.role);
 
         if (token.role === "Medico") {
-          navigation.navigate("DoctorHome"); // Adicione a página correspondente para outro tipo de usuário
+          navigation.navigate("DoctorHome");
         } else {
           navigation.navigate("HomePatient");
         }
@@ -56,6 +54,7 @@ const Login = ({ navigation }) => {
   async function handleSelectUser() {
     setLoading(true);
 
+
     if (!isFormValid) {
       // Form is valid, perform the submission logic
       console.log("Form submitted successfully!");
@@ -72,9 +71,13 @@ const Login = ({ navigation }) => {
 
       await LoadUserParams();
     } catch (error) {
+
       showValidationLogin();
+
       console.log(`teste ${error}`);
+
     } finally {
+
       setLoading(false);
     }
   }

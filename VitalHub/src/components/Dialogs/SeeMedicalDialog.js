@@ -77,7 +77,7 @@ export function SeeMedicalDialog({
             <CenterContainer>
                 <ContainerTextBox>
                     <ProfileImageModal
-                        source={imageUser}
+                        source={{uri: imageUser}}
                         widthImageUser={widthImageUser}
                         heightImageUser={heightImageUser}
                     />
