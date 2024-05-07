@@ -50,8 +50,8 @@ const DoctorHome = ({ navigation }) => {
   const [idUser, setIdUser] = useState("");
   const [fotoUser, setFotoUser] = useState("");
   const [cidade, setCidade] = useState("");
-  const [infosClinic, setInfosClinic] = useState({});
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  const [prioridadeSelected, setPrioridadeSelected] = useState("");
 
   const handleCardPress = (selectedSituation, userData) => {
     selectedSituation == "Pendentes"
@@ -60,6 +60,10 @@ const DoctorHome = ({ navigation }) => {
 
     setSelectedUserData(userData);
   };
+
+  // console.log(selectedButtonModal);
+  console.log("idUser");
+  console.log(idUser);
 
   const verifyPriorityLevels = (priority) => {
     switch (priority) {
@@ -143,6 +147,21 @@ const DoctorHome = ({ navigation }) => {
 
   const handleButtonClick = (buttonName) => {
     setSelectedButtonModal(buttonName);
+
+    switch (buttonName) {
+      case "Rotina":
+        setPrioridadeSelected("884CBA42-62A3-4FA5-856C-03A0AE7E3333");
+        break;
+      case "Exame":
+        setPrioridadeSelected("B200F0CC-FB72-4D3F-88B4-63EC574DFC67");
+        break;
+      case "Urgência":
+        setPrioridadeSelected("8D422B71-59FC-4A66-A025-B4294CF691D0");
+        break;
+
+      default:
+        break;
+    }
   };
 
   return (
@@ -369,13 +388,12 @@ const DoctorHome = ({ navigation }) => {
             if (isButtonEnabled) {
               setIsModalScheduleVisible(false);
               navigation.navigate("ChooseClinic", {
-                clinicas: infosClinic,
-                cidade: cidade,
-                botaoSelecionado: selectedButtonModal,
-                pacienteId: idUser,
+                agendamento: {
+                  prioridadeId: prioridadeSelected,
+                  pacienteId: idUser,
+                  cidade: cidade
+                },
               });
-              setCidade();
-              setSelectedButtonModal();
             } else {
               alert(
                 "Por favor, selecione um botão e informe a localização da clínica."

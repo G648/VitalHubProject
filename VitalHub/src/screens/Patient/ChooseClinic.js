@@ -19,9 +19,11 @@ export const ContainerScrollView = styled.ScrollView`
 export default function ChooseClinic({ navigation, route }) {
   const [selectedCard, setSelectedCard] = useState(null);
   const [infosClinic, setInfosClinic] = useState({});
-  const { clinicas, cidade, botaoSelecionado, pacienteId } = route.params;
 
-  console.log(pacienteId);
+  route.params.agendamento;
+
+  console.log('informações outra tela');
+  console.log(...agendamento);
 
   const handleCardPress = (id) => {
     setSelectedCard(id);
@@ -29,7 +31,7 @@ export default function ChooseClinic({ navigation, route }) {
 
   async function GetClinics() {
     try {
-      const cidadeEncoded = encodeURIComponent(cidade).trim();
+      const cidadeEncoded = encodeURIComponent(...agendamento.cidade).trim();
       const response = await api.get(
         `/api/Clinica/BuscarPorCidade?cidade=${cidadeEncoded}`
       );
@@ -96,11 +98,12 @@ export default function ChooseClinic({ navigation, route }) {
         title={"Continuar"}
         onPress={() =>
           navigation.navigate("ChoseDoctor", {
-            cidade: cidade,
-            clinicas: clinicas,
-            botaoSelecionado: botaoSelecionado,
-            clinicaSelecionada: selectedCard,
-            pacienteId: pacienteId,
+            // agendamento: {
+            //   ...route.params.agendamento,
+            //   clinicas: clinicas,
+            //   botaoSelecionado: botaoSelecionado,
+            //   clinicaSelecionada: selectedCard,
+            // },
           })
         }
       />

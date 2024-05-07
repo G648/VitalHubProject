@@ -27,13 +27,7 @@ const Login = ({ navigation }) => {
     try {
       const token = await userDecodeToken();
 
-      console.log(token);
-
       if (token) {
-        console.log("Token de acesso recuperado:", token);
-
-        // setSelectUser(token.role);
-        console.log("Role do usuário:", token.role);
 
         if (token.role === "Medico") {
           navigation.navigate("DoctorHome");
@@ -65,7 +59,6 @@ const Login = ({ navigation }) => {
 
     try {
       const response = await api.post(LoginResource, submitData);
-      console.log(response)
 
       await AsyncStorage.setItem("token", JSON.stringify(response.data));
 

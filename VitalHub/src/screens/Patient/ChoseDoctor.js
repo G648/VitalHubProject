@@ -13,22 +13,19 @@ import api, { DoctorResource } from "../../service/service";
 export default function ChoseDoctor({ navigation, route }) {
   const [selectedCard, setSelectedCard] = useState(null);
   const [doctorList, setDoctorList] = useState([]);
-  const [doctorName, setDoctorName] = useState("")
-  const [doctorEspecialidade, setDoctorEspecialidade] = useState("")
+  const [doctorName, setDoctorName] = useState("");
+  const [doctorEspecialidade, setDoctorEspecialidade] = useState("");
+  const [medicoClinicaId, setMedicoClinicaId] = useState("");
 
-  console.log(doctorName, doctorEspecialidade)
-  console.log(doctorList);
-
-  const { cidade, clinicas, botaoSelecionado, clinicaSelecionada, pacienteId } =
-    route.params;
+  route.params.agendamento;
 
   const getDoctor = async () => {
     await api
       .get(`/api/Medicos/BuscarPorIdClinica?id=${clinicaSelecionada}`)
       .then((response) => {
         setDoctorList(response.data);
-        setDoctorName(response.data[0].idNavigation.nome)
-        setDoctorEspecialidade(response.data[0].especialidade.especialidade1)
+        setDoctorName(response.data[0].idNavigation.nome);
+        setDoctorEspecialidade(response.data[0].especialidade.especialidade1);
       })
       .catch((error) => console.log(error));
   };
@@ -37,8 +34,21 @@ export default function ChoseDoctor({ navigation, route }) {
     setSelectedCard(id);
   };
 
+  const getClinicaId = async () => {
+    try {
+      await api
+        .get(`/api/Clinica/BuscarPorId?id=${clinicaSelecionada}`)
+        .then((response) => {
+          setMedicoClinicaId(response.data.medicosClinicas[0].id);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getDoctor();
+    getClinicaId();
   }, []);
 
   return (
@@ -82,14 +92,14 @@ export default function ChoseDoctor({ navigation, route }) {
         title={"Continuar"}
         onPress={() =>
           navigation.navigate("ChooseDate", {
-            cidade: cidade,
-            clinicas: clinicas,
-            botaoSelecionado: botaoSelecionado,
-            clinicaSelecionada: clinicaSelecionada,
-            doutorSelecionado: selectedCard,
-            nomeDoutor : doctorName,
-            especialidadeDoutor:doctorEspecialidade,
-            pacienteId: pacienteId
+            agendamento: {
+              ...route.params.agendamento,
+              doutorSelecionado: selectedCard,
+              pacienteId: pacienteId,
+              medicoClinicaId: medicoClinicaId,
+              nomeDoutor: doctorName,
+              especialidadeDoutor: doctorEspecialidade,
+            },
           })
         }
       />

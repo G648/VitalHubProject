@@ -26,30 +26,25 @@ export default function ChooseDate({ navigation, route }) {
 
   //TODO:FazerRequisiçãode doutor para capturar o medicoClinicaId
 
-  const {
-    cidade,
-    clinicas,
-    botaoSelecionado,
-    clinicaSelecionada,
-    doutorSelecionado,
-    nomeDoutor,
-    especialidadeDoutor,
-    pacienteId
-  } = route.params;
+ route.params.agendamento
 
   const dataHoraSelecionada = dataAtual + " " + hora;
 
   const parametros = {
-    situacaoId : "B2A29251-975A-46CA-8A41-D82AD95512DA",
-    cidade,
-    clinicas,
-    botaoSelecionado,
-    clinicaSelecionada,
-    doutorSelecionado,
-    nomeDoutor,
-    especialidadeDoutor,
-    dataHoraSelecionada,
-    pacienteId
+    // situacaoId: "B2A29251-975A-46CA-8A41-D82AD95512DA",
+    // pacienteId,
+    // cidade,
+    // clinicas,
+    // botaoSelecionado,
+    // clinicaSelecionada,
+    // doutorSelecionado,
+    // nomeDoutor,
+    // especialidadeDoutor,
+    // dataHoraSelecionada,
+    // medicoClinicaId
+
+    ...agendamento,
+    dataHoraSelecionada
   };
 
   console.log(parametros);
@@ -91,17 +86,18 @@ export default function ChooseDate({ navigation, route }) {
 
   async function handleGoBackPage() {
     try {
-      await api.post("/api/Consultas/Cadastrar", parametros, {
+      const response = await api.post("/api/Consultas/Cadastrar", parametros, {
         headers: {
           "Content-Type": "application/json",
         },
       });
+
+      console.log(response);
+      // setIsModalScheduleVisible(false);
+      // navigation.navigate("HomePatient");
     } catch (error) {
       console.log(error);
     }
-
-    await setIsModalScheduleVisible(false);
-    navigation.navigate("HomePatient");
   }
 
   useEffect(() => {
