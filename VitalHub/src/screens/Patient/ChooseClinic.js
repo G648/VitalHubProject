@@ -3,7 +3,6 @@ import styled from "styled-components/native";
 import { Container } from "../../components/Container/Style";
 import { Title } from "../../components/Title/Style";
 import { FlatlistInfos } from "../../components/FlatlistUsers/FlatlistUsers";
-// import { ClinicData } from '../../utils/MockDataClinics'
 import { CardUser } from "../../components/FlatlistUsers/CardFlatlistUsers";
 import { APP_COLORS } from "../../utils/App_colors";
 import { Button } from "../../components/Button/Button";
@@ -20,10 +19,10 @@ export default function ChooseClinic({ navigation, route }) {
   const [selectedCard, setSelectedCard] = useState(null);
   const [infosClinic, setInfosClinic] = useState({});
 
-  route.params.agendamento;
+  const {agendamento} = route.params;
 
   console.log('informações outra tela');
-  console.log(...agendamento);
+  console.log(agendamento);
 
   const handleCardPress = (id) => {
     setSelectedCard(id);
@@ -31,7 +30,7 @@ export default function ChooseClinic({ navigation, route }) {
 
   async function GetClinics() {
     try {
-      const cidadeEncoded = encodeURIComponent(...agendamento.cidade).trim();
+      const cidadeEncoded = encodeURIComponent(agendamento.cidade).trim();
       const response = await api.get(
         `/api/Clinica/BuscarPorCidade?cidade=${cidadeEncoded}`
       );
@@ -98,12 +97,10 @@ export default function ChooseClinic({ navigation, route }) {
         title={"Continuar"}
         onPress={() =>
           navigation.navigate("ChoseDoctor", {
-            // agendamento: {
-            //   ...route.params.agendamento,
-            //   clinicas: clinicas,
-            //   botaoSelecionado: botaoSelecionado,
-            //   clinicaSelecionada: selectedCard,
-            // },
+            agendamento: {
+              ...route.params.agendamento,
+              clinicaSelecionada: selectedCard,
+            },
           })
         }
       />

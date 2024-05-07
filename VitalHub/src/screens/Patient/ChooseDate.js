@@ -23,31 +23,18 @@ export default function ChooseDate({ navigation, route }) {
   const [arrayOptions, setArrayOptions] = useState(null);
   const dataAtual = moment().format("YYYY-MM-DD");
   const [hora, setHora] = useState("");
+  const { agendamento } = route.params;
+  const dataHoraSelecionada = dataSelecionada + " " + hora;
 
-  //TODO:FazerRequisiçãode doutor para capturar o medicoClinicaId
+  console.log(dataHoraSelecionada);
 
- route.params.agendamento
-
-  const dataHoraSelecionada = dataAtual + " " + hora;
-
-  const parametros = {
-    // situacaoId: "B2A29251-975A-46CA-8A41-D82AD95512DA",
-    // pacienteId,
-    // cidade,
-    // clinicas,
-    // botaoSelecionado,
-    // clinicaSelecionada,
-    // doutorSelecionado,
-    // nomeDoutor,
-    // especialidadeDoutor,
-    // dataHoraSelecionada,
-    // medicoClinicaId
-
-    ...agendamento,
-    dataHoraSelecionada
+  const dadosEnviadosApi = {
+    situacaoId: "B2A29251-975A-46CA-8A41-D82AD95512DA",
+    pacienteId: agendamento.pacienteId,
+    medicoClinicaId: agendamento.medicoClinicaId,
+    prioridadeId: agendamento.prioridadeId,
+    dataConsulta: dataHoraSelecionada,
   };
-
-  console.log(parametros);
 
   useEffect(() => {
     var date = new Date().getDate(); //Current Date
@@ -86,15 +73,20 @@ export default function ChooseDate({ navigation, route }) {
 
   async function handleGoBackPage() {
     try {
-      const response = await api.post("/api/Consultas/Cadastrar", parametros, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      console.log(response);
-      // setIsModalScheduleVisible(false);
-      // navigation.navigate("HomePatient");
+      const response = await api.post(
+        "/api/Consultas/Cadastrar",
+        dadosEnviadosApi,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 201) {
+        console.log(response);
+        setIsModalScheduleVisible(false);
+        navigation.navigate("HomePatient");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -214,10 +206,12 @@ export default function ChooseDate({ navigation, route }) {
           isModalScheduling={true}
           dataConsulta={formatarData(dataSelecionada)}
           horaConsulta={hora}
-          nomeMedico={"Dr. " + nomeDoutor}
-          especialidadeMedico={"Especialidade: " + especialidadeDoutor}
-          localConsulta={cidade}
-          tipoConsulta={botaoSelecionado}
+          nomeMedico={"Dr. " + agendamento.nomeDoutor}
+          especialidadeMedico={
+            "Especialidade: " + agendamento.especialidadeDoutor
+          }
+          localConsulta={agendamento.cidade}
+          tipoConsulta={agendamento.prioridadeButton}
         />
       )}
 

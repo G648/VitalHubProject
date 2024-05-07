@@ -17,11 +17,14 @@ export default function ChoseDoctor({ navigation, route }) {
   const [doctorEspecialidade, setDoctorEspecialidade] = useState("");
   const [medicoClinicaId, setMedicoClinicaId] = useState("");
 
-  route.params.agendamento;
+  const {agendamento} = route.params;
+
+  console.log("infos agendamento doutor");
+  console.log(agendamento);
 
   const getDoctor = async () => {
     await api
-      .get(`/api/Medicos/BuscarPorIdClinica?id=${clinicaSelecionada}`)
+      .get(`/api/Medicos/BuscarPorIdClinica?id=${agendamento.clinicaSelecionada}`)
       .then((response) => {
         setDoctorList(response.data);
         setDoctorName(response.data[0].idNavigation.nome);
@@ -37,7 +40,7 @@ export default function ChoseDoctor({ navigation, route }) {
   const getClinicaId = async () => {
     try {
       await api
-        .get(`/api/Clinica/BuscarPorId?id=${clinicaSelecionada}`)
+        .get(`/api/Clinica/BuscarPorId?id=${agendamento.clinicaSelecionada}`)
         .then((response) => {
           setMedicoClinicaId(response.data.medicosClinicas[0].id);
         });
@@ -95,7 +98,6 @@ export default function ChoseDoctor({ navigation, route }) {
             agendamento: {
               ...route.params.agendamento,
               doutorSelecionado: selectedCard,
-              pacienteId: pacienteId,
               medicoClinicaId: medicoClinicaId,
               nomeDoutor: doctorName,
               especialidadeDoutor: doctorEspecialidade,
