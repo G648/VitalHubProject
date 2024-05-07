@@ -82,8 +82,12 @@ export default function PatitentProfile({
   const [nomeUser, setNomeUser] = useState('');
   const [idUser, setIdUser] = useState('');
   const [fotoUser, setFotoUser] = useState('');
+  const [dataNascimentoUser, setDataNascimentoUser] = useState("");
+  const [logradouroUser, setLogradouroUser] = useState("");
+  const [cepUser, setCepUser] = useState("");
+  const [cidadeUser, setCidadeUser] = useState("");
 
-  // const userData = route.params.userData;
+  // const u = route.params.userData;
 
   const toggleEdit = () => {
     setIsEditable(prevState => !prevState); // Alterna entre editável e não editável
@@ -131,10 +135,17 @@ export default function PatitentProfile({
 
       if (token) {
         console.log('Token de acesso recuperado:', token);
+        const response = await api.get(`/api/Medicos/BuscarPorId?id=${idUser}`);
 
         setNomeUser(token.name)
         setEmailUser(token.email)
         setIdUser(token.jti)
+        setDataNascimentoUser(formatDate(response.data.dataNascimento));
+        setLogradouroUser(response.data.endereco.logradouro);
+        setCepUser(response.data.endereco.cep);
+        setCidadeUser(response.data.endereco.cidade);
+        setFotoUser(response.data.idNavigation.foto);
+  
 
       } else {
         console.log('Não foi possível recuperar o token de acesso.');
@@ -201,7 +212,7 @@ export default function PatitentProfile({
   return (
     <Container>
       <ProfileImageModal
-        source={ route.params.userData.Foto }
+        source={{ uri: fotoUser }}
         widthImageUser={"100%"}
         heightImageUser={300}
         resizeMode='cover'
@@ -274,7 +285,7 @@ export default function PatitentProfile({
           <Pressable
             onPress={toggleDatePicker}>
             <InputStyle
-              placeholder={`${ route.params.userData.EspecialidadeId }`}
+              // placeholder={`${ route.params.userData.EspecialidadeId }`}
               value={dateOfBirth}
               onChangeText={setDateOfBirth}
               placeholderTextColor={APP_COLORS.primaryV1}
@@ -298,7 +309,7 @@ export default function PatitentProfile({
         </TextLabel>
 
         <InputStyle
-          placeholder={`${ route.params.userData.CRM }`}
+          // placeholder={`${ route.params.userData.CRM }`}
           placeholderTextColor={APP_COLORS.primaryV1}
           boxHeigth={'60px'}
           boxWidth={"100%"}

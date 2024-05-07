@@ -96,10 +96,6 @@ export default function MapViewLocation({ navigation, route }) {
 
   const mapReference = useRef(null);
   const [initialPosition, setInitialPosition] = useState(null);
-  const [finalPosition, setFinalPosition] = useState({
-    latitude: -23.951,
-    longitude: -46.339,
-  });
   const [theme, setTheme] = useState(false);
   const { MapData } = route.params;
 

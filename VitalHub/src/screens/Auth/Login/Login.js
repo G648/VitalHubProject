@@ -17,7 +17,7 @@ const Login = ({ navigation }) => {
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
   const [submitData, setSubmitData] = useState({
-    email: "gabrieldemetrio571@gmail.com",
+    email: "00001092257160sp@al.educacao.sp.gov.br",
     senha: "123456",
   });
 
@@ -26,19 +26,14 @@ const Login = ({ navigation }) => {
 
   console.log(submitData);
 
+
   const [loading, setLoading] = useState(false);
 
   async function LoadUserParams() {
     try {
       const token = await userDecodeToken();
 
-      console.log(token);
-
       if (token) {
-        console.log("Token de acesso recuperado:", token);
-
-        // setSelectUser(token.role);
-        console.log("Role do usuário:", token.role);
 
         if (token.role === "Medico") {
           navigation.navigate("DoctorHome");
@@ -70,7 +65,6 @@ const Login = ({ navigation }) => {
 
     try {
       const response = await api.post(LoginResource, submitData);
-      console.log(response)
 
       await AsyncStorage.setItem("token", JSON.stringify(response.data));
 

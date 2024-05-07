@@ -31,18 +31,27 @@ export const ScheduledButton = styled.TouchableOpacity`
   justify-content: center;
 `;
 
+export const TextConsultas = styled.Text`
+  color: ${APP_COLORS.grayV4};
+  font-family: "Quicksand_400Regular";
+`;
+
 const DoctorHome = ({ navigation }) => {
   const [selectedButton, setSelectedButton] = useState("Pendentes");
+  const [selectedButtonModal, setSelectedButtonModal] = useState("");
   const [isModalCancel, setIsModalCancel] = useState(false);
   const [isModalMedical, setisModalMedical] = useState(false);
   const [selectedUserData, setSelectedUserData] = useState(null);
   const [isModalScheduleVisible, setIsModalScheduleVisible] = useState(false);
-  const [selectedInput, setSelectedInput] = useState("");
   const [emailUser, setEmailUser] = useState("");
   const [nomeUser, setNomeUser] = useState("");
   const [dataConsulta, setDataConsulta] = useState("");
   const [consultas, setConsultas] = useState([]);
-  const [agendamento, setAgendamento] = useState(null);
+  const [idUser, setIdUser] = useState("");
+  const [fotoUser, setFotoUser] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  const [prioridadeSelected, setPrioridadeSelected] = useState("");
 
   const handleCardPress = (selectedSituation, userData) => {
     selectedSituation == "Pendentes"
@@ -50,29 +59,20 @@ const DoctorHome = ({ navigation }) => {
       : setisModalMedical(true);
 
     setSelectedUserData(userData);
-
-    console.log("selecionado");
-    console.log(userData);
   };
 
-  console.log(selectedUserData);
-  console.log(consultas);
+  // console.log(selectedButtonModal);
+  console.log("idUser");
+  console.log(idUser);
 
   const verifyPriorityLevels = (priority) => {
     switch (priority) {
       case 1:
         return <Text>Rotina</Text>;
-
-        break;
       case 2:
         return <Text>Exame</Text>;
-        break;
       case 3:
         return <Text> Urgência </Text>;
-        break;
-      default:
-        return <Text> Sem precêdencia</Text>;
-        break;
     }
   };
 
@@ -99,6 +99,17 @@ const DoctorHome = ({ navigation }) => {
     }
   }
 
+  async function GetByIdUser() {
+    try {
+      const response = await api.get(`/api/Pacientes/BuscarPorId?id=${idUser}`);
+
+      setFotoUser(response.data.idNavigation.foto);
+    } catch (error) {
+      console.log("deu ruim na requição de usuario por ID");
+      console.log(error.request);
+    }
+  }
+
   async function profileLoad() {
     try {
       const token = await userDecodeToken();
@@ -106,6 +117,7 @@ const DoctorHome = ({ navigation }) => {
       if (token) {
         setEmailUser(token.email);
         setNomeUser(token.name);
+        setIdUser(token.jti);
       } else {
         console.log("Não foi possível recuperar o token de acesso.");
       }
@@ -125,13 +137,41 @@ const DoctorHome = ({ navigation }) => {
     }
   }, [dataConsulta]);
 
-  console.log(`dados:${JSON.stringify(selectedUserData)}`);
-  // console.log(consultaId, foto, nomeMedico, crm, especialidade, descricao, diagnostico);
 
+  useEffect(() => {
+    GetByIdUser();
+  });
+
+  useEffect(() => {
+    setIsButtonEnabled(selectedButtonModal !== "" && cidade !== "");
+  }, [selectedButtonModal, cidade]);
+
+  const handleButtonClick = (buttonName) => {
+    setSelectedButtonModal(buttonName);
+
+    switch (buttonName) {
+      case "Rotina":
+        setPrioridadeSelected("884CBA42-62A3-4FA5-856C-03A0AE7E3333");
+        break;
+      case "Exame":
+        setPrioridadeSelected("B200F0CC-FB72-4D3F-88B4-63EC574DFC67");
+        break;
+      case "Urgência":
+        setPrioridadeSelected("8D422B71-59FC-4A66-A025-B4294CF691D0");
+        break;
+
+      default:
+        break;
+    }
+  };
 
   return (
     <Container>
-      <Header textValue={"Bem vindo!"} nameDoctor={nomeUser} />
+      <Header
+        sourcePhoto={fotoUser}
+        textValue={"Bem vindo!"}
+        nameDoctor={nomeUser}
+      />
 
       <CalendarHome
         dataConsulta={dataConsulta}
@@ -184,101 +224,107 @@ const DoctorHome = ({ navigation }) => {
         />
       </ContainerView>
 
-      <FlatlistInfos
-        data={consultas}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          if (
-            selectedButton === "Pendentes" &&
-            item.situacao.situacao === "Pendentes"
-          ) {
-            return (
-              <CardUser
-                imageUser={item.medicoClinica.medico.idNavigation.foto}
-                nameUser={item.medicoClinica.medico.idNavigation.nome}
-                ageUser={item.medicoClinica.medico.crm}
-                descriptionUser={verifyPriorityLevels(
-                  item.prioridade.prioridade
-                )}
-                iconName={"clockcircle"}
-                bgColor={item.situacao.situacao}
-                schedulingTime={FormatData(item.dataConsulta)}
-                key={item.id}
-                situation={item.situacao.situacao}
-                onPressBorder={() =>
-                  item.situacao.situacao === "Pendentes"
-                    ? handleCardPress(selectedButton, item)
-                    : null
-                }
-              />
-            );
-          } else if (
-            selectedButton === "Realizados" &&
-            item.situacao.situacao === "Realizados"
-          ) {
-            return (
-              <CardUser
-                imageUser={item.medicoClinica.medico.idNavigation.foto}
-                nameUser={item.medicoClinica.medico.idNavigation.nome}
-                ageUser={item.medicoClinica.medico.crm}
-                descriptionUser={verifyPriorityLevels(
-                  item.prioridade.prioridade
-                )}
-                iconName={"clockcircle"}
-                bgColor={item.situacao.situacao}
-                schedulingTime={FormatData(item.dataConsulta)}
-                key={item.id}
-                situation={item.situacao.situacao}
-                onPress={() => {
-                  navigation.push("MedicalRecordPage",
-                    {
-                      consultaId: selectedUserData.id,
-                      foto: selectedUserData.medicoClinica.medico.idNavigation.foto,
-                      nomeMedico: selectedUserData.medicoClinica.medico.idNavigation.nome,
-                      crm: selectedUserData.medicoClinica.medico.crm,
-                      especialidade: selectedUserData.medicoClinica.medico.especialidade.especialidade1,
-                      descricao: selectedUserData.descricao,
-                      diagnostico: selectedUserData.diagnostico
-                    }
-                  )
-                }}
-                onPressBorder={() =>
-                  item.situacao.situacao === "Realizados"
-                    ? handleCardPress(selectedButton, item)
-                    : null
-                }s
-              />
-            );
-          } else if (
-            selectedButton === "Cancelados" &&
-            item.situacao.situacao === "Cancelados"
-          ) {
-            return (
-              <CardUser
-                imageUser={item.medicoClinica.medico.idNavigation.foto}
-                nameUser={item.medicoClinica.medico.idNavigation.nome}
-                ageUser={item.medicoClinica.medico.crm}
-                descriptionUser={verifyPriorityLevels(
-                  item.prioridade.prioridade
-                )}
-                iconName={"clockcircle"}
-                key={item.id}
-                bgColor={item.situacao.situacao}
-                iconColor={item.situacao.situacao}
-                schedulingTime={FormatData(item.dataConsulta)}
-                situation={item.situacao.situacao}
-                onPressBorder={() =>
-                  item.situacao.situacao === "Cancelados"
-                    ? handleCardPress(selectedButton, JSON.parse(item))
-                    : null
-                }
-              />
-            );
-          }
-        }}
-        style={{ flex: 1 }}
-        showsVerticalScrollIndicator={false}
-      />
+      {consultas.length > 0 ? (
+        <FlatlistInfos
+          data={consultas}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            if (
+              selectedButton === "Pendentes" &&
+              item.situacao.situacao === "Pendentes"
+            ) {
+              return (
+                <CardUser
+                  imageUser={item.medicoClinica.medico.idNavigation.foto}
+                  nameUser={item.medicoClinica.medico.idNavigation.nome}
+                  ageUser={item.medicoClinica.medico.crm}
+                  descriptionUser={verifyPriorityLevels(
+                    item.prioridade.prioridade
+                  )}
+                  iconName={"clockcircle"}
+                  bgColor={item.situacao.situacao}
+                  schedulingTime={FormatData(item.dataConsulta)}
+                  key={item.id}
+                  situation={item.situacao.situacao}
+                  onPressBorder={() =>
+                    item.situacao.situacao === "Pendentes"
+                      ? handleCardPress(selectedButton, item)
+                      : null
+                  }
+                />
+              );
+            } else if (
+              selectedButton === "Realizados" &&
+              item.situacao.situacao === "Realizados"
+            ) {
+              return (
+                <CardUser
+                  imageUser={item.medicoClinica.medico.idNavigation.foto}
+                  nameUser={item.medicoClinica.medico.idNavigation.nome}
+                  ageUser={item.medicoClinica.medico.crm}
+                  descriptionUser={verifyPriorityLevels(
+                    item.prioridade.prioridade
+                  )}
+                  iconName={"clockcircle"}
+                  bgColor={item.situacao.situacao}
+                  schedulingTime={FormatData(item.dataConsulta)}
+                  key={item.id}
+                  situation={item.situacao.situacao}
+                  onPress={() => {
+                    navigation.push("MedicalRecordPage",
+                      {
+                        consultaId: selectedUserData.id,
+                        foto: selectedUserData.medicoClinica.medico.idNavigation.foto,
+                        nomeMedico: selectedUserData.medicoClinica.medico.idNavigation.nome,
+                        crm: selectedUserData.medicoClinica.medico.crm,
+                        especialidade: selectedUserData.medicoClinica.medico.especialidade.especialidade1,
+                        descricao: selectedUserData.descricao,
+                        diagnostico: selectedUserData.diagnostico
+                      }
+                    )
+                  }}
+                  onPressBorder={() =>
+                    item.situacao.situacao === "Realizados"
+                      ? handleCardPress(selectedButton, item)
+                      : null
+                  }
+                />
+              );
+            } else if (
+              selectedButton === "Cancelados" &&
+              item.situacao.situacao === "Cancelados"
+            ) {
+              return (
+                <CardUser
+                  imageUser={item.medicoClinica.medico.idNavigation.foto}
+                  nameUser={item.medicoClinica.medico.idNavigation.nome}
+                  ageUser={item.medicoClinica.medico.crm}
+                  descriptionUser={verifyPriorityLevels(
+                    item.prioridade.prioridade
+                  )}
+                  iconName={"clockcircle"}
+                  key={item.id}
+                  bgColor={item.situacao.situacao}
+                  iconColor={item.situacao.situacao}
+                  schedulingTime={FormatData(item.dataConsulta)}
+                  situation={item.situacao.situacao}
+                  onPressBorder={() =>
+                    item.situacao.situacao === "Cancelados"
+                      ? handleCardPress(selectedButton, JSON.parse(item))
+                      : null
+                  }
+                />
+              );
+            }
+          }}
+          style={{ flex: 1 }}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <TextConsultas>
+          Nenhum agendamento encontrado para esta data!
+        </TextConsultas>
+      )}
 
       {/* Renderiza o Dialogs quando  ModalVisible for true */}
       {isModalCancel && (
@@ -343,26 +389,33 @@ const DoctorHome = ({ navigation }) => {
       {isModalScheduleVisible && (
         <ScheduleAppointment
           widthModal={"100%"}
-          heightModal={600}
+          heightModal={480}
           titleContent={"Agendar consulta"}
           justifyContentModal={"flex-end"}
           fontSizeText={25}
-          placeholder={"tipo de consulta"}
-          mockdata={consultas}
-          save={"value"}
-          setSelectedType={setSelectedInput}
-          onSelected={selectedInput}
+          selectedButton={selectedButtonModal}
+          handleTabSelected={handleButtonClick}
+          onChangeText={(txt) => setCidade(txt)}
           cancelDialog={() => setIsModalScheduleVisible(false)}
           onClick={async () => {
-            await setIsModalScheduleVisible(false);
-            navigation.navigate("ChooseClinic");
-            setAgendamento({
-              ...agendamento, //manter todas as alterações existentes dentro do state
-              prioridadeId: item.Id,
-              prioridadeLabel: item.tipo,
-              //alterar o tipo para rotina exame e urgência
-            });
+            // Verifica se o botão de continuar está habilitado antes de prosseguir
+            if (isButtonEnabled) {
+              setIsModalScheduleVisible(false);
+              navigation.navigate("ChooseClinic", {
+                agendamento: {
+                  prioridadeId: prioridadeSelected,
+                  prioridadeButton: selectedButtonModal,
+                  pacienteId: idUser,
+                  cidade: cidade
+                },
+              });
+            } else {
+              alert(
+                "Por favor, selecione um botão e informe a localização da clínica."
+              );
+            }
           }}
+          isButtonEnabled={isButtonEnabled}
         />
       )}
     </Container>
@@ -370,3 +423,7 @@ const DoctorHome = ({ navigation }) => {
 };
 
 export default DoctorHome;
+
+
+
+

@@ -1,9 +1,6 @@
 import styled from "styled-components/native";
 import { AntDesign } from "@expo/vector-icons";
-import { CardSituation } from "../../utils/AppSituationCard";
 import { APP_COLORS } from "../../utils/App_colors";
-import { useState } from "react";
-import { SeeMedicalDialog } from "../Dialogs/SeeMedicalDialog";
 
 const defaultBgColor = APP_COLORS.grayV6;
 const defaultIconColor = APP_COLORS.grayV1;
@@ -150,8 +147,7 @@ export function CardUser({
         <ProfileImage
           width={widthImage}
           height={heightImage}
-          // source={{uri: imageUser}}
-          source={imageUser}
+          source={{ uri: imageUser }}
           marginTop={marginTopImage}
         />
 
@@ -162,7 +158,7 @@ export function CardUser({
 
           <ProfileData marginLeftInfoUser={marginLeftInfoUser}>
             <TextAge>{ageUser}</TextAge>
-            <TextBold>{descriptionUser}</TextBold>
+            {isDoctor ? <TextBold>{descriptionUser}</TextBold> : <TextBold>{descriptionUser}</TextBold>}
           </ProfileData>
 
           <ViewRow>
@@ -177,7 +173,6 @@ export function CardUser({
                 <ClockTime situation={bgColor}>{schedulingTime}</ClockTime>
               </ClockCard>
             )}
-
             {isClinic ? (
               <AntDesign name="star" size={18} color="#F9A620" />
             ) : null}

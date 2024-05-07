@@ -1,101 +1,120 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components/native'
-import { Container } from '../../components/Container/Style'
-import { Title } from '../../components/Title/Style'
-import { FlatlistInfos } from '../../components/FlatlistUsers/FlatlistUsers'
+import React, { useEffect, useState } from "react";
+import styled from "styled-components/native";
+import { Container } from "../../components/Container/Style";
+import { Title } from "../../components/Title/Style";
+import { FlatlistInfos } from "../../components/FlatlistUsers/FlatlistUsers";
 // import { ClinicData } from '../../utils/MockDataClinics'
-import { CardUser } from '../../components/FlatlistUsers/CardFlatlistUsers'
-import { APP_COLORS } from '../../utils/App_colors'
-import { Button } from '../../components/Button/Button'
-import { UnderlinedLink } from '../../components/Links/Style'
-import api, { ClinicResource } from '../../service/service'
+import { CardUser } from "../../components/FlatlistUsers/CardFlatlistUsers";
+import { APP_COLORS } from "../../utils/App_colors";
+import { Button } from "../../components/Button/Button";
+import { UnderlinedLink } from "../../components/Links/Style";
+import api, { ClinicResource } from "../../service/service";
+import { Text } from "react-native";
 
 export const ContainerScrollView = styled.ScrollView`
-    width: 90%;
-    display:flex;
-`
+  width: 90%;
+  display: flex;
+`;
 
-export default function ChooseClinic({ navigation }) {
+export default function ChooseClinic({ navigation, route }) {
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [infosClinic, setInfosClinic] = useState({});
 
-    const [selectedCard, setSelectedCard] = useState(null);
-    const [clinicList, setClinicList] = useState([])
+  route.params.agendamento;
 
-    const getClinic = async () => {
-        await api.get(ClinicResource)
-          .then(response => {
-            setClinicList(response.data)
-          })
-          .catch(error => console.log(error));
-      }
+  console.log('informações outra tela');
+  console.log(...agendamento);
 
-    const handleCardPress = (id) => {
-        setSelectedCard(id);
-    };
+  const handleCardPress = (id) => {
+    setSelectedCard(id);
+  };
 
-    useEffect(() => {
-        getClinic()
-      }, [])
+  async function GetClinics() {
+    try {
+      const cidadeEncoded = encodeURIComponent(...agendamento.cidade).trim();
+      const response = await api.get(
+        `/api/Clinica/BuscarPorCidade?cidade=${cidadeEncoded}`
+      );
 
-    console.log(clinicList);
-    return (
-        <Container>
-            <Title
-                marginTop={60}
-            >
-                Selecionar clínica
-            </Title>
+      setInfosClinic(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-            <ContainerScrollView>
-                <FlatlistInfos
-                    width={'100%'}
-                    data={clinicList}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => {
-                        return (
-                            <CardUser
-                                imageUser={require('../../assets/Images/Group.png')}
-                                nameUser={item.nomeFantasia}
-                                descriptionUser={item.endereco.logradouro}
-                                schedulingTime={item.horarioFuncionamento}
-                                iconName={"calendar"}
-                                iconSize={20}
-                                bgColor={item.situation}
-                                clinicAvaliation={"5.0"}
-                                marginLeftInfoUser={"-15px"}
-                                isClinic={true}
-                                widthImage={60}
-                                heightImage={53}
-                                marginTopImage={15}
-                                isSelected={selectedCard === item.id}
-                                onPressBorder={() => handleCardPress(item.id)}
-                                marginBottomCard={0}
-                            />
-                        )
-                    }}
-                    style={{ flex: 1 }}
-                    showsVerticalScrollIndicator={false}
+  useEffect(() => {
+    GetClinics();
+  }, []);
+
+  return (
+    <Container>
+      <Title marginTop={60}>Selecionar clínica</Title>
+
+      <ContainerScrollView>
+        {infosClinic.length === 0 ? (
+          <Text>Não há clinicas para essa região!</Text>
+        ) : (
+          <FlatlistInfos
+            width={"100%"}
+            data={infosClinic}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => {
+              return (
+                <CardUser
+                  // imageUser={require("../../assets/Images/Group.png")}
+                  nameUser={item.nomeFantasia}
+                  descriptionUser={item.endereco.logradouro}
+                  isDoctor={false}
+                  schedulingTime={"Seg - Sab"}
+                  iconName={"calendar"}
+                  iconSize={20}
+                  bgColor={item.situation}
+                  clinicAvaliation={"4.7"}
+                  marginLeftInfoUser={"-15px"}
+                  isClinic={true}
+                  widthImage={60}
+                  heightImage={53}
+                  marginTopImage={15}
+                  isSelected={selectedCard === item.id}
+                  onPressBorder={() => handleCardPress(item.id)}
+                  marginBottomCard={0}
+                  starColor={true}
                 />
-            </ContainerScrollView>
+              );
+            }}
+            style={{ flex: 1 }}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+      </ContainerScrollView>
 
-            <Button
-                marginTop={50}
-                activeOpacity={.6}
-                backgroundColor={APP_COLORS.secondary}
-                border={APP_COLORS.secondary}
-                color={APP_COLORS.white}
-                width={"90%"}
-                title={'Continuar'}
-                onPress={() => navigation.navigate("ChoseDoctor")}
-            />
+      <Button
+        marginTop={50}
+        activeOpacity={0.6}
+        backgroundColor={APP_COLORS.secondary}
+        border={APP_COLORS.secondary}
+        color={APP_COLORS.white}
+        width={"90%"}
+        title={"Continuar"}
+        onPress={() =>
+          navigation.navigate("ChoseDoctor", {
+            // agendamento: {
+            //   ...route.params.agendamento,
+            //   clinicas: clinicas,
+            //   botaoSelecionado: botaoSelecionado,
+            //   clinicaSelecionada: selectedCard,
+            // },
+          })
+        }
+      />
 
-            <UnderlinedLink
-                ColorText={APP_COLORS.secondary}
-                buttonAlign={'center'}
-                buttonOpacity={.6}
-                textIntput={'Cancelar'}
-                onClick={() => navigation.navigate("HomePatient")}
-            />
-
-        </Container>
-    )
+      <UnderlinedLink
+        ColorText={APP_COLORS.secondary}
+        buttonAlign={"center"}
+        buttonOpacity={0.6}
+        textIntput={"Cancelar"}
+        onClick={() => navigation.navigate("HomePatient")}
+      />
+    </Container>
+  );
 }

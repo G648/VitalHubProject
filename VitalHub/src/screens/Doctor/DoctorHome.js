@@ -181,7 +181,7 @@ const DoctorHome = ({ navigation }) => {
           ) {
             return (
               <CardUser
-                imageUser={{ uri: item.imagem }}
+                imageUser={item.paciente.idNavigation.foto}
                 nameUser={item.paciente.idNavigation.nome}
                 ageUser={
                   calcularIdade(item.paciente.dataNascimento) + " anos" + "  •"
@@ -207,7 +207,7 @@ const DoctorHome = ({ navigation }) => {
           ) {
             return (
               <CardUser
-                imageUser={{ uri: item.imagem }}
+                imageUser={item.paciente.idNavigation.foto}
                 nameUser={item.paciente.idNavigation.nome}
                 ageUser={
                   calcularIdade(item.paciente.dataNascimento) + " anos" + "  •"
