@@ -84,7 +84,7 @@ export const BoxButons = styled.View`
     left: 2.5%;
     `
 
-export default function MedicalExamsPhotos({ navigation, route }, getMediaLibrary = false) {
+export default function MedicalExamsPhotos({ navigation }, route, getMediaLibrary = false) {
 
     const cameraRef = useRef(null)
     const [photo, setPhoto] = useState(null)
@@ -95,9 +95,6 @@ export default function MedicalExamsPhotos({ navigation, route }, getMediaLibrar
     const [typeCamera, setTypeCamera] = useState(Camera.Constants.Type.back)
 
     const [lastestPhoto, setLastestPhoto] = useState(null)
-
-    const { consultaId, foto, nomeMedico, crm, especialidade, descricao, diagnostico } = route.params;
-    console.log(consultaId);
 
     async function CapturePhoto() {
         if (cameraRef) {
@@ -174,33 +171,27 @@ export default function MedicalExamsPhotos({ navigation, route }, getMediaLibrar
             onGoBack: () => setOpenModal(false) // Feche o modal após a navegação bem-sucedida
         });
     }
+    
+    // async function SendPhotoToRecord() {
+    //     navigation.navigate('MedicalRecordPage', {
+    //         photoUri: photo,
+    //         onGoBack: () => setOpenModal(false)
+    //     });
+    // }
 
     async function SendPhotoToRecord() {
-        navigation.push('MedicalRecordPage', {
-            consultaId: consultaId,
-            nomeMedico: nomeMedico,
-            crm: crm,
-            especialidade: especialidade,
-            descricao: descricao,
-            diagnostico: diagnostico,
-            photoUri: photo,
-            onGoBack: () => setOpenModal(false)
-        });
-    }
-
-    // async function SendPhotoToRecord() {
-    // 	if (route.params && route.params.isProfile) {
-    // 		navigation.navigate(
-    // 			route.params.isProfile === true
-    // 				? 'PatientHome'
-    // 				: 'MedicalRecordPage',
-    // 			{ photoUri: photo },
-    // 		);
-    // 	} else {
-    // 		// Se isProfile não estiver definido ou for falso, navegue de volta para VisualizePrescription
-    // 		navigation.navigate('MedicalRecordPage', { photoUri: photo });
-    // 	}
-    // }
+		if (route.params && route.params.isProfile) {
+			navigation.navigate(
+				route.params.isProfile === true
+					? 'PatientHome'
+					: 'MedicalRecordPage',
+				{ photoUri: photo },
+			);
+		} else {
+			// Se isProfile não estiver definido ou for falso, navegue de volta para VisualizePrescription
+			navigation.navigate('MedicalRecordPage', { photoUri: photo });
+		}
+	}
 
     useEffect(() => {
         (async () => {

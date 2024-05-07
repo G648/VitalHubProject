@@ -64,12 +64,13 @@ export const ContainerHeader = styled(LinearGradient).attrs({
 
 export const Header = ({
     textValue,
-    nameDoctor
+    nameDoctor,
+    sourcePhoto
 }) => {
     return (
         <ContainerHeader>
             <BoxUser>
-                <ImageUser source={{ uri: "https://github.com/G648.png" }} />
+                <ImageUser source={{uri: sourcePhoto}} />
                 
                 <DataUser>
                     <TextDefault>{textValue}</TextDefault>

@@ -211,7 +211,7 @@ export default function PatitentProfile({
 
       <DoctorContainerInfos>
         <ContentInputSmall>
-          <ButtonCamera onPress={() => navigation.navigate("MedicalExamsPhotos")}>
+          <ButtonCamera onPress={() => navigation.navigate("MedicalProfilePhotos")}>
             <MaterialCommunityIcons name="camera-plus" size={20} color="fbfbfb"></MaterialCommunityIcons>
           </ButtonCamera>
         </ContentInputSmall>

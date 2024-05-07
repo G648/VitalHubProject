@@ -22,6 +22,7 @@ import MedicalRecordPage from './src/screens/Patient/MedicalRecordPage';
 import MedicalExamsPhotos from './src/screens/Patient/MedicalExamsPhotos';
 import Toast from 'react-native-toast-message';
 import RecoverPassword from './src/screens/Auth/RecoverPassword/RecoverPassword';
+import MedicalProfilePhotos from './src/screens/Patient/MedicalProfilePhoto';
 
 
 export default function App() {
@@ -74,6 +75,12 @@ export default function App() {
             name='MedicalExamsPhotos'
             component={MedicalExamsPhotos}
             options={{ title: 'MedicalExamsPhotos' }}
+          />
+
+          <Stack.Screen
+            name='MedicalProfilePhotos'
+            component={MedicalProfilePhotos}
+            options={{ title: 'MedicalProfilePhotos' }}
           />
 
           <Stack.Screen

@@ -1,6 +1,6 @@
 import React from 'react'
 import { CenterContainer, ContainerTextBox, ModalContainer, TextModal } from './CalcelDialogs'
-import { TextLabel } from '../../screens/Doctor/MedicalRecord'
+import { InputStyle, TextLabel } from '../../screens/Doctor/MedicalRecord'
 import styled from 'styled-components'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { APP_COLORS } from '../../utils/App_colors'
@@ -13,6 +13,21 @@ export const ViewSelectedList = styled.View`
     width: 100%;
     margin-bottom: 25px;
     margin-top: ${({marginTopList = 0}) => marginTopList};
+`
+
+export const InputSelectLocation = styled.TextInput.attrs({
+    placeholderTextColor: APP_COLORS.primaryV1,
+})`
+    width : ${({width}) => width};
+    height: ${({height}) => height};
+    border-width: 2;
+    border-color: ${({borderColor}) => borderColor};
+    border-radius: 5px;
+    padding: 0px 20px; 
+    color: ${APP_COLORS.primaryV1};
+    font-size: 15px;
+    font-weight: 500;
+    
 `
 
 export const SelectedList = styled(SelectList)`
@@ -147,7 +162,7 @@ export default function ScheduleAppointment({
                     >
                         Informe a localização desejada
                     </TextLabel>
-
+{/* 
                     <Button
                         title={"Selecione a localização"}
                         width={'100%'}
@@ -157,6 +172,13 @@ export default function ScheduleAppointment({
                         border={APP_COLORS.primaryV2}
                         color={APP_COLORS.primaryV1}
                         onPress={onClick}
+                    /> */}
+
+                    <InputSelectLocation
+                        width={'100%'}
+                        borderColor={APP_COLORS.primary}
+                        height={60}
+                        placeholder={"informe a clinica"}
                     />
 
                     <Button
