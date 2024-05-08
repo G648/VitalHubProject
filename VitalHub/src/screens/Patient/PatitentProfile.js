@@ -193,146 +193,146 @@ export default function PatitentProfile({ navigation, route }) {
 
       <DoctorContainerInfos>
         <ContentInputSmall>
-  <ButtonCamera onPress={() => navigation.navigate("MedicalProfilePhotos")}>
-    <MaterialCommunityIcons name="camera-plus" size={20} color="fbfbfb"></MaterialCommunityIcons>
+          <ButtonCamera onPress={() => navigation.navigate("MedicalProfilePhotos")}>
+            <MaterialCommunityIcons name="camera-plus" size={20} color="fbfbfb"></MaterialCommunityIcons>
 
-  </ButtonCamera>
-  </ContentInputSmall >
-    <DataUser>
-      <DoctorName>{nomeUser}</DoctorName>
+          </ButtonCamera>
+        </ContentInputSmall >
+        <DataUser>
+          <DoctorName>{nomeUser}</DoctorName>
 
-      <DoctorEmail>{emailUser}</DoctorEmail>
-    </DataUser>
+          <DoctorEmail>{emailUser}</DoctorEmail>
+        </DataUser>
       </DoctorContainerInfos >
 
-    <ScrollViewContainer width={"90%"} showsVerticalScrollIndicator={false}>
-      <TextLabel>Data de nascimento</TextLabel>
+      <ScrollViewContainer width={"90%"} showsVerticalScrollIndicator={false}>
+        <TextLabel>Data de nascimento</TextLabel>
 
-      {open && (
-        <DateTimePicker
-          mode="date"
-          display="inline"
-          value={dataNascimentoUser}
-          onChange={onChange}
-          editable={isEditable}
-          isEditable={isEditable}
-        />
-      )}
-
-      {!open && (
-        <Pressable onPress={toggleDatePicker}>
-          <InputStyle
-            placeholder={dataNascimentoUser}
+        {open && (
+          <DateTimePicker
+            mode="date"
+            display="inline"
             value={dataNascimentoUser}
-            onChangeText={setDateOfBirth}
-            placeholderTextColor={APP_COLORS.primaryV1}
-            boxHeigth={"60px"}
-            boxWidth={"100%"}
-            borderColor={APP_COLORS.primary}
+            onChange={onChange}
             editable={isEditable}
             isEditable={isEditable}
           />
-        </Pressable>
-      )}
+        )}
 
-      {/* <Calendar
+        {!open && (
+          <Pressable onPress={toggleDatePicker}>
+            <InputStyle
+              placeholder={dataNascimentoUser}
+              value={dataNascimentoUser}
+              onChangeText={setDateOfBirth}
+              placeholderTextColor={APP_COLORS.primaryV1}
+              boxHeigth={"60px"}
+              boxWidth={"100%"}
+              borderColor={APP_COLORS.primary}
+              editable={isEditable}
+              isEditable={isEditable}
+            />
+          </Pressable>
+        )}
+
+        {/* <Calendar
           name="calendar"
           size={24}
           color={APP_COLORS.primaryV1}
         /> */}
 
-      <TextLabel>CPF</TextLabel>
+        <TextLabel>CPF</TextLabel>
 
-      <InputStyle
-        placeholder={cpfUser}
-        value={cpfUser}
-        placeholderTextColor={APP_COLORS.primaryV1}
-        boxHeigth={"60px"}
-        boxWidth={"100%"}
-        borderColor={APP_COLORS.primary}
-        editable={isEditable}
-        isEditable={isEditable}
-      />
-      <TextLabel>Endereço</TextLabel>
+        <InputStyle
+          placeholder={cpfUser}
+          value={cpfUser}
+          placeholderTextColor={APP_COLORS.primaryV1}
+          boxHeigth={"60px"}
+          boxWidth={"100%"}
+          borderColor={APP_COLORS.primary}
+          editable={isEditable}
+          isEditable={isEditable}
+        />
+        <TextLabel>Endereço</TextLabel>
 
-      <InputStyle
-        value={logradouroUser}
-        placeholderTextColor={APP_COLORS.primaryV1}
-        boxHeigth={"60px"}
-        boxWidth={"100%"}
-        borderColor={APP_COLORS.primary}
-        editable={isEditable}
-        isEditable={isEditable}
-      />
+        <InputStyle
+          value={logradouroUser}
+          placeholderTextColor={APP_COLORS.primaryV1}
+          boxHeigth={"60px"}
+          boxWidth={"100%"}
+          borderColor={APP_COLORS.primary}
+          editable={isEditable}
+          isEditable={isEditable}
+        />
 
-      <InfosContainer>
-        <InfosColumn>
-          <TextLabel>CEP</TextLabel>
-          <InputStyle
-            value={cepUser}
-            boxWidth={"100%"}
-            boxHeigth={"60px"}
-            editable={isEditable}
-            isEditable={isEditable}
+        <InfosContainer>
+          <InfosColumn>
+            <TextLabel>CEP</TextLabel>
+            <InputStyle
+              value={cepUser}
+              boxWidth={"100%"}
+              boxHeigth={"60px"}
+              editable={isEditable}
+              isEditable={isEditable}
+            />
+          </InfosColumn>
+
+          <InfosColumn>
+            <TextLabel>Cidade</TextLabel>
+            <InputStyle
+              value={cidadeUser}
+              boxWidth={"100%"}
+              boxHeigth={"60px"}
+              editable={isEditable}
+              isEditable={isEditable}
+            />
+          </InfosColumn>
+        </InfosContainer>
+
+        {!isEditable && ( // Renderiza o botão de editar apenas quando os inputs não estiverem editáveis
+          <Button
+            width={"100%"}
+            activeOpacity={0.6}
+            backgroundColor={APP_COLORS.secondary}
+            border={APP_COLORS.secondary}
+            color={APP_COLORS.white}
+            title={"Editar"}
+            // marginTop={30}
+            onPress={toggleEdit}
           />
-        </InfosColumn>
+        )}
 
-        <InfosColumn>
-          <TextLabel>Cidade</TextLabel>
-          <InputStyle
-            value={cidadeUser}
-            boxWidth={"100%"}
-            boxHeigth={"60px"}
-            editable={isEditable}
-            isEditable={isEditable}
+        {isEditable && ( // Renderiza o botão de salvar apenas quando os inputs estiverem editáveis
+          <Button
+            width={"100%"}
+            activeOpacity={0.6}
+            backgroundColor={APP_COLORS.secondary}
+            border={APP_COLORS.secondary}
+            color={APP_COLORS.white}
+            title={"Salvar"}
+            // marginTop={-10}
+            onPress={handleSave}
           />
-        </InfosColumn>
-      </InfosContainer>
+        )}
 
-      {!isEditable && ( // Renderiza o botão de editar apenas quando os inputs não estiverem editáveis
         <Button
           width={"100%"}
           activeOpacity={0.6}
           backgroundColor={APP_COLORS.secondary}
           border={APP_COLORS.secondary}
           color={APP_COLORS.white}
-          title={"Editar"}
-          // marginTop={30}
-          onPress={toggleEdit}
+          title={"Sair"}
+          marginTop={15}
+          onPress={removeToken}
         />
-      )}
 
-      {isEditable && ( // Renderiza o botão de salvar apenas quando os inputs estiverem editáveis
-        <Button
-          width={"100%"}
-          activeOpacity={0.6}
-          backgroundColor={APP_COLORS.secondary}
-          border={APP_COLORS.secondary}
-          color={APP_COLORS.white}
-          title={"Salvar"}
-          // marginTop={-10}
-          onPress={handleSave}
+        <UnderlinedLink
+          textIntput={"Cancelar"}
+          ColorText={APP_COLORS.secondaryV1}
+          buttonOpacity={0.6}
+          onClick={handleSave}
         />
-      )}
-
-      <Button
-        width={"100%"}
-        activeOpacity={0.6}
-        backgroundColor={APP_COLORS.secondary}
-        border={APP_COLORS.secondary}
-        color={APP_COLORS.white}
-        title={"Sair"}
-        marginTop={15}
-        onPress={removeToken}
-      />
-
-      <UnderlinedLink
-        textIntput={"Cancelar"}
-        ColorText={APP_COLORS.secondaryV1}
-        buttonOpacity={0.6}
-        onClick={handleSave}
-      />
-    </ScrollViewContainer>
+      </ScrollViewContainer>
     </Container >
   );
 }

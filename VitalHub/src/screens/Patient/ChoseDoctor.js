@@ -17,17 +17,38 @@ export default function ChoseDoctor({ navigation, route }) {
   const [doctorEspecialidade, setDoctorEspecialidade] = useState("");
   const [medicoClinicaId, setMedicoClinicaId] = useState("");
 
-  route.params.agendamento;
+  const {agendamento} = route.params;
+
+  console.log("infos agendamento doutor");
+  console.log(agendamento);
+  console.log(medicoClinicaId);
+
+  // const getDoctor = async () => {
+  //   await api
+  //     .get(`/api/Medicos/BuscarPorIdClinica?id=${agendamento.clinicaSelecionada}`)
+  //     .then((response) => {
+  //       setDoctorList(response.data);
+  //       setDoctorName(response.data[0].idNavigation.nome);
+  //       setDoctorEspecialidade(response.data[0].especialidade.especialidade1);
+  //     })
+  //     .catch((error) => console.log(error));
+  // };
 
   const getDoctor = async () => {
-    await api
-      .get(`/api/Medicos/BuscarPorIdClinica?id=${clinicaSelecionada}`)
-      .then((response) => {
-        setDoctorList(response.data);
-        setDoctorName(response.data[0].idNavigation.nome);
-        setDoctorEspecialidade(response.data[0].especialidade.especialidade1);
-      })
-      .catch((error) => console.log(error));
+    try {
+      const response = await api.get(`/api/Medicos/BuscarPorIdClinica?id=${agendamento.clinicaSelecionada}`);
+      const doctorData = response.data;
+      
+      if (Array.isArray(doctorData) && doctorData.length > 0) {
+        setDoctorList(doctorData);
+        setDoctorName(doctorData[0].idNavigation.nome);
+        setDoctorEspecialidade(doctorData[0].especialidade.especialidade1);
+      } else {
+        console.log("Não há médicos disponíveis para esta clínica.");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleCardPress = (id) => {
@@ -37,9 +58,11 @@ export default function ChoseDoctor({ navigation, route }) {
   const getClinicaId = async () => {
     try {
       await api
-        .get(`/api/Clinica/BuscarPorId?id=${clinicaSelecionada}`)
+        .get(`/api/Clinica/BuscarPorId?id=${agendamento.clinicaSelecionada}`)
         .then((response) => {
           setMedicoClinicaId(response.data.medicosClinicas[0].id);
+          console.log("resposta api medico clinica");
+          console.log(response);
         });
     } catch (error) {
       console.log(error);
@@ -95,7 +118,6 @@ export default function ChoseDoctor({ navigation, route }) {
             agendamento: {
               ...route.params.agendamento,
               doutorSelecionado: selectedCard,
-              pacienteId: pacienteId,
               medicoClinicaId: medicoClinicaId,
               nomeDoutor: doctorName,
               especialidadeDoutor: doctorEspecialidade,

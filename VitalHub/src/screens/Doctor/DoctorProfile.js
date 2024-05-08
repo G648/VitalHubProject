@@ -82,9 +82,10 @@ export default function PatitentProfile({
   const [nomeUser, setNomeUser] = useState('');
   const [idUser, setIdUser] = useState('');
   const [fotoUser, setFotoUser] = useState('');
-  const [dataNascimentoUser, setDataNascimentoUser] = useState("");
+  const [especialidadeUser, setEspecialidadeUser] = useState("");
   const [logradouroUser, setLogradouroUser] = useState("");
   const [cepUser, setCepUser] = useState("");
+  const [crmUser, setCrmUser] = useState("");
   const [cidadeUser, setCidadeUser] = useState("");
 
   // const u = route.params.userData;
@@ -133,19 +134,21 @@ export default function PatitentProfile({
     try {
       const token = await userDecodeToken();
 
+      setIdUser(token.jti)
+
       if (token) {
-        console.log('Token de acesso recuperado:', token);
+        console.log('Token de aces so recuperado:', token);
         const response = await api.get(`/api/Medicos/BuscarPorId?id=${idUser}`);
+        console.log(response);
 
         setNomeUser(token.name)
         setEmailUser(token.email)
-        setIdUser(token.jti)
-        setDataNascimentoUser(formatDate(response.data.dataNascimento));
+        setEspecialidadeUser(response.data.especialidade.especialidade1);
         setLogradouroUser(response.data.endereco.logradouro);
+        setCrmUser(response.data.crm)
         setCepUser(response.data.endereco.cep);
         setCidadeUser(response.data.endereco.cidade);
         setFotoUser(response.data.idNavigation.foto);
-  
 
       } else {
         console.log('Não foi possível recuperar o token de acesso.');
@@ -206,9 +209,6 @@ export default function PatitentProfile({
     }
   }, [route.params, idUser])
 
-
-
-
   return (
     <Container>
       <ProfileImageModal
@@ -216,7 +216,7 @@ export default function PatitentProfile({
         widthImageUser={"100%"}
         heightImageUser={300}
         resizeMode='cover'
-        />
+      />
 
 
 
@@ -230,15 +230,15 @@ export default function PatitentProfile({
           <DoctorName>
             {nomeUser}
           </DoctorName>
-        <ContainerInfoDoctor>
-          <Crm>
-            {crm}
-          </Crm>
-        
-          <Especialidade>
-            {especialidade}
-          </Especialidade>
-        </ContainerInfoDoctor>
+          <ContainerInfoDoctor>
+            {/* <Crm>
+              {crm}
+            </Crm>
+
+            <Especialidade>
+              {especialidade}
+            </Especialidade> */}
+          </ContainerInfoDoctor>
 
           <DoctorEmail>
             {emailUser}
@@ -253,7 +253,7 @@ export default function PatitentProfile({
         <TextLabel>
           Especialidade
         </TextLabel>
-
+        {/* 
         {open && (
 
           <DateTimePicker
@@ -264,9 +264,9 @@ export default function PatitentProfile({
             editable={isEditable}
             isEditable={isEditable}
           />
-        )}
+        )} */}
 
-{/* <DateTimePicker
+        {/* <DateTimePicker
             data={consultas}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
@@ -279,13 +279,14 @@ export default function PatitentProfile({
             }}
           />
         )} */}
+        
 
         {!open && (
 
           <Pressable
             onPress={toggleDatePicker}>
             <InputStyle
-              // placeholder={`${ route.params.userData.EspecialidadeId }`}
+              placeholder={especialidadeUser}
               value={dateOfBirth}
               onChangeText={setDateOfBirth}
               placeholderTextColor={APP_COLORS.primaryV1}
@@ -298,18 +299,18 @@ export default function PatitentProfile({
           </Pressable>
         )}
 
-        <Calendar 
+        {/* <Calendar
           name="calendar"
           size={24}
           color={APP_COLORS.primaryV1}
-        />
+        /> */}
 
         <TextLabel>
           CRM
         </TextLabel>
 
         <InputStyle
-          // placeholder={`${ route.params.userData.CRM }`}
+          placeholder={crmUser}
           placeholderTextColor={APP_COLORS.primaryV1}
           boxHeigth={'60px'}
           boxWidth={"100%"}
@@ -322,7 +323,7 @@ export default function PatitentProfile({
         </TextLabel>
 
         <InputStyle
-          placeholder='Rua Vicenso Silva, 987'
+          placeholder={logradouroUser}
           placeholderTextColor={APP_COLORS.primaryV1}
           boxHeigth={'60px'}
           boxWidth={"100%"}
@@ -338,6 +339,8 @@ export default function PatitentProfile({
               CEP
             </TextLabel>
             <InputStyle
+              placeholder={cepUser}
+              placeholderTextColor={APP_COLORS.primaryV1}
               boxWidth={"100%"}
               boxHeigth={"60px"}
               editable={isEditable}
@@ -350,6 +353,8 @@ export default function PatitentProfile({
               Cidade
             </TextLabel>
             <InputStyle
+              placeholder={cidadeUser}
+              placeholderTextColor={APP_COLORS.primaryV1}
               boxWidth={"100%"}
               boxHeigth={"60px"}
               editable={isEditable}

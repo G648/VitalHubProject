@@ -55,8 +55,8 @@ const DoctorHome = ({ navigation }) => {
 
   const handleCardPress = (selectedSituation, userData) => {
     selectedSituation == "Pendentes"
-      ? setIsModalCancel(true)
-      : setisModalMedical(true);
+      ? setisModalMedical(true)
+      : setIsModalCancel(true);
 
     setSelectedUserData(userData);
   };
@@ -67,11 +67,11 @@ const DoctorHome = ({ navigation }) => {
 
   const verifyPriorityLevels = (priority) => {
     switch (priority) {
-      case 1:
+      case 0:
         return <Text>Rotina</Text>;
-      case 2:
+      case 1:
         return <Text>Exame</Text>;
-      case 3:
+      case 2:
         return <Text> Urgência </Text>;
     }
   };
@@ -236,8 +236,10 @@ const DoctorHome = ({ navigation }) => {
               return (
                 <CardUser
                   imageUser={item.medicoClinica.medico.idNavigation.foto}
-                  nameUser={item.medicoClinica.medico.idNavigation.nome}
-                  ageUser={item.medicoClinica.medico.crm}
+                  nameUser={
+                    "Dr. " + item.medicoClinica.medico.idNavigation.nome
+                  }
+                  // ageUser={item.medicoClinica.medico.crm}
                   descriptionUser={verifyPriorityLevels(
                     item.prioridade.prioridade
                   )}
@@ -251,6 +253,7 @@ const DoctorHome = ({ navigation }) => {
                       ? handleCardPress(selectedButton, item)
                       : null
                   }
+                  onPress={() => setIsModalCancel(true)}
                 />
               );
             } else if (
@@ -260,7 +263,9 @@ const DoctorHome = ({ navigation }) => {
               return (
                 <CardUser
                   imageUser={item.medicoClinica.medico.idNavigation.foto}
-                  nameUser={item.medicoClinica.medico.idNavigation.nome}
+                  nameUser={
+                    "Dr. " + item.medicoClinica.medico.idNavigation.nome
+                  }
                   ageUser={item.medicoClinica.medico.crm}
                   descriptionUser={verifyPriorityLevels(
                     item.prioridade.prioridade
@@ -297,7 +302,9 @@ const DoctorHome = ({ navigation }) => {
               return (
                 <CardUser
                   imageUser={item.medicoClinica.medico.idNavigation.foto}
-                  nameUser={item.medicoClinica.medico.idNavigation.nome}
+                  nameUser={
+                    "Dr. " + item.medicoClinica.medico.idNavigation.nome
+                  }
                   ageUser={item.medicoClinica.medico.crm}
                   descriptionUser={verifyPriorityLevels(
                     item.prioridade.prioridade
@@ -347,38 +354,40 @@ const DoctorHome = ({ navigation }) => {
         />
       )}
 
-      <SeeMedicalDialog
-        isVisible={isModalMedical}
-        imageUser={
-          selectedUserData != null &&
-          selectedUserData.medicoClinica.medico.idNavigation.foto
-        }
-        nameUser={
-          selectedUserData != null &&
-          selectedUserData.medicoClinica.medico.idNavigation.nome
-        }
-        ageUser={
-          selectedUserData != null && selectedUserData.medicoClinica.medico.crm
-        }
-        emailuser={
-          selectedUserData != null &&
-          selectedUserData.medicoClinica.medico.especialidade.especialidade1
-        }
-        heightImageUser={250}
-        widthImageUser={320}
-        showCancelButton={true}
-        onPressCancel={() => setisModalMedical(false)}
-        titleButton={"Ver local da consulta".toUpperCase()}
-        onPress={() => {
-          setisModalMedical(false);
-          navigation.navigate("MapViewLocation", {
-            MapData: selectedUserData.medicoClinica.clinica.endereco,
-          });
-        }}
-        widtContainerInfoUser={180}
-        marginBottomName={"15px"}
-      />
-
+      {isModalMedical && (
+        <SeeMedicalDialog
+          isVisible={isModalMedical}
+          imageUser={
+            selectedUserData != null &&
+            selectedUserData.medicoClinica.medico.idNavigation.foto
+          }
+          nameUser={
+            selectedUserData != null &&
+            "Dr. " + selectedUserData.medicoClinica.medico.idNavigation.nome
+          }
+          ageUser={
+            selectedUserData != null &&
+            selectedUserData.medicoClinica.medico.crm
+          }
+          emailuser={
+            selectedUserData != null &&
+            selectedUserData.medicoClinica.medico.especialidade.especialidade1
+          }
+          heightImageUser={250}
+          widthImageUser={320}
+          showCancelButton={true}
+          onPressCancel={() => setisModalMedical(false)}
+          titleButton={"Ver local da consulta".toUpperCase()}
+          onPress={() => {
+            setisModalMedical(false);
+            navigation.navigate("MapViewLocation", {
+              MapData: selectedUserData.medicoClinica.clinica.endereco,
+            });
+          }}
+          widtContainerInfoUser={180}
+          marginBottomName={"15px"}
+        />
+      )}
       <ScheduledButton
         activeOpacity={0.8}
         onPress={() => setIsModalScheduleVisible(true)}
@@ -406,7 +415,7 @@ const DoctorHome = ({ navigation }) => {
                   prioridadeId: prioridadeSelected,
                   prioridadeButton: selectedButtonModal,
                   pacienteId: idUser,
-                  cidade: cidade
+                  cidade: cidade,
                 },
               });
             } else {

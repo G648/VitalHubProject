@@ -50,6 +50,9 @@ export const TextAge = styled.Text`
 `;
 export const TextBold = styled(TextAge)`
   font-family: "Quicksand_600SemiBold";
+  /* position: ${({isDoctor}) => isDoctor ? "" : 'relative'};
+  bottom: ${({isDoctor}) => isDoctor ? 0 : 40};
+  margin-left: ${({isDoctor}) => isDoctor ? 0 : -2};; */
 `;
 export const ViewRow = styled.View`
   width: 100%;

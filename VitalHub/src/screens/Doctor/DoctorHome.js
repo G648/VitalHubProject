@@ -15,6 +15,7 @@ import { userDecodeToken } from "../../utils/Auth";
 import api from "../../service/service";
 import { Text } from "react-native";
 import moment from "moment";
+import { TextConsultas } from "../Patient/PatientHome";
 
 const DoctorHome = ({ navigation }) => {
   const [selectedButton, setSelectedButton] = useState(CardSituation.scheduled);
@@ -23,6 +24,8 @@ const DoctorHome = ({ navigation }) => {
   const [selectedUserData, setSelectedUserData] = useState({});
   const [emailUser, setEmailUser] = useState("");
   const [nomeUser, setNomeUser] = useState("");
+  const [idUser, setIdUser] = useState("");
+  const [fotoUser, setFotoUser] = useState("");
   const [dataConsulta, setDataConsulta] = useState([]);
 
   const [consultas, setConsultas] = useState([]);
@@ -86,6 +89,17 @@ const DoctorHome = ({ navigation }) => {
     }
   }
 
+  async function GetByIdUser() {
+    try {
+      const response = await api.get(`/api/Medicos/BuscarPorId?id=${idUser}`);
+
+      setFotoUser(response.data.idNavigation.foto);
+    } catch (error) {
+      console.log("deu ruim na requição de usuario por ID");
+      console.log(error.request);
+    }
+  }
+
   async function profileLoad() {
     try {
       const token = await userDecodeToken();
@@ -93,6 +107,7 @@ const DoctorHome = ({ navigation }) => {
       if (token) {
         setEmailUser(token.email);
         setNomeUser(token.name);
+        setIdUser(token.jti);
       } else {
         console.log("Não foi possível recuperar o token de acesso.");
       }
@@ -116,9 +131,16 @@ const DoctorHome = ({ navigation }) => {
   // console.log(`user data: ${selectedUserData}`);
   console.log("user data:", JSON.stringify(selectedUserData));
 
+  useEffect(() => {
+    GetByIdUser();
+  });
   return (
     <Container>
-      <Header textValue={"Bem vindo!"} nameDoctor={nomeUser} />
+      <Header
+        sourcePhoto={fotoUser}
+        textValue={"Bem vindo!"}
+        nameDoctor={nomeUser}
+      />
 
       <CalendarHome
         dataConsulta={dataConsulta}
@@ -171,93 +193,99 @@ const DoctorHome = ({ navigation }) => {
         />
       </ContainerView>
 
-      <FlatlistInfos
-        data={consultas}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          if (
-            selectedButton === "Pendentes" &&
-            item.situacao.situacao === "Pendentes"
-          ) {
-            return (
-              <CardUser
-                imageUser={item.paciente.idNavigation.foto}
-                nameUser={item.paciente.idNavigation.nome}
-                ageUser={
-                  calcularIdade(item.paciente.dataNascimento) + " anos" + "  •"
-                }
-                descriptionUser={verifyPriorityLevels(
-                  item.prioridade.prioridade
-                )}
-                iconName={"clockcircle"}
-                bgColor={item.situacao.situacao}
-                schedulingTime={FormatData(item.dataConsulta)}
-                key={item.id}
-                situation={item.situacao.situacao}
-                onPressBorder={() =>
-                  item.situacao.situacao === "Pendentes"
-                    ? handleCardPress(selectedButton, item)
-                    : null
-                }
-              />
-            );
-          } else if (
-            selectedButton === "Realizados" &&
-            item.situacao.situacao === "Realizados"
-          ) {
-            return (
-              <CardUser
-                imageUser={item.paciente.idNavigation.foto}
-                nameUser={item.paciente.idNavigation.nome}
-                ageUser={
-                  calcularIdade(item.paciente.dataNascimento) + " anos" + "  •"
-                }
-                descriptionUser={verifyPriorityLevels(
-                  item.prioridade.prioridade
-                )}
-                iconName={"clockcircle"}
-                bgColor={item.situacao.situacao}
-                schedulingTime={FormatData(item.dataConsulta)}
-                key={item.id}
-                situation={item.situacao.situacao}
-                onPressBorder={() =>
-                  item.situacao.situacao === "Realizados"
-                    ? handleCardPress(selectedButton, item)
-                    : null
-                }
-              />
-            );
-          } else if (
-            selectedButton === "Cancelados" &&
-            item.situacao.situacao === "Cancelados"
-          ) {
-            return (
-              <CardUser
-                imageUser={item.paciente.idNavigation.foto}
-                nameUser={item.paciente.idNavigation.nome}
-                ageUser={
-                  calcularIdade(item.paciente.dataNascimento) + " anos" + "  •"
-                }
-                descriptionUser={verifyPriorityLevels(
-                  item.prioridade.prioridade
-                )}
-                iconName={"clockcircle"}
-                bgColor={item.situacao.situacao}
-                schedulingTime={FormatData(item.dataConsulta)}
-                key={item.id}
-                situation={item.situacao.situacao}
-                onPressBorder={() =>
-                  item.situacao.situacao === "Cancelados"
-                    ? handleCardPress(selectedButton, item)
-                    : null
-                }
-              />
-            );
-          }
-        }}
-        style={{ flex: 1 }}
-        showsVerticalScrollIndicator={false}
-      />
+      {consultas.length > 0 ? (
+        <FlatlistInfos
+          data={consultas}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            if (
+              selectedButton === "Pendentes" &&
+              item.situacao.situacao === "Pendentes"
+            ) {
+              return (
+                <CardUser
+                  imageUser={item.paciente.idNavigation.foto}
+                  nameUser={item.paciente.idNavigation.nome}
+                  ageUser={
+                    calcularIdade(item.paciente.dataNascimento) + " anos" + "  •"
+                  }
+                  descriptionUser={verifyPriorityLevels(
+                    item.prioridade.prioridade
+                  )}
+                  iconName={"clockcircle"}
+                  bgColor={item.situacao.situacao}
+                  schedulingTime={FormatData(item.dataConsulta)}
+                  key={item.id}
+                  situation={item.situacao.situacao}
+                  onPressBorder={() =>
+                    item.situacao.situacao === "Pendentes"
+                      ? handleCardPress(selectedButton, item)
+                      : null
+                  }
+                />
+              );
+            } else if (
+              selectedButton === "Realizados" &&
+              item.situacao.situacao === "Realizados"
+            ) {
+              return (
+                <CardUser
+                  imageUser={item.paciente.idNavigation.foto}
+                  nameUser={item.paciente.idNavigation.nome}
+                  ageUser={
+                    calcularIdade(item.paciente.dataNascimento) + " anos" + "  •"
+                  }
+                  descriptionUser={verifyPriorityLevels(
+                    item.prioridade.prioridade
+                  )}
+                  iconName={"clockcircle"}
+                  bgColor={item.situacao.situacao}
+                  schedulingTime={FormatData(item.dataConsulta)}
+                  key={item.id}
+                  situation={item.situacao.situacao}
+                  onPressBorder={() =>
+                    item.situacao.situacao === "Realizados"
+                      ? handleCardPress(selectedButton, item)
+                      : null
+                  }
+                />
+              );
+            } else if (
+              selectedButton === "Cancelados" &&
+              item.situacao.situacao === "Cancelados"
+            ) {
+              return (
+                <CardUser
+                  imageUser={item.paciente.idNavigation.foto}
+                  nameUser={item.paciente.idNavigation.nome}
+                  ageUser={
+                    calcularIdade(item.paciente.dataNascimento) + " anos" + "  •"
+                  }
+                  descriptionUser={verifyPriorityLevels(
+                    item.prioridade.prioridade
+                  )}
+                  iconName={"clockcircle"}
+                  bgColor={item.situacao.situacao}
+                  schedulingTime={FormatData(item.dataConsulta)}
+                  key={item.id}
+                  situation={item.situacao.situacao}
+                  onPressBorder={() =>
+                    item.situacao.situacao === "Cancelados"
+                      ? handleCardPress(selectedButton, item)
+                      : null
+                  }
+                />
+              );
+            }
+          }}
+          style={{ flex: 1 }}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <TextConsultas>
+          Nenhum agendamento encontrado para esta data!
+        </TextConsultas>
+      )}
 
       {/* Renderiza o Dialogs quando isModalVisible for true */}
       {isModalCancel && (
