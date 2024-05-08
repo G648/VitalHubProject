@@ -62,8 +62,8 @@ const DoctorHome = ({ navigation }) => {
   };
 
   // console.log(selectedButtonModal);
-  console.log("idUser");
-  console.log(idUser);
+  console.log("UserDataaaaaaa");
+  console.log(selectedUserData);
 
   const verifyPriorityLevels = (priority) => {
     switch (priority) {
@@ -127,6 +127,19 @@ const DoctorHome = ({ navigation }) => {
         error
       );
     }
+  }
+
+  async function cancelConsulta() {
+    console.log(selectedUserData.id);
+
+    await api
+      .put(
+        `/api/Consultas/Status?idConsulta=${selectedUserData.id}&status=Cancelados`
+      )
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => console.log(error.request));
   }
 
   useEffect(() => {
@@ -291,7 +304,7 @@ const DoctorHome = ({ navigation }) => {
                   nameUser={
                     "Dr. " + item.medicoClinica.medico.idNavigation.nome
                   }
-                  ageUser={item.medicoClinica.medico.crm}
+                  // ageUser={item.medicoClinica.medico.crm}
                   descriptionUser={verifyPriorityLevels(
                     item.prioridade.prioridade
                   )}
@@ -332,6 +345,13 @@ const DoctorHome = ({ navigation }) => {
           fontSizeTextParagraf={"15px"}
           onPressConfirm={() => {
             setIsModalCancel(false);
+
+            cancelConsulta();
+
+            GetPatientAppointmentFunction();
+
+            //TODO:pegar o id da consulta quando o usuário clicar no botão de cancelar consulta
+            setSelectedButton("Cancelados");
           }}
           onPressCancel={() => {
             setIsModalCancel(false);

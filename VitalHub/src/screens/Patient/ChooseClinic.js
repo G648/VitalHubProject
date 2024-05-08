@@ -19,9 +19,9 @@ export default function ChooseClinic({ navigation, route }) {
   const [selectedCard, setSelectedCard] = useState(null);
   const [infosClinic, setInfosClinic] = useState({});
 
-  const {agendamento} = route.params;
+  const { agendamento } = route.params;
 
-  console.log('informações outra tela');
+  console.log("informações outra tela");
   console.log(agendamento);
 
   const handleCardPress = (id) => {
