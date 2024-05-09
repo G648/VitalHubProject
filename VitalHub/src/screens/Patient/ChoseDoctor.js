@@ -90,8 +90,8 @@ export default function ChoseDoctor({ navigation, route }) {
                 ageUser={"CRM " + item.crm}
                 descriptionUser={item.especialidade.especialidade1}
                 marginLeftInfoUser={-15}
-                widthImage={100}
-                heightImage={100}
+                widthImage={90}
+                heightImage={90}
                 marginTopImage={1}
                 isSelected={selectedCard === item.id}
                 onPressBorder={() => handleCardPress(item.idNavigation.id)}

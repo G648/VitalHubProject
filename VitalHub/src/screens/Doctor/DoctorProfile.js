@@ -46,13 +46,16 @@ export const Calendar = styled(Entypo)`
 
 export const InfosContainer = styled.View`
   flex-direction: row;
-  justify-content:space-between;
+  justify-content:space-around;
 `
 
 export const InfosColumn = styled.View`
   flex-direction:column;
   width: 45%;
 `
+// export const CidadeColumn = styled(InfosColumn)`
+//   width: 50px;
+// `
 
 export const ContainerInfoDoctor = styled.View`
   flex-direction: row;
@@ -87,6 +90,8 @@ export default function PatitentProfile({
   const [cepUser, setCepUser] = useState("");
   const [crmUser, setCrmUser] = useState("");
   const [cidadeUser, setCidadeUser] = useState("");
+  const [typeUSer, setTypeUSer] = useState("");
+  const [numeroUser, setNumeroUser] = useState("");
 
   // const u = route.params.userData;
 
@@ -127,28 +132,37 @@ export default function PatitentProfile({
     }
   }
 
+  async function GetByIdUser() {
+    try {
+      const response = await api.get(`/api/Medicos/BuscarPorId?id=${idUser}`);
+      // console.log(response);
 
+      setEspecialidadeUser(response.data.especialidade.especialidade1);
+      setLogradouroUser(response.data.endereco.logradouro);
+      setCrmUser(response.data.crm)
+      setCepUser(response.data.endereco.cep);
+      setCidadeUser(response.data.endereco.cidade);
+      setFotoUser(response.data.idNavigation.foto);
+      setNumeroUser(response.data.endereco.numero);
+      setTypeUSer(response.data.idNavigation.tipoUsuarioId);
+
+    } catch (error) {
+      console.log("deu ruim na requisição de usuario por ID");
+      console.log(error.request);
+    }
+  }
 
 
   async function profileLoad() {
+    const token = await userDecodeToken();
+    setIdUser(token.jti)
     try {
-      const token = await userDecodeToken();
-
-      setIdUser(token.jti)
 
       if (token) {
-        console.log('Token de aces so recuperado:', token);
-        const response = await api.get(`/api/Medicos/BuscarPorId?id=${idUser}`);
-        console.log(response);
+        console.log('Token de acesso recuperado:', token);
 
         setNomeUser(token.name)
         setEmailUser(token.email)
-        setEspecialidadeUser(response.data.especialidade.especialidade1);
-        setLogradouroUser(response.data.endereco.logradouro);
-        setCrmUser(response.data.crm)
-        setCepUser(response.data.endereco.cep);
-        setCidadeUser(response.data.endereco.cidade);
-        setFotoUser(response.data.idNavigation.foto);
 
       } else {
         console.log('Não foi possível recuperar o token de acesso.');
@@ -170,7 +184,7 @@ export default function PatitentProfile({
         console.log('Não foi possível recuperar o token de acesso.');
       }
 
-      console.log(token);
+      // console.log(token);
     } catch (error) {
       console.log(error);
     }
@@ -185,7 +199,7 @@ export default function PatitentProfile({
     })
 
     try {
-      console.log(route.params.photoUri);
+      // console.log(route.params.photoUri);
       await api.put(`/api/Usuario/AlterarFotoPerfil?id=${idUser}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data"
@@ -196,7 +210,33 @@ export default function PatitentProfile({
     } catch (error) {
       console.log("Erro ao tentar atualizar a foto de perfil:", error);
     }
+  }
 
+  async function UpdateInfo() {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      console.log(token);
+      await api.put(`/api/Medicos/AtualizarPerfil`, {
+
+        // nome: nomeUser,
+        // email: emailUser,
+        cep: cepUser,
+        logradouro: logradouroUser,
+        numero: numeroUser,
+        cidade: cidadeUser,
+        // especialidadeId: especialidadeUser, 
+        crm: crmUser,
+        // idTipoUsuario: typeUSer
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      console.log('Deu bom!');
+
+    } catch (error) {
+      console.error('Erro ao atualizar as informações:', error);
+    }
   }
 
   useEffect(() => {
@@ -208,6 +248,13 @@ export default function PatitentProfile({
       UpdatePhoto()
     }
   }, [route.params, idUser])
+
+  useEffect(() => {
+    GetByIdUser();
+  });
+
+  // useEffect(() => {
+  // })
 
   return (
     <Container>
@@ -253,51 +300,17 @@ export default function PatitentProfile({
         <TextLabel>
           Especialidade
         </TextLabel>
-        {/* 
-        {open && (
-
-          <DateTimePicker
-            mode='date'
-            display='inline'
-            value={date}
-            onChange={onChange}
-            editable={isEditable}
-            isEditable={isEditable}
-          />
-        )} */}
-
-        {/* <DateTimePicker
-            data={consultas}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => {
-              mode = 'date'
-              display = 'inline'
-              value = { date }
-              onChange = { onChange }
-              editable = { isEditable }
-              isEditable = { isEditable }
-            }}
-          />
-        )} */}
-        
-
-        {!open && (
-
-          <Pressable
-            onPress={toggleDatePicker}>
-            <InputStyle
-              placeholder={especialidadeUser}
-              value={dateOfBirth}
-              onChangeText={setDateOfBirth}
-              placeholderTextColor={APP_COLORS.primaryV1}
-              boxHeigth={'60px'}
-              boxWidth={"100%"}
-              borderColor={APP_COLORS.primary}
-              editable={isEditable}
-              isEditable={isEditable}
-            />
-          </Pressable>
-        )}
+        <InputStyle
+          placeholder={especialidadeUser}
+          value={especialidadeUser}
+          onChangeText={setDateOfBirth}
+          placeholderTextColor={APP_COLORS.primaryV1}
+          boxHeigth={'60px'}
+          boxWidth={"100%"}
+          borderColor={APP_COLORS.primary}
+          editable={isEditable}
+          isEditable={isEditable}
+        />
 
         {/* <Calendar
           name="calendar"
@@ -311,6 +324,7 @@ export default function PatitentProfile({
 
         <InputStyle
           placeholder={crmUser}
+          // value={crmUser}
           placeholderTextColor={APP_COLORS.primaryV1}
           boxHeigth={'60px'}
           boxWidth={"100%"}
@@ -324,6 +338,7 @@ export default function PatitentProfile({
 
         <InputStyle
           placeholder={logradouroUser}
+          // value={logradouroUser}
           placeholderTextColor={APP_COLORS.primaryV1}
           boxHeigth={'60px'}
           boxWidth={"100%"}
@@ -340,6 +355,7 @@ export default function PatitentProfile({
             </TextLabel>
             <InputStyle
               placeholder={cepUser}
+              // value={cepUser}
               placeholderTextColor={APP_COLORS.primaryV1}
               boxWidth={"100%"}
               boxHeigth={"60px"}
@@ -354,6 +370,7 @@ export default function PatitentProfile({
             </TextLabel>
             <InputStyle
               placeholder={cidadeUser}
+              // value={cidadeUser}
               placeholderTextColor={APP_COLORS.primaryV1}
               boxWidth={"100%"}
               boxHeigth={"60px"}
@@ -387,7 +404,7 @@ export default function PatitentProfile({
             color={APP_COLORS.white}
             title={"Salvar"}
             // marginTop={-10}
-            onPress={handleSave}
+            onPress={UpdateInfo}
           />
         )}
 
