@@ -11,19 +11,17 @@ import api from "../../../service/service";
 
 const Cadastro = ({ navigation }) => {
 
-    const [email, setEmail] = useState("gabrieldemetrio571@gmail.com");
-
-    console.log(email);
+    const [email, setEmail] = useState("");
 
     async function EnviarEmail() {
-        await api.post(`/RecuperarSenha?email=${email}`)
+        await api.post(`/api/RecuperarSenha?email=${email}`)
             .then(() => {
                 navigation.replace("VerificaEmail", { emailRecuperacao: email });
             }).catch(error => {
                 console.log(error)
             })
 
-        navigation.navigate("VerificaEmail", {emailRecuperacao: "gabrieldemetrio571@gmail.com"})
+        navigation.navigate("VerificaEmail", {emailRecuperacao: email})
     };
 
     return (
@@ -50,7 +48,6 @@ const Cadastro = ({ navigation }) => {
             <InputValues
                 value={email}
                 onChangeText={(txt) => setEmail(txt)}
-
             />
 
             <Button
@@ -59,7 +56,7 @@ const Cadastro = ({ navigation }) => {
                 marginTop={60}
                 color={APP_COLORS.white}
                 title={"Continuar".toUpperCase()}
-                onPress={() =>EnviarEmail()}
+                onPress={() => EnviarEmail()}
                 activeOpacity={.8}
             />
 

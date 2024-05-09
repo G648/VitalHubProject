@@ -17,12 +17,10 @@ export const ContainerScrollView = styled.ScrollView`
 
 export default function ChooseClinic({ navigation, route }) {
   const [selectedCard, setSelectedCard] = useState(null);
+  const [isSelected, setIsSelected] = useState(false);
   const [infosClinic, setInfosClinic] = useState({});
 
   const { agendamento } = route.params;
-
-  console.log("informações outra tela");
-  console.log(agendamento);
 
   const handleCardPress = (id) => {
     setSelectedCard(id);
@@ -41,9 +39,19 @@ export default function ChooseClinic({ navigation, route }) {
     }
   }
 
+  function getButtonValidation() {
+    if (selectedCard != null) {
+      setIsSelected(true)
+    }
+  }
+
   useEffect(() => {
     GetClinics();
   }, []);
+
+  useEffect(() => {
+    getButtonValidation();
+  }, [selectedCard])
 
   return (
     <Container>
@@ -87,23 +95,25 @@ export default function ChooseClinic({ navigation, route }) {
         )}
       </ContainerScrollView>
 
-      <Button
-        marginTop={50}
-        activeOpacity={0.6}
-        backgroundColor={APP_COLORS.secondary}
-        border={APP_COLORS.secondary}
-        color={APP_COLORS.white}
-        width={"90%"}
-        title={"Continuar"}
-        onPress={() =>
-          navigation.navigate("ChoseDoctor", {
-            agendamento: {
-              ...route.params.agendamento,
-              clinicaSelecionada: selectedCard,
-            },
-          })
-        }
-      />
+      {isSelected && (
+        <Button
+          marginTop={50}
+          activeOpacity={0.6}
+          backgroundColor={APP_COLORS.secondary}
+          border={APP_COLORS.secondary}
+          color={APP_COLORS.white}
+          width={"90%"}
+          title={"Continuar"}
+          onPress={() =>
+            navigation.navigate("ChoseDoctor", {
+              agendamento: {
+                ...route.params.agendamento,
+                clinicaSelecionada: selectedCard,
+              },
+            })
+          }
+        />
+      )}
 
       <UnderlinedLink
         ColorText={APP_COLORS.secondary}

@@ -61,10 +61,6 @@ const DoctorHome = ({ navigation }) => {
     setSelectedUserData(userData);
   };
 
-  // console.log(selectedButtonModal);
-  console.log("UserDataaaaaaa");
-  console.log(selectedUserData);
-
   const verifyPriorityLevels = (priority) => {
     switch (priority) {
       case 0:
@@ -140,6 +136,10 @@ const DoctorHome = ({ navigation }) => {
         console.log(response);
       })
       .catch((error) => console.log(error.request));
+  }
+
+  function cidadeDefault() {
+    setCidade("")
   }
 
   useEffect(() => {
@@ -304,7 +304,7 @@ const DoctorHome = ({ navigation }) => {
                   nameUser={
                     "Dr. " + item.medicoClinica.medico.idNavigation.nome
                   }
-                  // ageUser={item.medicoClinica.medico.crm}
+                  // ageUser={"crm: " + item.medicoClinica.medico.crm}
                   descriptionUser={verifyPriorityLevels(
                     item.prioridade.prioridade
                   )}
@@ -316,7 +316,7 @@ const DoctorHome = ({ navigation }) => {
                   situation={item.situacao.situacao}
                   onPressBorder={() =>
                     item.situacao.situacao === "Cancelados"
-                      ? handleCardPress(selectedButton, JSON.parse(item))
+                      ? handleCardPress(selectedButton, item)
                       : null
                   }
                 />
@@ -413,7 +413,6 @@ const DoctorHome = ({ navigation }) => {
           onChangeText={(txt) => setCidade(txt)}
           cancelDialog={() => setIsModalScheduleVisible(false)}
           onClick={async () => {
-            // Verifica se o botão de continuar está habilitado antes de prosseguir
             if (isButtonEnabled) {
               setIsModalScheduleVisible(false);
               navigation.navigate("ChooseClinic", {

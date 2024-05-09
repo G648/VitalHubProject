@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Camera, CameraType } from "expo-camera";
+import { CameraView } from "expo-camera";
 import { Container } from "../../components/Header/Header";
 import styled from "styled-components/native";
 import { UnderlinedLink } from "../../components/Links/Style";
 import { APP_COLORS } from "../../utils/App_colors";
 import { FontAwesome } from "@expo/vector-icons";
-import { Alert, Image, Modal, TouchableOpacity, View } from "react-native";
+import { Image, Modal, TouchableOpacity, View } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 
-export const CameraView = styled(Camera)`
+export const CameraViewContainer = styled(CameraView)`
   flex: 1;
   width: 100%;
   height: 80%;
@@ -69,7 +69,7 @@ export default function MedicalExamsPhotos(
   const [openModal, setOpenModal] = useState(false);
   const [captureMode, setCaptureMode] = useState("photo");
   const [isRecording, setIsRecording] = useState(false);
-  const [typeCamera, setTypeCamera] = useState(Camera.Constants.Type.back);
+  const [typeCamera, setTypeCamera] = useState('back')
 
   async function CapturePhoto() {
     if (cameraRef) {
@@ -149,7 +149,7 @@ export default function MedicalExamsPhotos(
 
   return (
     <Container>
-      <CameraView
+      <CameraViewContainer
         getMediaLibrary={true}
         ref={cameraRef}
         type={typeCamera}
@@ -226,7 +226,7 @@ export default function MedicalExamsPhotos(
             </BtnSave>
           </BoxButons>
         </Modal>
-      </CameraView>
+      </CameraViewContainer>
     </Container>
   );
 }

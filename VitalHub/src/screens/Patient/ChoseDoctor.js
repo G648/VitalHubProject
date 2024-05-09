@@ -16,15 +16,18 @@ export default function ChoseDoctor({ navigation, route }) {
   const [doctorName, setDoctorName] = useState("");
   const [doctorEspecialidade, setDoctorEspecialidade] = useState("");
   const [medicoClinicaId, setMedicoClinicaId] = useState("");
+  const [isSelected, setIsSelected] = useState(false);
 
-  const {agendamento} = route.params;
+  const { agendamento } = route.params;
 
   console.log("infos agendamento doutor");
-  console.log(agendamento);
+  console.log(selectedCard);
 
   const getDoctor = async () => {
     await api
-      .get(`/api/Medicos/BuscarPorIdClinica?id=${agendamento.clinicaSelecionada}`)
+      .get(
+        `/api/Medicos/BuscarPorIdClinica?id=${agendamento.clinicaSelecionada}`
+      )
       .then((response) => {
         setDoctorList(response.data);
         setDoctorName(response.data[0].idNavigation.nome);
@@ -48,6 +51,16 @@ export default function ChoseDoctor({ navigation, route }) {
       console.log(error);
     }
   };
+
+  function getButtonValidation() {
+    if (selectedCard != null) {
+      setIsSelected(true);
+    }
+  }
+
+  useEffect(() => {
+    getButtonValidation();
+  }, [selectedCard]);
 
   useEffect(() => {
     getDoctor();
@@ -73,7 +86,7 @@ export default function ChoseDoctor({ navigation, route }) {
                 widthImage={100}
                 heightImage={100}
                 marginTopImage={1}
-                isSelected={selectedCard === item.id}
+                isSelected={selectedCard === item.idNavigation.id}
                 onPressBorder={() => handleCardPress(item.idNavigation.id)}
                 marginBottomCard={0}
                 isDoctor={true}
@@ -85,26 +98,28 @@ export default function ChoseDoctor({ navigation, route }) {
         />
       </ContainerScrollView>
 
-      <Button
-        marginTop={50}
-        activeOpacity={0.6}
-        backgroundColor={APP_COLORS.secondary}
-        border={APP_COLORS.secondary}
-        color={APP_COLORS.white}
-        width={"90%"}
-        title={"Continuar"}
-        onPress={() =>
-          navigation.navigate("ChooseDate", {
-            agendamento: {
-              ...route.params.agendamento,
-              doutorSelecionado: selectedCard,
-              medicoClinicaId: medicoClinicaId,
-              nomeDoutor: doctorName,
-              especialidadeDoutor: doctorEspecialidade,
-            },
-          })
-        }
-      />
+      {isSelected && (
+        <Button
+          marginTop={50}
+          activeOpacity={0.6}
+          backgroundColor={APP_COLORS.secondary}
+          border={APP_COLORS.secondary}
+          color={APP_COLORS.white}
+          width={"90%"}
+          title={"Continuar"}
+          onPress={() =>
+            navigation.navigate("ChooseDate", {
+              agendamento: {
+                ...route.params.agendamento,
+                doutorSelecionado: selectedCard,
+                medicoClinicaId: medicoClinicaId,
+                nomeDoutor: doctorName,
+                especialidadeDoutor: doctorEspecialidade,
+              },
+            })
+          }
+        />
+      )}
 
       <UnderlinedLink
         ColorText={APP_COLORS.secondary}

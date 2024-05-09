@@ -24,6 +24,7 @@ export default function ChooseDate({ navigation, route }) {
   const dataAtual = moment().format("YYYY-MM-DD");
   const [hora, setHora] = useState("");
   const { agendamento } = route.params;
+  const [isSelected, setIsSelected] = useState(false);
   const dataHoraSelecionada = dataSelecionada + " " + hora;
 
   console.log(dataHoraSelecionada);
@@ -91,6 +92,16 @@ export default function ChooseDate({ navigation, route }) {
       console.log(error);
     }
   }
+
+  function getButtonValidation() {
+    if (currentDate != undefined && hora != "") {
+      setIsSelected(true);
+    }
+  }
+
+  useEffect(() => {
+    getButtonValidation();
+  }, [currentDate, hora]);
 
   useEffect(() => {
     LoadOptions();
@@ -176,16 +187,18 @@ export default function ChooseDate({ navigation, route }) {
         )}
       </ViewSelectedList>
 
-      <Button
-        title={"Continuar"}
-        activeOpacity={0.8}
-        border={APP_COLORS.secondary}
-        backgroundColor={APP_COLORS.secondary}
-        color={APP_COLORS.white}
-        marginTop={100}
-        width={"95%"}
-        onPress={() => handleScheduling()}
-      />
+      {isSelected && (
+        <Button
+          title={"Continuar"}
+          activeOpacity={0.8}
+          border={APP_COLORS.secondary}
+          backgroundColor={APP_COLORS.secondary}
+          color={APP_COLORS.white}
+          marginTop={100}
+          width={"95%"}
+          onPress={() => handleScheduling()}
+        />
+      )}
 
       {/* Renderiza o Dialogs quando isModalVisible for true */}
       {isModalScheduleVisible && (
