@@ -308,9 +308,12 @@ const DoctorHome = ({ navigation }) => {
         />
       )}
 
-      {/* <SeeMedicalDialog
+      <SeeMedicalDialog
         isVisible={isModalMedical}
-        // imageUser={{ uri: selectedUserData.idNavigation.foto }}
+        imageUser={
+          selectedUserData != null &&
+          selectedUserData.idNavigation.foto
+        }
         showCancelButton={true}
         onPressCancel={() => setisModalMedical(false)}
         heightImageUser={250}
@@ -329,7 +332,7 @@ const DoctorHome = ({ navigation }) => {
         }}
         widtContainerInfoUser={280}
         marginBottomName={"30px"}
-      /> */}
+      />
     </Container>
   );
 };

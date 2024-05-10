@@ -13,6 +13,7 @@ import { userDecodeToken } from '../../utils/Auth'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import api from "../../service/service";
+import axios from "axios";
 
 export const DoctorContainerInfos = styled.View`
   width: 80%;
@@ -46,7 +47,7 @@ export const Calendar = styled(Entypo)`
 
 export const InfosContainer = styled.View`
   flex-direction: row;
-  justify-content:space-around;
+  justify-content:space-between;
 `
 
 export const InfosColumn = styled.View`
@@ -80,7 +81,7 @@ export default function PatitentProfile({
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
   const [dateOfBirth, setDateOfBirth] = useState("")
-  const [isEditable, setIsEditable] = useState(false); // Estado de edição dos inputs
+  const [isEditable, setIsEditable] = useState(true); // Estado de edição dos inputs
   const [emailUser, setEmailUser] = useState('');
   const [nomeUser, setNomeUser] = useState('');
   const [idUser, setIdUser] = useState('');
@@ -90,8 +91,14 @@ export default function PatitentProfile({
   const [cepUser, setCepUser] = useState("");
   const [crmUser, setCrmUser] = useState("");
   const [cidadeUser, setCidadeUser] = useState("");
-  const [typeUSer, setTypeUSer] = useState("");
   const [numeroUser, setNumeroUser] = useState("");
+  const [infosEndereco, setInfosEndereco] = useState({});
+
+  //novas informações do usuário
+  const [newEspecialidadeUser, setNewEspecialidadeUser] = useState("");
+  const [newCrmUser, setNewCrmUser] = useState("");
+  const [newCepUser, setNewCepUser] = useState("");
+  const [newNumeroUser, setNewNumeroUser] = useState("");
 
   // const u = route.params.userData;
 
@@ -147,8 +154,8 @@ export default function PatitentProfile({
       setTypeUSer(response.data.idNavigation.tipoUsuarioId);
 
     } catch (error) {
-      console.log("deu ruim na requisição de usuario por ID");
-      console.log(error.request);
+      // console.log("deu ruim na requisição de usuario por ID");
+      // console.log(error.request);
     }
   }
 
@@ -214,22 +221,18 @@ export default function PatitentProfile({
 
   async function UpdateInfo() {
     try {
-      const token = await AsyncStorage.getItem('token');
+      const token = JSON.parse(await AsyncStorage.getItem('token')).token;
       console.log(token);
-      await api.put(`/api/Medicos/AtualizarPerfil`, {
-
-        // nome: nomeUser,
-        // email: emailUser,
-        cep: cepUser,
+      await api.put(`/api/Medicos`, {
+        cep: newCepUser,
         logradouro: logradouroUser,
-        numero: numeroUser,
+        numero: newNumeroUser,
         cidade: cidadeUser,
-        // especialidadeId: especialidadeUser, 
-        crm: crmUser,
-        // idTipoUsuario: typeUSer
+        especialidade1: especialidadeUser,
+        crm: newCrmUser
       }, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         }
       })
       console.log('Deu bom!');
@@ -238,6 +241,23 @@ export default function PatitentProfile({
       console.error('Erro ao atualizar as informações:', error);
     }
   }
+
+  async function GetCep() {
+    try {
+      const response = await axios.get(`https://viacep.com.br/ws/${newCepUser}/json/`);
+
+      setInfosEndereco(response.data);
+
+      console.log(infosEndereco);
+    } catch (error) {
+      console.log("deu ruim " + error);
+    }
+  }
+
+  useEffect(() => {
+    GetCep();
+    console.log(infosEndereco);
+  }, [newCepUser]);
 
   useEffect(() => {
     profileLoad();
@@ -277,15 +297,6 @@ export default function PatitentProfile({
           <DoctorName>
             {nomeUser}
           </DoctorName>
-          <ContainerInfoDoctor>
-            {/* <Crm>
-              {crm}
-            </Crm>
-
-            <Especialidade>
-              {especialidade}
-            </Especialidade> */}
-          </ContainerInfoDoctor>
 
           <DoctorEmail>
             {emailUser}
@@ -302,21 +313,15 @@ export default function PatitentProfile({
         </TextLabel>
         <InputStyle
           placeholder={especialidadeUser}
-          value={especialidadeUser}
-          onChangeText={setDateOfBirth}
+          value={newEspecialidadeUser}
           placeholderTextColor={APP_COLORS.primaryV1}
           boxHeigth={'60px'}
           boxWidth={"100%"}
           borderColor={APP_COLORS.primary}
           editable={isEditable}
           isEditable={isEditable}
+          onChangeText={(txt) => setNewEspecialidadeUser(txt)}
         />
-
-        {/* <Calendar
-          name="calendar"
-          size={24}
-          color={APP_COLORS.primaryV1}
-        /> */}
 
         <TextLabel>
           CRM
@@ -324,30 +329,16 @@ export default function PatitentProfile({
 
         <InputStyle
           placeholder={crmUser}
-          // value={crmUser}
+          value={newCrmUser}
           placeholderTextColor={APP_COLORS.primaryV1}
           boxHeigth={'60px'}
           boxWidth={"100%"}
           borderColor={APP_COLORS.primary}
           editable={isEditable}
           isEditable={isEditable}
+          onChangeText={(txt) => setNewCrmUser(txt)}
+
         />
-        <TextLabel>
-          Endereço
-        </TextLabel>
-
-        <InputStyle
-          placeholder={logradouroUser}
-          // value={logradouroUser}
-          placeholderTextColor={APP_COLORS.primaryV1}
-          boxHeigth={'60px'}
-          boxWidth={"100%"}
-          borderColor={APP_COLORS.primary}
-          editable={isEditable}
-          isEditable={isEditable}
-        />
-
-
         <InfosContainer>
           <InfosColumn>
             <TextLabel>
@@ -355,12 +346,13 @@ export default function PatitentProfile({
             </TextLabel>
             <InputStyle
               placeholder={cepUser}
-              // value={cepUser}
+              value={newCepUser}
               placeholderTextColor={APP_COLORS.primaryV1}
               boxWidth={"100%"}
               boxHeigth={"60px"}
               editable={isEditable}
               isEditable={isEditable}
+              onChangeText={(txt) => setNewCepUser(txt)}
             />
           </InfosColumn>
 
@@ -369,17 +361,34 @@ export default function PatitentProfile({
               Cidade
             </TextLabel>
             <InputStyle
-              placeholder={cidadeUser}
+              placeholder={infosEndereco.localidade}
               // value={cidadeUser}
               placeholderTextColor={APP_COLORS.primaryV1}
               boxWidth={"100%"}
               boxHeigth={"60px"}
-              editable={isEditable}
+              editable={false}
               isEditable={isEditable}
             />
           </InfosColumn>
         </InfosContainer>
 
+
+
+        <TextLabel>
+          Endereço
+        </TextLabel>
+
+        <InputStyle
+          // placeholder={logradouroUser}
+          placeholder={infosEndereco.logradouro}
+          // value={logradouroUser}
+          placeholderTextColor={APP_COLORS.primaryV1}
+          boxHeigth={'60px'}
+          boxWidth={"100%"}
+          borderColor={APP_COLORS.primary}
+          editable={false}
+          isEditable={isEditable}
+        />
 
 
         {!isEditable && ( // Renderiza o botão de editar apenas quando os inputs não estiverem editáveis
@@ -404,7 +413,7 @@ export default function PatitentProfile({
             color={APP_COLORS.white}
             title={"Salvar"}
             // marginTop={-10}
-            onPress={UpdateInfo}
+            onPress={() => { UpdateInfo(); handleSave(); }}
           />
         )}
 
@@ -419,13 +428,15 @@ export default function PatitentProfile({
           onPress={removeToken}
         />
 
-        <UnderlinedLink
-          textIntput={"Cancelar"}
-          ColorText={APP_COLORS.secondaryV1}
-          buttonOpacity={.6}
-          onClick={handleSave}
+        {isEditable && (
+          <UnderlinedLink
+            textIntput={"Cancelar"}
+            ColorText={APP_COLORS.secondaryV1}
+            buttonOpacity={.6}
+            onClick={handleSave}
 
-        />
+          />
+        )}
 
       </ScrollViewContainer>
 
