@@ -142,6 +142,10 @@ const DoctorHome = ({ navigation }) => {
     setCidade("")
   }
 
+  function emptyComponent() {
+    //TODO
+  }
+
   useEffect(() => {
     profileLoad();
 
@@ -240,6 +244,7 @@ const DoctorHome = ({ navigation }) => {
         <FlatlistInfos
           data={consultas}
           keyExtractor={(item) => item.id}
+          ListEmptyComponent={emptyComponent}
           renderItem={({ item }) => {
             if (
               selectedButton === "Pendentes" &&

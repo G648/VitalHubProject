@@ -194,13 +194,13 @@ export default function PatitentProfile({ navigation }) {
           <Pressable onPress={toggleDatePicker}>
             <InputStyle
               placeholder={dataNascimentoUser}
-              value={dataNascimentoUser}
+              value={dateOfBirth}
               onChangeText={setDateOfBirth}
               placeholderTextColor={APP_COLORS.primaryV1}
               boxHeigth={"60px"}
               boxWidth={"100%"}
               borderColor={APP_COLORS.primary}
-              editable={isEditable}
+              editable={false}
               isEditable={isEditable}
             />
           </Pressable>

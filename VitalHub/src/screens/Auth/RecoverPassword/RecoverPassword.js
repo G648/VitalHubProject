@@ -155,9 +155,6 @@ export default function RecoverPassword({ navigation }) {
           value={senha}
           onChangeText={(txt) => setSenha(txt)}
         />
-        {/* 
-        //TODO:validar campos de senha
-         */}
 
         <Button
           activeOpacity={0.8}
