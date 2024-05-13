@@ -25,6 +25,7 @@ import { UnderlinedLink } from "../../../components/Links/Style";
 import axios from "axios";
 import { useRoute } from "@react-navigation/native";
 import api from "../../../service/service";
+import { Masks, useMaskedInputProps } from "react-native-mask-input";
 
 export default function InfosCadastroUser({ navigation, route }) {
   const [date, setDate] = useState(new Date());
@@ -35,21 +36,11 @@ export default function InfosCadastroUser({ navigation, route }) {
   const [cep, setCep] = useState("");
   const [infosEndereco, setInfosEndereco] = useState({});
   const [image, setImage] = useState();
-  const [rg, setRg] = useState("")
-  const [cpf, setCpf] = useState("")
-  const [numero, setNumero] = useState()
+  const [rg, setRg] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [numero, setNumero] = useState();
   const { email, senha } = route.params;
   const { params } = useRoute();
-
-  console.log(email, senha);
-
-  const toggleEdit = () => {
-    setIsEditable((prevState) => !prevState); // Alterna entre editável e não editável
-  };
-
-  const handleSave = () => {
-    setIsEditable(false); // Define todos os inputs como não editáveis ao salvar
-  };
 
   const formatDate = (rawDate) => {
     let date = new Date(rawDate);
@@ -90,7 +81,7 @@ export default function InfosCadastroUser({ navigation, route }) {
 
   async function SubmitForm() {
     const form = new FormData();
-    var dateStr = (new Date(date)).toUTCString();
+    var dateStr = new Date(date).toUTCString();
     console.log(dateStr);
     form.append("Arquivo", {
       uri: image,
@@ -99,28 +90,43 @@ export default function InfosCadastroUser({ navigation, route }) {
     });
     form.append("Rg", rg);
     form.append("Cpf", cpf);
-    form.append("DataNascimento", dateStr)
-    form.append("Cep", cep)
-    form.append("Logradouro", infosEndereco.logradouro )
-    form.append("Numero", numero )
-    form.append("Cidade", infosEndereco.localidade )
-    form.append("Nome", nomeUser )
-    form.append("Email", email )
-    form.append("Senha", senha )
-    form.append("IdTipoUsuario", "AD755F08-904B-497A-A496-C5883F650E7D" )
+    form.append("DataNascimento", dateStr);
+    form.append("Cep", cep);
+    form.append("Logradouro", infosEndereco.logradouro);
+    form.append("Numero", numero);
+    form.append("Cidade", infosEndereco.localidade);
+    form.append("Nome", nomeUser);
+    form.append("Email", email);
+    form.append("Senha", senha);
+    form.append("IdTipoUsuario", "AD755F08-904B-497A-A496-C5883F650E7D");
 
     console.log(form);
 
-    await api.post("/api/Pacientes" , form, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    }).then(response => {
-      navigation.navigate("Login")
-    }).catch(error => {
-      console.log( error.request);
-    })
+    await api
+      .post("/api/Pacientes", form, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        navigation.navigate("Login");
+      })
+      .catch((error) => {
+        console.log(error.request);
+      });
   }
+
+  const cpfMasked = useMaskedInputProps({
+    value: cpf,
+    onChangeText: setCpf,
+    mask: Masks.BRL_CPF,
+  });
+
+  const cepMasked = useMaskedInputProps({
+    value: cep,
+    onChangeText: setCep,
+    mask: Masks.ZIP_CODE,
+  });
 
   useEffect(() => {
     GetCep();
@@ -132,7 +138,6 @@ export default function InfosCadastroUser({ navigation, route }) {
       setImage(params.image);
     }
   }, [params]);
-
 
   return (
     <Container>
@@ -146,7 +151,7 @@ export default function InfosCadastroUser({ navigation, route }) {
       <DoctorContainerInfos>
         <ContentInputSmall>
           <ButtonCamera
-            onPress={() => navigation.navigate("MedicalExamsPhotos")}
+            onPress={() => navigation.navigate("MedicalProfilePhotos")}
           >
             <MaterialCommunityIcons
               name="camera-plus"
@@ -166,7 +171,7 @@ export default function InfosCadastroUser({ navigation, route }) {
         <TextLabel>Nome</TextLabel>
 
         <InputStyle
-          placeholder="Guilherme Amorim"
+          placeholder="Nome..."
           placeholderTextColor={APP_COLORS.primaryV1}
           boxHeigth={"60px"}
           boxWidth={"100%"}
@@ -187,6 +192,7 @@ export default function InfosCadastroUser({ navigation, route }) {
             isEditable={isEditable}
           />
         )}
+        {/* TODO */}
 
         {!open && (
           <Pressable onPress={toggleDatePicker}>
@@ -225,7 +231,8 @@ export default function InfosCadastroUser({ navigation, route }) {
           boxWidth={"100%"}
           borderColor={APP_COLORS.primary}
           isEditable={!isEditable}
-          onChangeText={(txt) => setCpf(txt)}
+          {...cpfMasked}
+          keyboardType="numeric"
           value={cpf}
         />
         <TextLabel>CEP</TextLabel>
@@ -237,7 +244,8 @@ export default function InfosCadastroUser({ navigation, route }) {
           boxWidth={"100%"}
           borderColor={APP_COLORS.primary}
           isEditable={!isEditable}
-          onChangeText={(txt) => setCep(txt)}
+          {...cepMasked}
+          keyboardType="numeric"
         />
         <TextLabel>Logradouro</TextLabel>
 
@@ -303,7 +311,7 @@ export default function InfosCadastroUser({ navigation, route }) {
           textIntput={"Cancelar"}
           ColorText={APP_COLORS.secondaryV1}
           buttonOpacity={0.6}
-          onClick={handleSave}
+          onClick={() => navigation.navigate("Login")}
         />
       </ScrollViewContainer>
     </Container>

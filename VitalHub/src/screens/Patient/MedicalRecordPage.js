@@ -84,6 +84,7 @@ export default function MedicalRecordPage({ navigation, route }) {
                     'Content-Type': 'multipart/form-data',
                 },
             });
+            console.log(response);
             setDescricaoExame(descricaoExame + '\n' + response.data.descricao);
         } catch (error) {
             console.error('Deu erro:', error);
@@ -119,8 +120,8 @@ export default function MedicalRecordPage({ navigation, route }) {
     return (
         <Container>
             <ProfileImageModal
-                source={{ uri: 'https://blobvitalhubg16m.blob.core.windows.net/blobvitalhubcontainerg16m/0e5906e4a6764a8799b77757e9ae5ffb.jpg' }}
-                // source={{ uri: photoUri }}
+                // source={{ uri: 'https://blobvitalhubg16m.blob.core.windows.net/blobvitalhubcontainerg16m/0e5906e4a6764a8799b77757e9ae5ffb.jpg' }}
+                source={{ uri: photoUri }}
                 widthImageUser={"100%"}
                 heightImageUser={280}
                 resizeMode='cover'

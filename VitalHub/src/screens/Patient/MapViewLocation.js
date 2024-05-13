@@ -227,6 +227,7 @@ export default function MapViewLocation({ navigation, route }) {
             boxHeigth={"60px"}
             boxWidth={"100%"}
             placeholderTextColor={APP_COLORS.secondary}
+            editable={false}
           />
           <BoxInfoRow>
             <ContainerColumn>
@@ -236,6 +237,7 @@ export default function MapViewLocation({ navigation, route }) {
                 boxHeigth={"60px"}
                 boxWidth={"90%"}
                 placeholderTextColor={APP_COLORS.secondary}
+                editable={false}
               />
             </ContainerColumn>
 
@@ -246,6 +248,7 @@ export default function MapViewLocation({ navigation, route }) {
                 boxHeigth={"60px"}
                 boxWidth={"160%"}
                 placeholderTextColor={APP_COLORS.secondary}
+                editable={false}
               />
             </ContainerColumn>
           </BoxInfoRow>

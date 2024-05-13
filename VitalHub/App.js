@@ -8,11 +8,8 @@ import { Quicksand_700Bold, Quicksand_600SemiBold, Quicksand_400Regular, Quicksa
 import Cadastro from './src/screens/Auth/Cadastro/Cadastro';
 import { VerificaEmail } from './src/screens/Auth/VerificaEmail/VerificaEmail';
 import CadastroUser from './src/screens/Auth/CadastroUser/CadastroUser';
-import DoctorHome from './src/screens/Doctor/DoctorHome';
 import { BottomTabNavigation } from './src/settings/Routes/AppTabNavigationDoctor';
 import MedicalRecord from './src/screens/Doctor/MedicalRecord';
-import { MockData } from './src/utils/MockData';
-import PatientHome from './src/screens/Patient/PatientHome';
 import { BottomTabNavigationPatient } from './src/settings/Routes/AppTabNavigationPatient';
 import ChooseClinic from './src/screens/Patient/ChooseClinic';
 import ChoseDoctor from './src/screens/Patient/ChoseDoctor';

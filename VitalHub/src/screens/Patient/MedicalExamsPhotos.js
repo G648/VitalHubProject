@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Camera, CameraType } from 'expo-camera'
+import { CameraView } from 'expo-camera'
 import { Container } from '../../components/Header/Header'
 import styled from 'styled-components/native'
 import { UnderlinedLink } from '../../components/Links/Style'
@@ -29,7 +29,7 @@ export const BtnView = styled.View`
     flex-direction: row;
 `
 
-export const CameraView = styled(Camera)`
+export const CameraViewContainer = styled(CameraView)`
     flex: 1;
     width: 100%;
     height: 80%;
@@ -84,15 +84,19 @@ export const BoxButons = styled.View`
     left: 2.5%;
     `
 
-export default function MedicalExamsPhotos({ navigation, route }, getMediaLibrary = false) {
+export default function MedicalExamsPhotos(
+  { getMediaLibrary = false,
+    route,
+    navigation }
+) {
+  const cameraRef = useRef(null);
+  const [photo, setPhoto] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [captureMode, setCaptureMode] = useState("photo");
+  const [isRecording, setIsRecording] = useState(false);
+  const [typeCamera, setTypeCamera] = useState('back')
 
-  const cameraRef = useRef(null)
-  const [photo, setPhoto] = useState(null)
-  const [photoUri, setPhotoUri] = useState(null)
-  const [openModal, setOpenModal] = useState(false)
-  const [captureMode, setCaptureMode] = useState('photo')
-  const [isRecording, setIsRecording] = useState(false)
-  const [typeCamera, setTypeCamera] = useState(Camera.Constants.Type.back)
+  const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
 
   const [lastestPhoto, setLastestPhoto] = useState(null)
 
@@ -144,7 +148,8 @@ export default function MedicalExamsPhotos({ navigation, route }, getMediaLibrar
 
     console.log(assets);
     if (assets.length > 0) {
-      setLastestPhoto(assets[0].uri)
+      const infoAssets = await MediaLibrary.getAssetInfoAsync(assets[0].id)
+      setLastestPhoto(infoAssets.localUri)
     }
   }
 
@@ -205,13 +210,16 @@ export default function MedicalExamsPhotos({ navigation, route }, getMediaLibrar
   useEffect(() => {
     (async () => {
       //acesso a camera
-      const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync()
+      // const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync()
 
       //acesso a galeria da camera
-      const { status: mediaStatus } = await MediaLibrary.requestPermissionsAsync()
+      // const { status: mediaStatus } = await MediaLibrary.requestPermissionsAsync()
+      if (permissionResponse && !permissionResponse.granted) {
+        await requestPermission();
+      }
 
       //acesso ao microfone
-      const { status: videoStatus } = await Camera.requestMicrophonePermissionsAsync()
+      // const { status: videoStatus } = await Camera.requestMicrophonePermissionsAsync()
     })();
 
   }, [])
@@ -238,7 +246,7 @@ export default function MedicalExamsPhotos({ navigation, route }, getMediaLibrar
 
   return (
     <Container>
-      <CameraView
+      <CameraViewContainer
         getMediaLibrary={true}
         ref={cameraRef}
         type={typeCamera}
@@ -317,14 +325,14 @@ export default function MedicalExamsPhotos({ navigation, route }, getMediaLibrar
             >
               <FontAwesome name="trash" size={30} color="red" />
             </BtnCancel>
-            <BtnSave
+            {/* <BtnSave
               onPress={() => {
                 SendPhotoToProfile();
                 SavePhoto();
               }}
             >
               <AntDesign name="upload" size={24} color="black" />
-            </BtnSave>
+            </BtnSave> */}
             <BtnSave
               onPress={() => {
                 SendPhotoToRecord();
@@ -335,7 +343,7 @@ export default function MedicalExamsPhotos({ navigation, route }, getMediaLibrar
             </BtnSave>
           </BoxButons>
         </Modal>
-      </CameraView>
+      </CameraViewContainer>
     </Container>
   )
 } 

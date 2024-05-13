@@ -8,7 +8,7 @@ export const Input = styled.TextInput.attrs({
   width: ${({ width = "90%" }) => width};
   height: 53px;
   padding: 16px;
-  margin-top: 15px;
+  margin: 8px;
   border: 2px solid #49b3ba;
   border-radius: 5px;
   color: #34898f;
@@ -30,7 +30,7 @@ export function InputValues({ secureTextEntry, isRecoveryPassword, value, ...pro
           style={{
             position: "relative",
             right: isRecoveryPassword ? -310 : -150,
-            top: -38,
+            top: -45,
           }}
           onPress={() => setShowPassword(!showPassword)}
         />

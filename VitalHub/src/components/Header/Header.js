@@ -3,7 +3,9 @@ import styled from "styled-components/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
 import { userDecodeToken } from '../../utils/Auth'
-import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { TouchableOpacity } from "react-native";
+import PatitentProfile from "../../screens/Patient/PatitentProfile";
 
 export const BoxUser = styled.View`
   gap: 10px;
@@ -39,13 +41,13 @@ export const Container = styled.SafeAreaView`
   flex: 1;
   align-items: center;
   background-color: #fafafa;
-  width: ${({widthContainer = "100%"}) => widthContainer};
+  width: ${({ widthContainer = "100%" }) => widthContainer};
 `;
 
 export const ContainerHeader = styled(LinearGradient).attrs({
-    colors: ["#60BFC5", "#496BBA"],
-    start: { x: -0.05, y: 1.08 },
-    end: { x: 1, y: 0 },
+  colors: ["#60BFC5", "#496BBA"],
+  start: { x: -0.05, y: 1.08 },
+  end: { x: 1, y: 0 },
 
 })`
   height:20%;
@@ -63,24 +65,46 @@ export const ContainerHeader = styled(LinearGradient).attrs({
 
 
 export const Header = ({
-    textValue,
-    nameDoctor,
-    sourcePhoto
+  navigation,
+  textValue,
+  nameDoctor,
+  sourcePhoto
 }) => {
-    return (
-        <ContainerHeader>
-            <BoxUser>
-                <ImageUser source={{uri: sourcePhoto}} />
-                
-                <DataUser>
-                    <TextDefault>{textValue}</TextDefault>
-                    <NameUser>{nameDoctor}</NameUser>
-                </DataUser>
-            </BoxUser>
 
-            {/* material icons */}
-            <MaterialIcons name="notifications" size={25} color="#fbfbfb" />
+  async function SendPhotoToProfile(navigation) {
+    const retornoStorage = await AsyncStorage.getItem('token');
+    console.log(retornoStorage);
+    const token = await userDecodeToken();
+    console.log('Role do usuário:', token.role);
 
-        </ContainerHeader>
-    );
+    let navigationTarget = token.role === 'Medico' ? 'DoctorProfile' : 'PatitentProfile';
+
+    console.log(navigationTarget);
+
+    navigation.navigate(navigationTarget);
+  }
+
+  return (
+    <ContainerHeader>
+
+      <TouchableOpacity
+        style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}
+        activeOpacity={.8}
+        onPress={() => SendPhotoToProfile(navigation)}
+      >
+        <BoxUser>
+          <ImageUser source={{ uri: sourcePhoto }} />
+
+          <DataUser>
+            <TextDefault>{textValue}</TextDefault>
+            <NameUser>{nameDoctor}</NameUser>
+          </DataUser>
+        </BoxUser>
+
+        {/* material icons */}
+        <MaterialIcons name="notifications" size={25} color="#fbfbfb" />
+      </TouchableOpacity>
+
+    </ContainerHeader>
+  );
 };

@@ -16,39 +16,24 @@ export default function ChoseDoctor({ navigation, route }) {
   const [doctorName, setDoctorName] = useState("");
   const [doctorEspecialidade, setDoctorEspecialidade] = useState("");
   const [medicoClinicaId, setMedicoClinicaId] = useState("");
+  const [isSelected, setIsSelected] = useState(false);
 
-  const {agendamento} = route.params;
+  const { agendamento } = route.params;
 
   console.log("infos agendamento doutor");
-  console.log(agendamento);
-  console.log(medicoClinicaId);
-
-  // const getDoctor = async () => {
-  //   await api
-  //     .get(`/api/Medicos/BuscarPorIdClinica?id=${agendamento.clinicaSelecionada}`)
-  //     .then((response) => {
-  //       setDoctorList(response.data);
-  //       setDoctorName(response.data[0].idNavigation.nome);
-  //       setDoctorEspecialidade(response.data[0].especialidade.especialidade1);
-  //     })
-  //     .catch((error) => console.log(error));
-  // };
+  console.log(selectedCard);
 
   const getDoctor = async () => {
-    try {
-      const response = await api.get(`/api/Medicos/BuscarPorIdClinica?id=${agendamento.clinicaSelecionada}`);
-      const doctorData = response.data;
-      
-      if (Array.isArray(doctorData) && doctorData.length > 0) {
-        setDoctorList(doctorData);
-        setDoctorName(doctorData[0].idNavigation.nome);
-        setDoctorEspecialidade(doctorData[0].especialidade.especialidade1);
-      } else {
-        console.log("Não há médicos disponíveis para esta clínica.");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    await api
+      .get(
+        `/api/Medicos/BuscarPorIdClinica?id=${agendamento.clinicaSelecionada}`
+      )
+      .then((response) => {
+        setDoctorList(response.data);
+        setDoctorName(response.data[0].idNavigation.nome);
+        setDoctorEspecialidade(response.data[0].especialidade.especialidade1);
+      })
+      .catch((error) => console.log(error));
   };
 
   const handleCardPress = (id) => {
@@ -69,10 +54,22 @@ export default function ChoseDoctor({ navigation, route }) {
     }
   };
 
+  function getButtonValidation() {
+    if (selectedCard != null) {
+      setIsSelected(true);
+    }
+  }
+
+  useEffect(() => {
+    getButtonValidation();
+  }, [selectedCard]);
+
   useEffect(() => {
     getDoctor();
     getClinicaId();
   }, []);
+
+  // Erro ao reconhecer o textoOperation returned an invalid status code 'BadRequest'
 
   return (
     <Container>
@@ -93,7 +90,7 @@ export default function ChoseDoctor({ navigation, route }) {
                 widthImage={90}
                 heightImage={90}
                 marginTopImage={1}
-                isSelected={selectedCard === item.id}
+                isSelected={selectedCard === item.idNavigation.id}
                 onPressBorder={() => handleCardPress(item.idNavigation.id)}
                 marginBottomCard={0}
                 isDoctor={true}
@@ -105,26 +102,28 @@ export default function ChoseDoctor({ navigation, route }) {
         />
       </ContainerScrollView>
 
-      <Button
-        marginTop={50}
-        activeOpacity={0.6}
-        backgroundColor={APP_COLORS.secondary}
-        border={APP_COLORS.secondary}
-        color={APP_COLORS.white}
-        width={"90%"}
-        title={"Continuar"}
-        onPress={() =>
-          navigation.navigate("ChooseDate", {
-            agendamento: {
-              ...route.params.agendamento,
-              doutorSelecionado: selectedCard,
-              medicoClinicaId: medicoClinicaId,
-              nomeDoutor: doctorName,
-              especialidadeDoutor: doctorEspecialidade,
-            },
-          })
-        }
-      />
+      {isSelected && (
+        <Button
+          marginTop={50}
+          activeOpacity={0.6}
+          backgroundColor={APP_COLORS.secondary}
+          border={APP_COLORS.secondary}
+          color={APP_COLORS.white}
+          width={"90%"}
+          title={"Continuar"}
+          onPress={() =>
+            navigation.navigate("ChooseDate", {
+              agendamento: {
+                ...route.params.agendamento,
+                doutorSelecionado: selectedCard,
+                medicoClinicaId: medicoClinicaId,
+                nomeDoutor: doctorName,
+                especialidadeDoutor: doctorEspecialidade,
+              },
+            })
+          }
+        />
+      )}
 
       <UnderlinedLink
         ColorText={APP_COLORS.secondary}

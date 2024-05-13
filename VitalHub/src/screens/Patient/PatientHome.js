@@ -61,10 +61,6 @@ const DoctorHome = ({ navigation }) => {
     setSelectedUserData(userData);
   };
 
-  // console.log(selectedButtonModal);
-  console.log("idUser");
-  console.log(idUser);
-
   const verifyPriorityLevels = (priority) => {
     switch (priority) {
       case 0:
@@ -127,6 +123,27 @@ const DoctorHome = ({ navigation }) => {
         error
       );
     }
+  }
+
+  async function cancelConsulta() {
+    console.log(selectedUserData.id);
+
+    await api
+      .put(
+        `/api/Consultas/Status?idConsulta=${selectedUserData.id}&status=Cancelados`
+      )
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => console.log(error.request));
+  }
+
+  function cidadeDefault() {
+    setCidade("")
+  }
+
+  function emptyComponent() {
+    //TODO
   }
 
   useEffect(() => {
@@ -228,6 +245,7 @@ const DoctorHome = ({ navigation }) => {
         <FlatlistInfos
           data={consultas}
           keyExtractor={(item) => item.id}
+          ListEmptyComponent={emptyComponent}
           renderItem={({ item }) => {
             if (
               selectedButton === "Pendentes" &&
@@ -305,7 +323,7 @@ const DoctorHome = ({ navigation }) => {
                   nameUser={
                     "Dr. " + item.medicoClinica.medico.idNavigation.nome
                   }
-                  ageUser={item.medicoClinica.medico.crm}
+                  // ageUser={"crm: " + item.medicoClinica.medico.crm}
                   descriptionUser={verifyPriorityLevels(
                     item.prioridade.prioridade
                   )}
@@ -317,7 +335,7 @@ const DoctorHome = ({ navigation }) => {
                   situation={item.situacao.situacao}
                   onPressBorder={() =>
                     item.situacao.situacao === "Cancelados"
-                      ? handleCardPress(selectedButton, JSON.parse(item))
+                      ? handleCardPress(selectedButton, item)
                       : null
                   }
                 />
@@ -346,6 +364,13 @@ const DoctorHome = ({ navigation }) => {
           fontSizeTextParagraf={"15px"}
           onPressConfirm={() => {
             setIsModalCancel(false);
+
+            cancelConsulta();
+
+            GetPatientAppointmentFunction();
+
+            //TODO:pegar o id da consulta quando o usuário clicar no botão de cancelar consulta
+            setSelectedButton("Cancelados");
           }}
           onPressCancel={() => {
             setIsModalCancel(false);
@@ -407,7 +432,6 @@ const DoctorHome = ({ navigation }) => {
           onChangeText={(txt) => setCidade(txt)}
           cancelDialog={() => setIsModalScheduleVisible(false)}
           onClick={async () => {
-            // Verifica se o botão de continuar está habilitado antes de prosseguir
             if (isButtonEnabled) {
               setIsModalScheduleVisible(false);
               navigation.navigate("ChooseClinic", {
