@@ -20,9 +20,6 @@ export default function ChoseDoctor({ navigation, route }) {
 
   const { agendamento } = route.params;
 
-  console.log("infos agendamento doutor");
-  console.log(selectedCard);
-
   const getDoctor = async () => {
     await api
       .get(
