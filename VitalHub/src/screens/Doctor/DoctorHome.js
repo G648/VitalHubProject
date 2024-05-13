@@ -308,7 +308,7 @@ const DoctorHome = ({ navigation }) => {
         />
       )}
 
-      <SeeMedicalDialog
+      {/* <SeeMedicalDialog
         isVisible={isModalMedical}
         imageUser={
           selectedUserData != null &&
@@ -332,7 +332,7 @@ const DoctorHome = ({ navigation }) => {
         }}
         widtContainerInfoUser={280}
         marginBottomName={"30px"}
-      />
+      /> */}
     </Container>
   );
 };
