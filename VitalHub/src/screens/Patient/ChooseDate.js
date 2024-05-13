@@ -27,15 +27,17 @@ export default function ChooseDate({ navigation, route }) {
   const [isSelected, setIsSelected] = useState(false);
   const dataHoraSelecionada = dataSelecionada + " " + hora;
 
-  console.log(dataHoraSelecionada);
+  console.log(agendamento);
 
   const dadosEnviadosApi = {
-    situacaoId: "B2A29251-975A-46CA-8A41-D82AD95512DA",
+    situacaoId: "4BA379BE-4D05-4CCC-A220-FB9D922E84EA",
     pacienteId: agendamento.pacienteId,
     medicoClinicaId: agendamento.medicoClinicaId,
     prioridadeId: agendamento.prioridadeId,
     dataConsulta: dataHoraSelecionada,
   };
+
+  console.log(dadosEnviadosApi);
 
   useEffect(() => {
     var date = new Date().getDate(); //Current Date

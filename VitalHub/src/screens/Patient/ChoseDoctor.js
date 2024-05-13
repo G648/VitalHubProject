@@ -43,6 +43,8 @@ export default function ChoseDoctor({ navigation, route }) {
         .get(`/api/Clinica/BuscarPorId?id=${agendamento.clinicaSelecionada}`)
         .then((response) => {
           setMedicoClinicaId(response.data.medicosClinicas[0].id);
+          console.log("resposta api medico clinica");
+          console.log(response);
         });
     } catch (error) {
       console.log(error);
@@ -64,6 +66,8 @@ export default function ChoseDoctor({ navigation, route }) {
     getClinicaId();
   }, []);
 
+  // Erro ao reconhecer o textoOperation returned an invalid status code 'BadRequest'
+
   return (
     <Container>
       <Title marginTop={60}>Selecionar Médico</Title>
@@ -80,8 +84,8 @@ export default function ChoseDoctor({ navigation, route }) {
                 ageUser={"CRM " + item.crm}
                 descriptionUser={item.especialidade.especialidade1}
                 marginLeftInfoUser={-15}
-                widthImage={100}
-                heightImage={100}
+                widthImage={90}
+                heightImage={90}
                 marginTopImage={1}
                 isSelected={selectedCard === item.idNavigation.id}
                 onPressBorder={() => handleCardPress(item.idNavigation.id)}

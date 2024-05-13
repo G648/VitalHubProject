@@ -151,7 +151,7 @@ export default function InfosCadastroUser({ navigation, route }) {
       <DoctorContainerInfos>
         <ContentInputSmall>
           <ButtonCamera
-            onPress={() => navigation.navigate("MedicalExamsPhotos")}
+            onPress={() => navigation.navigate("MedicalProfilePhotos")}
           >
             <MaterialCommunityIcons
               name="camera-plus"
@@ -245,6 +245,7 @@ export default function InfosCadastroUser({ navigation, route }) {
           borderColor={APP_COLORS.primary}
           isEditable={!isEditable}
           {...cepMasked}
+          keyboardType="numeric"
         />
         <TextLabel>Logradouro</TextLabel>
 

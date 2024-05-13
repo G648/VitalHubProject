@@ -38,23 +38,21 @@ export const ProfileName = styled.Text`
 `;
 
 export const ProfileData = styled.View`
-  flex-direction: column;
-  gap: 5px;
-  margin-top: 10px;
-  margin-bottom: -50px;
+  flex-direction: row;
+  gap: 15px;
+  margin-bottom: -10px;
   margin-left: ${({ marginLeftInfoUser = "0px" }) => marginLeftInfoUser};
 `;
 export const TextAge = styled.Text`
   font-size: 16px;
   color: ${defaultTextColor};
   font-family: "Quicksand_400Regular";
-  margin-left: 15px;
 `;
 export const TextBold = styled(TextAge)`
   font-family: "Quicksand_600SemiBold";
-  position: ${({isDoctor}) => isDoctor ? "" : 'relative'};
+  /* position: ${({isDoctor}) => isDoctor ? "" : 'relative'};
   bottom: ${({isDoctor}) => isDoctor ? 0 : 40};
-  margin-left: ${({isDoctor}) => isDoctor ? 0 : -2};;
+  margin-left: ${({isDoctor}) => isDoctor ? 0 : -2};; */
 `;
 export const ViewRow = styled.View`
   width: 100%;
@@ -140,6 +138,7 @@ export function CardUser({
   isSelected,
   marginBottomCard,
   isDoctor,
+  consulta
 }) {
   return (
     <ButtonSelectedCard
@@ -185,7 +184,7 @@ export function CardUser({
               {situation === "Pendentes" ? (
                 <ButtonText situation={situation}>{"Cancelar"}</ButtonText>
               ) : situation === "Realizados" ? (
-                <ButtonText>{"Ver Prontuário"}</ButtonText>
+                <ButtonText onPress={onPress} >{"Ver Prontuário"}</ButtonText>
               ) : (
                 <></>
               )}

@@ -8,11 +8,8 @@ import { Quicksand_700Bold, Quicksand_600SemiBold, Quicksand_400Regular, Quicksa
 import Cadastro from './src/screens/Auth/Cadastro/Cadastro';
 import { VerificaEmail } from './src/screens/Auth/VerificaEmail/VerificaEmail';
 import CadastroUser from './src/screens/Auth/CadastroUser/CadastroUser';
-import DoctorHome from './src/screens/Doctor/DoctorHome';
 import { BottomTabNavigation } from './src/settings/Routes/AppTabNavigationDoctor';
 import MedicalRecord from './src/screens/Doctor/MedicalRecord';
-import { MockData } from './src/utils/MockData';
-import PatientHome from './src/screens/Patient/PatientHome';
 import { BottomTabNavigationPatient } from './src/settings/Routes/AppTabNavigationPatient';
 import ChooseClinic from './src/screens/Patient/ChooseClinic';
 import ChoseDoctor from './src/screens/Patient/ChoseDoctor';
@@ -22,6 +19,7 @@ import MedicalRecordPage from './src/screens/Patient/MedicalRecordPage';
 import MedicalExamsPhotos from './src/screens/Patient/MedicalExamsPhotos';
 import Toast from 'react-native-toast-message';
 import RecoverPassword from './src/screens/Auth/RecoverPassword/RecoverPassword';
+import MedicalProfilePhotos from './src/screens/Patient/MedicalProfilePhoto';
 import InfosCadastroUser from './src/screens/Auth/CadastroUser/InfosCadastroUser';
 
 
@@ -75,6 +73,12 @@ export default function App() {
             name='MedicalExamsPhotos'
             component={MedicalExamsPhotos}
             options={{ title: 'MedicalExamsPhotos' }}
+          />
+
+          <Stack.Screen
+            name='MedicalProfilePhotos'
+            component={MedicalProfilePhotos}
+            options={{ title: 'MedicalProfilePhotos' }}
           />
 
           <Stack.Screen

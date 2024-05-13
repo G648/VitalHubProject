@@ -154,6 +154,7 @@ const DoctorHome = ({ navigation }) => {
     }
   }, [dataConsulta]);
 
+
   useEffect(() => {
     GetByIdUser();
   });
@@ -292,6 +293,19 @@ const DoctorHome = ({ navigation }) => {
                   schedulingTime={FormatData(item.dataConsulta)}
                   key={item.id}
                   situation={item.situacao.situacao}
+                  onPress={() => {
+                    navigation.push("MedicalRecordPage",
+                      {
+                        consultaId: selectedUserData.id,
+                        foto: selectedUserData.medicoClinica.medico.idNavigation.foto,
+                        nomeMedico: selectedUserData.medicoClinica.medico.idNavigation.nome,
+                        crm: selectedUserData.medicoClinica.medico.crm,
+                        especialidade: selectedUserData.medicoClinica.medico.especialidade.especialidade1,
+                        descricao: selectedUserData.descricao,
+                        diagnostico: selectedUserData.diagnostico
+                      }
+                    )
+                  }}
                   onPressBorder={() =>
                     item.situacao.situacao === "Realizados"
                       ? handleCardPress(selectedButton, item)
@@ -442,3 +456,7 @@ const DoctorHome = ({ navigation }) => {
 };
 
 export default DoctorHome;
+
+
+
+

@@ -1,3 +1,4 @@
+
 import { View, Text, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Container } from "../../components/Container/Style";
@@ -28,7 +29,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import api from "../../service/service";
 
-export default function PatitentProfile({ navigation }) {
+export default function PatitentProfile({ navigation, route }) {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [dateOfBirth, setDateOfBirth] = useState("");
@@ -44,7 +45,7 @@ export default function PatitentProfile({ navigation }) {
   const [cidadeUser, setCidadeUser] = useState("");
   const [fotoUser, setFotoUser] = useState("")
 
-  console.log(rgUser, cpfUser, dataNascimentoUser, logradouroUser, cepUser);
+  // console.log(rgUser, cpfUser, dataNascimentoUser, logradouroUser, cepUser);
 
   const toggleEdit = () => {
     setIsEditable((prevState) => !prevState); // Alterna entre editável e não editável
@@ -111,11 +112,12 @@ export default function PatitentProfile({ navigation }) {
       const token = await userDecodeToken();
 
       if (token) {
-        console.log("Token de acesso recuperado:", token);
+        console.log('Token de acesso recuperado:', token);
 
-        setNomeUser(token.name);
-        setEmailUser(token.email);
-        setIdUser(token.jti);
+        setNomeUser(token.name)
+        setEmailUser(token.email)
+        setIdUser(token.jti)
+
       } else {
         console.log("Não foi possível recuperar o token de acesso.");
       }
@@ -143,8 +145,40 @@ export default function PatitentProfile({ navigation }) {
     }
   }
 
+  async function UpdatePhoto() {
+    const formData = new FormData();
+    formData.append("Arquivo", {
+      uri: route.params.photoUri,
+      name: `image.jpg`,
+      type: `image/jpg`
+    })
+
+    try {
+      console.log(route.params.photoUri);
+      await api.put(`/api/Usuario/AlterarFotoPerfil?id=${idUser}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      });
+      setFotoUser(route.params.photoUri);
+      console.log("Foto de perfil atualizada com sucesso!");
+    } catch (error) {
+      console.log("Erro ao tentar atualizar a foto de perfil:", error);
+    }
+
+  }
+
   useEffect(() => {
     profileLoad();
+  }, [])
+
+  useEffect(() => {
+    if (route.params && idUser != '') {
+      UpdatePhoto()
+    }
+  }, [route.params, idUser])
+
+  useEffect(() => {
     GetByIdUser();
   });
 
@@ -159,22 +193,17 @@ export default function PatitentProfile({ navigation }) {
 
       <DoctorContainerInfos>
         <ContentInputSmall>
-          <ButtonCamera
-            onPress={() => navigation.navigate("MedicalExamsPhotos")}
-          >
-            <MaterialCommunityIcons
-              name="camera-plus"
-              size={20}
-              color="fbfbfb"
-            ></MaterialCommunityIcons>
+          <ButtonCamera onPress={() => navigation.navigate("MedicalProfilePhotos")}>
+            <MaterialCommunityIcons name="camera-plus" size={20} color="fbfbfb"></MaterialCommunityIcons>
+
           </ButtonCamera>
-        </ContentInputSmall>
+        </ContentInputSmall >
         <DataUser>
           <DoctorName>{nomeUser}</DoctorName>
 
           <DoctorEmail>{emailUser}</DoctorEmail>
         </DataUser>
-      </DoctorContainerInfos>
+      </DoctorContainerInfos >
 
       <ScrollViewContainer width={"90%"} showsVerticalScrollIndicator={false}>
         <TextLabel>Data de nascimento</TextLabel>
@@ -304,6 +333,6 @@ export default function PatitentProfile({ navigation }) {
           onClick={handleSave}
         />
       </ScrollViewContainer>
-    </Container>
+    </Container >
   );
 }

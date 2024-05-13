@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Container } from '../../components/Header/Header'
-import { useRoute } from '@react-navigation/native';
+// import { useRoute } from '@react-navigation/native';
 import { ContainerInfoUser, Infouser, ProfileImageModal } from '../../components/Dialogs/SeeMedicalDialog';
 import { ContainerTextBox } from '../../components/Dialogs/CalcelDialogs';
 import { ProfileName } from '../../components/FlatlistUsers/CardFlatlistUsers';
@@ -11,7 +11,7 @@ import { UnderlinedLink } from '../../components/Links/Style';
 
 
 export const ContainerViewUserInfo = styled.View`
-    width: ${({width = '100%'}) => width};
+    width: ${({ width = '100%' }) => width};
     height: 100%;
     border: 2px;
 `
@@ -19,7 +19,7 @@ export const ContainerViewUserInfo = styled.View`
 export const ScrollViewContainer = styled.ScrollView`
     width: 90%;
     height: 100%;
-    top: -10%;
+    top: -7%;
     
 `
 
@@ -29,8 +29,8 @@ export const TextLabel = styled.Text`
     font-size: ${({ fontSize = "16px" }) => fontSize};
     text-align: start;
     width: 100%;
-    margin-bottom: ${({marginBottom}) => marginBottom};
-    margin-left: ${({marginLeftLabel = 0}) => marginLeftLabel};
+    margin-bottom: ${({ marginBottom }) => marginBottom};
+    margin-left: ${({ marginLeftLabel = 0 }) => marginLeftLabel};
 `
 
 export const InputStyle = styled.TextInput`
@@ -46,12 +46,19 @@ export const InputStyle = styled.TextInput`
     font-family: "MontserratAlternates_500Medium";
 `
 
-export default function MedicalRecord({ navigation }) {
+export default function MedicalRecord({ navigation, route }) {
 
-    const route = useRoute();
-    const userData = route.params.userData;
+    // const route = useRoute();
+    // const userData = route.params.userData;
+
+    // useEffect(() => {
+    //     console.log(userData);
+    // })
 
     const [isEditable, setIsEditable] = useState(false); // Estado de edição dos inputs
+    const {nomeMedico} = route.params;
+
+    console.log(nomeMedico);
 
     const toggleEdit = () => {
         setIsEditable(prevState => !prevState); // Alterna entre editável e não editável
@@ -65,7 +72,7 @@ export default function MedicalRecord({ navigation }) {
         <Container>
 
             <ProfileImageModal
-                source={{ uri: userData.imagem }}
+                // source={{ uri: userData.imagem }}
                 widthImageUser={"100%"}
                 heightImageUser={280}
             />
@@ -77,17 +84,17 @@ export default function MedicalRecord({ navigation }) {
                 <ProfileName
                     marginBottomName={20}
                 >
-                    {userData.nome}
+                    {/* {userData.nome} */}
                 </ProfileName>
 
                 <ContainerInfoUser
                     widtContainerInfoUser={"68%"}
                 >
                     <Infouser>
-                        {`${userData.idade} anos`}
+                        {/* {`${userData.idade} anos`} */}
                     </Infouser>
                     <Infouser>
-                        {userData.email}
+                        {/* {userData.email} */}
                     </Infouser>
                 </ContainerInfoUser>
             </ContainerTextBox>

@@ -4,7 +4,8 @@ import axios from "axios";
 const apiPort = '4466'
 
 //declaring machine IP
-const ip = '192.168.21.98'
+const ip = '192.168.21.101'
+
 
 //login API endpoint 
 export const LoginResource = '/api/Login'

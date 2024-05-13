@@ -17,9 +17,15 @@ const Login = ({ navigation }) => {
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
   const [submitData, setSubmitData] = useState({
-    email: "sousa@souzinha.com",
+    email: "gabrieldemetrio571@gmail.com",
     senha: "123456",
   });
+
+// paciente: gabrieldemetrio571@gmail.com
+// médico: 00001092257160sp@al.educacao.sp.gov.br
+
+  console.log(submitData);
+
 
   const [loading, setLoading] = useState(false);
 
