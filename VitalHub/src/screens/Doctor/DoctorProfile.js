@@ -4,7 +4,6 @@ import { ButtonCamera, ContentInputSmall, ProfileImageModal } from '../../compon
 import styled from 'styled-components/native'
 import { APP_COLORS } from '../../utils/App_colors'
 import { InputStyle, ScrollViewContainer, TextLabel } from './MedicalRecord'
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { Entypo } from '@expo/vector-icons';
 import { Pressable, Platform } from 'react-native'
 import { Button } from '../../components/Button/Button'
@@ -54,9 +53,6 @@ export const InfosColumn = styled.View`
   flex-direction:column;
   width: 45%;
 `
-// export const CidadeColumn = styled(InfosColumn)`
-//   width: 50px;
-// `
 
 export const ContainerInfoDoctor = styled.View`
   flex-direction: row;
@@ -73,10 +69,7 @@ export const Especialidade = styled(Crm)`
 
 export default function PatitentProfile({
   navigation,
-  route,
-  especialidade,
-  crm,
-  isDoctor
+  route
 }) {
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
@@ -285,8 +278,6 @@ export default function PatitentProfile({
         resizeMode='cover'
       />
 
-
-
       <DoctorContainerInfos>
         <ContentInputSmall>
           <ButtonCamera onPress={() => navigation.navigate("MedicalProfilePhotos")}>
@@ -337,8 +328,8 @@ export default function PatitentProfile({
           editable={isEditable}
           isEditable={isEditable}
           onChangeText={(txt) => setNewCrmUser(txt)}
-
         />
+
         <InfosContainer>
           <InfosColumn>
             <TextLabel>

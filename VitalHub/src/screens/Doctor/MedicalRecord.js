@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Container } from '../../components/Header/Header'
-// import { useRoute } from '@react-navigation/native';
 import { ContainerInfoUser, Infouser, ProfileImageModal } from '../../components/Dialogs/SeeMedicalDialog';
 import { ContainerTextBox } from '../../components/Dialogs/CalcelDialogs';
 import { ProfileName } from '../../components/FlatlistUsers/CardFlatlistUsers';
@@ -13,7 +12,6 @@ import { UnderlinedLink } from '../../components/Links/Style';
 export const ContainerViewUserInfo = styled.View`
     width: ${({ width = '100%' }) => width};
     height: 100%;
-    border: 2px;
 `
 
 export const ScrollViewContainer = styled.ScrollView`
@@ -48,24 +46,17 @@ export const InputStyle = styled.TextInput`
 
 export default function MedicalRecord({ navigation, route }) {
 
-    // const route = useRoute();
-    // const userData = route.params.userData;
-
-    // useEffect(() => {
-    //     console.log(userData);
-    // })
-
-    const [isEditable, setIsEditable] = useState(false); // Estado de edição dos inputs
+    const [isEditable, setIsEditable] = useState(false); 
     const {nomeMedico} = route.params;
 
     console.log(nomeMedico);
 
     const toggleEdit = () => {
-        setIsEditable(prevState => !prevState); // Alterna entre editável e não editável
+        setIsEditable(prevState => !prevState); 
     };
 
     const handleSave = () => {
-        setIsEditable(false); // Define todos os inputs como não editáveis ao salvar
+        setIsEditable(false); 
     };
 
     return (

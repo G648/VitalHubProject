@@ -7,7 +7,7 @@ import { CardUser } from "../../components/FlatlistUsers/CardFlatlistUsers";
 import { APP_COLORS } from "../../utils/App_colors";
 import { Button } from "../../components/Button/Button";
 import { UnderlinedLink } from "../../components/Links/Style";
-import api, { ClinicResource } from "../../service/service";
+import api from "../../service/service";
 import { Text } from "react-native";
 
 export const ContainerScrollView = styled.ScrollView`

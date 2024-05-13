@@ -3,7 +3,7 @@ import { Container } from "../../../components/Container/Style";
 import { Logo } from "../../../components/Logo/Style";
 import { Title } from "../../../components/Title/Style";
 import { ParagrafText } from "../../../components/Paragraf/Paragraf";
-import { Input, InputValues } from "../../../components/Input/Input";
+import { InputValues } from "../../../components/Input/Input";
 import { Button } from "../../../components/Button/Button";
 import { APP_COLORS } from "../../../utils/App_colors";
 import { ComeBack } from "../../../components/GoBackPage/GoBackPage";
