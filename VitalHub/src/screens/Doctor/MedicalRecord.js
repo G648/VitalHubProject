@@ -13,7 +13,6 @@ import { UnderlinedLink } from '../../components/Links/Style';
 export const ContainerViewUserInfo = styled.View`
     width: ${({ width = '100%' }) => width};
     height: 100%;
-    border: 2px;
 `
 
 export const ScrollViewContainer = styled.ScrollView`
@@ -56,9 +55,13 @@ export default function MedicalRecord({ navigation, route }) {
     // })
 
     const [isEditable, setIsEditable] = useState(false); // Estado de edição dos inputs
-    const {nomeMedico} = route.params;
+    // const {nomeMedico} = route.params;
 
-    console.log(nomeMedico);
+    const { consultaId, foto, nomeMedico, crm, especialidade, descricao, diagnostico } = route.params;
+    const [photoUri, setPhotoUri] = useState(null);
+
+    console.log(consultaId, foto, nomeMedico, crm, especialidade, descricao, diagnostico);
+
 
     const toggleEdit = () => {
         setIsEditable(prevState => !prevState); // Alterna entre editável e não editável
@@ -73,6 +76,7 @@ export default function MedicalRecord({ navigation, route }) {
 
             <ProfileImageModal
                 // source={{ uri: userData.imagem }}
+                source={{ uri: photoUri }}
                 widthImageUser={"100%"}
                 heightImageUser={280}
             />
@@ -84,7 +88,7 @@ export default function MedicalRecord({ navigation, route }) {
                 <ProfileName
                     marginBottomName={20}
                 >
-                    {/* {userData.nome} */}
+                    {`${nomeMedico}`}
                 </ProfileName>
 
                 <ContainerInfoUser

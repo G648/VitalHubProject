@@ -244,6 +244,19 @@ const DoctorHome = ({ navigation }) => {
                   schedulingTime={FormatData(item.dataConsulta)}
                   key={item.id}
                   situation={item.situacao.situacao}
+                  onPress={() => {
+                    navigation.push("MedicalRecord",
+                      {
+                        consultaId: selectedUserData.id,
+                        foto: selectedUserData.medicoClinica.medico.idNavigation.foto,
+                        nomeMedico: selectedUserData.medicoClinica.medico.idNavigation.nome,
+                        crm: selectedUserData.medicoClinica.medico.crm,
+                        especialidade: selectedUserData.medicoClinica.medico.especialidade.especialidade1,
+                        descricao: selectedUserData.descricao,
+                        diagnostico: selectedUserData.diagnostico
+                      }
+                    )
+                  }}
                   onPressBorder={() =>
                     item.situacao.situacao === "Realizados"
                       ? handleCardPress(selectedButton, item)
@@ -309,12 +322,12 @@ const DoctorHome = ({ navigation }) => {
         />
       )}
 
-      {/* <SeeMedicalDialog
+      <SeeMedicalDialog
         isVisible={isModalMedical}
-        imageUser={
-          selectedUserData != null &&
-          selectedUserData.idNavigation.foto
-        }
+        // imageUser={
+        //   selectedUserData != null &&
+        //   selectedUserData.idNavigation.foto
+        // }
         showCancelButton={true}
         onPressCancel={() => setisModalMedical(false)}
         heightImageUser={250}
@@ -333,7 +346,7 @@ const DoctorHome = ({ navigation }) => {
         }}
         widtContainerInfoUser={280}
         marginBottomName={"30px"}
-      /> */}
+      />
     </Container>
   );
 };
