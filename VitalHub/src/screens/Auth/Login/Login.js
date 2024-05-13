@@ -17,7 +17,7 @@ const Login = ({ navigation }) => {
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
   const [submitData, setSubmitData] = useState({
-    email: "gabrieldemetrio571@gmail.com",
+    email: "00001092257160sp@al.educacao.sp.gov.br",
     senha: "123456",
   });
 

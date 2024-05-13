@@ -71,17 +71,17 @@ export const Header = ({
   sourcePhoto
 }) => {
 
-  async function SendPhotoToProfile(navigation) {
+  async function SendToProfile(navigation) {
     const retornoStorage = await AsyncStorage.getItem('token');
     console.log(retornoStorage);
     const token = await userDecodeToken();
     console.log('Role do usuário:', token.role);
 
-    let navigationTarget = token.role === 'Medico' ? 'DoctorProfile' : 'PatitentProfile';
+    let navigationTarget = token.role === 'Medico' ? 'DoctorHome' : 'HomePatient';
 
     console.log(navigationTarget);
 
-    navigation.navigate(navigationTarget);
+    navigation.navigate(navigationTarget, {screen: 'Perfil'});
   }
 
   return (
@@ -90,7 +90,7 @@ export const Header = ({
       <TouchableOpacity
         style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}
         activeOpacity={.8}
-        onPress={() => SendPhotoToProfile(navigation)}
+        onPress={() => SendToProfile(navigation)}
       >
         <BoxUser>
           <ImageUser source={{ uri: sourcePhoto }} />

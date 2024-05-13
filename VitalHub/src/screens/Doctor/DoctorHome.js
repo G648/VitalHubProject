@@ -140,6 +140,7 @@ const DoctorHome = ({ navigation }) => {
         sourcePhoto={fotoUser}
         textValue={"Bem vindo!"}
         nameDoctor={nomeUser}
+        navigation={navigation}
       />
 
       <CalendarHome
