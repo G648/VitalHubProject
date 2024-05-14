@@ -55,8 +55,9 @@ const DoctorHome = ({ navigation }) => {
 
   const handleCardPress = (selectedSituation, userData) => {
     selectedSituation == "Pendentes"
-      ? setisModalMedical(true)
-      : setIsModalCancel(true);
+      // ? setisModalMedical(false)
+      // : setIsModalCancel(true);
+      setisModalMedical(true);
 
     setSelectedUserData(userData);
   };
@@ -95,17 +96,6 @@ const DoctorHome = ({ navigation }) => {
     }
   }
 
-  async function GetByIdUser() {
-    try {
-      const response = await api.get(`/api/Pacientes/BuscarPorId?id=${idUser}`);
-
-      setFotoUser(response.data.idNavigation.foto);
-    } catch (error) {
-      console.log("deu ruim na requição de usuario por ID");
-      console.log(error.request);
-    }
-  }
-
   async function profileLoad() {
     try {
       const token = await userDecodeToken();
@@ -122,6 +112,17 @@ const DoctorHome = ({ navigation }) => {
         "Erro ao recuperar o token de acesso do AsyncStorage:",
         error
       );
+    }
+  }
+
+  async function GetByIdUser() {
+    try {
+      const response = await api.get(`/api/Pacientes/BuscarPorId?id=${idUser}`);
+
+      setFotoUser(response.data.idNavigation.foto);
+    } catch (error) {
+      console.log("deu ruim na requição de usuario por ID");
+      console.log(error.request);
     }
   }
 
@@ -145,6 +146,9 @@ const DoctorHome = ({ navigation }) => {
   function emptyComponent() {
     //TODO
   }
+  useEffect(() => {
+    console.log(selectedUserData);
+  });
 
   useEffect(() => {
     profileLoad();
@@ -267,10 +271,11 @@ const DoctorHome = ({ navigation }) => {
                   schedulingTime={FormatData(item.dataConsulta)}
                   key={item.id}
                   situation={item.situacao.situacao}
-                  onPressBorder={() =>
+                  onPressBorder={() => 
+                    // setisModalMedical(true)
                     item.situacao.situacao === "Pendentes"
                       ? handleCardPress(selectedButton, item)
-                      : null
+                      : null                    
                   }
                   onPress={() => setIsModalCancel(true)}
                 />
@@ -295,19 +300,20 @@ const DoctorHome = ({ navigation }) => {
                   key={item.id}
                   situation={item.situacao.situacao}
                   onPress={() => {
-                    navigation.push("MedicalRecordPage",
-                      {
-                        consultaId: selectedUserData.id,
-                        foto: selectedUserData.medicoClinica.medico.idNavigation.foto,
-                        nomeMedico: selectedUserData.medicoClinica.medico.idNavigation.nome,
-                        crm: selectedUserData.medicoClinica.medico.crm,
-                        especialidade: selectedUserData.medicoClinica.medico.especialidade.especialidade1,
-                        descricao: selectedUserData.descricao,
-                        diagnostico: selectedUserData.diagnostico
-                      }
-                    )
+                      navigation.push("MedicalRecordPage", 
+                        {
+                          consultaId: item.id,
+                          foto: item.medicoClinica.medico.idNavigation.foto,
+                          nomeMedico: item.medicoClinica.medico.idNavigation.nome,
+                          crm: item.medicoClinica.medico.crm,
+                          especialidade: item.medicoClinica.medico.especialidade.especialidade1,
+                          descricao: item.descricao, 
+                          diagnostico: item.diagnostico
+                        }
+                      );
                   }}
-                  onPressBorder={() =>
+                  onPressBorder={() => 
+                    // setisModalMedical(true)
                     item.situacao.situacao === "Realizados"
                       ? handleCardPress(selectedButton, item)
                       : null
@@ -334,7 +340,8 @@ const DoctorHome = ({ navigation }) => {
                   iconColor={item.situacao.situacao}
                   schedulingTime={FormatData(item.dataConsulta)}
                   situation={item.situacao.situacao}
-                  onPressBorder={() =>
+                  onPressBorder={() => 
+                    // setisModalMedical(true)
                     item.situacao.situacao === "Cancelados"
                       ? handleCardPress(selectedButton, item)
                       : null

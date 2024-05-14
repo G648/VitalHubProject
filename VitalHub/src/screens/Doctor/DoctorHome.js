@@ -31,9 +31,9 @@ const DoctorHome = ({ navigation }) => {
   const [consultas, setConsultas] = useState([]);
 
   const handleCardPress = (selectedSituation, userData) => {
-    selectedSituation == "Pendentes"
-      ? setIsModalCancel(true)
-      : setisModalMedical(true);
+    // selectedSituation == "Pendentes"
+    //   ? setIsModalCancel(true)
+    //   : setisModalMedical(true);
     setSelectedUserData(userData);
 
     // console.log(selectedUserData);
@@ -89,17 +89,6 @@ const DoctorHome = ({ navigation }) => {
     }
   }
 
-  async function GetByIdUser() {
-    try {
-      const response = await api.get(`/api/Medicos/BuscarPorId?id=${idUser}`);
-
-      setFotoUser(response.data.idNavigation.foto);
-    } catch (error) {
-      console.log("deu ruim na requição de usuario por ID");
-      console.log(error.request);
-    }
-  }
-
   async function profileLoad() {
     try {
       const token = await userDecodeToken();
@@ -116,6 +105,17 @@ const DoctorHome = ({ navigation }) => {
         "Erro ao recuperar o token de acesso do AsyncStorage:",
         error
       );
+    }
+  }
+
+  async function GetByIdUser() {
+    try {
+      const response = await api.get(`/api/Medicos/BuscarPorId?id=${idUser}`);
+
+      setFotoUser(response.data.idNavigation.foto);
+    } catch (error) {
+      console.log("deu ruim na requição de usuario por ID");
+      console.log(error.request);
     }
   }
 
@@ -245,23 +245,25 @@ const DoctorHome = ({ navigation }) => {
                   key={item.id}
                   situation={item.situacao.situacao}
                   onPress={() => {
-                    navigation.push("MedicalRecord",
-                      {
-                        consultaId: selectedUserData.id,
-                        foto: selectedUserData.medicoClinica.medico.idNavigation.foto,
-                        nomeMedico: selectedUserData.medicoClinica.medico.idNavigation.nome,
-                        crm: selectedUserData.medicoClinica.medico.crm,
-                        especialidade: selectedUserData.medicoClinica.medico.especialidade.especialidade1,
-                        descricao: selectedUserData.descricao,
-                        diagnostico: selectedUserData.diagnostico
-                      }
-                    )
+                    setisModalMedical(true);
+
+                    // navigation.push("MedicalRecord",
+                    //   {
+                    //     consultaId: item.id,
+                    //     foto: item.medicoClinica.medico.idNavigation.foto,
+                    //     nomeMedico: item.medicoClinica.medico.idNavigation.nome,
+                    //     crm: item.medicoClinica.medico.crm,
+                    //     especialidade: item.medicoClinica.medico.especialidade.especialidade1,
+                    //     descricao: item.descricao, 
+                    //     diagnostico: item.diagnostico
+                    //   }
+                    // )
                   }}
-                  onPressBorder={() =>
-                    item.situacao.situacao === "Realizados"
-                      ? handleCardPress(selectedButton, item)
-                      : null
-                  }
+                // onPressBorder={() =>
+                //   item.situacao.situacao === "Realizados"
+                //     ? handleCardPress(selectedButton, item)
+                //     : null
+                // }
                 />
               );
             } else if (
@@ -283,11 +285,11 @@ const DoctorHome = ({ navigation }) => {
                   schedulingTime={FormatData(item.dataConsulta)}
                   key={item.id}
                   situation={item.situacao.situacao}
-                  onPressBorder={() =>
-                    item.situacao.situacao === "Cancelados"
-                      ? handleCardPress(selectedButton, item)
-                      : null
-                  }
+                // onPressBorder={() =>
+                //   item.situacao.situacao === "Cancelados"
+                //     ? handleCardPress(selectedButton, item)
+                //     : null
+                // }
                 />
               );
             }
@@ -302,7 +304,7 @@ const DoctorHome = ({ navigation }) => {
       )}
 
       {/* Renderiza o Dialogs quando isModalVisible for true */}
-      {isModalCancel && (
+      {/* {isModalCancel && (
         <CancelDialogs
           isVisible={isModalCancel}
           bgColor={APP_COLORS.grayV6}
@@ -320,33 +322,74 @@ const DoctorHome = ({ navigation }) => {
           }}
           showCancelButton={true}
         />
+      )} */}
+
+      {/* {isModalMedical && (
+        <SeeMedicalDialog
+          isVisible={isModalMedical}
+          // imageUser={
+          //   selectedUserData != null &&
+          //   selectedUserData.idNavigation.foto
+          // }
+          showCancelButton={true}
+          onPressCancel={() => setisModalMedical(false)}
+          heightImageUser={250}
+          widthImageUser={320}
+          nameUser={selectedUserData.paciente.idNavigation.nome}
+          ageUser={`   ${calcularIdade(
+            selectedUserData.paciente.dataNascimento
+          )} anos`}
+          emailuser={selectedUserData.paciente.idNavigation.email}
+          titleButton={"Inserir prontuário"}
+          onPress={() => {
+            navigation.navigate("MedicalRecord");
+            setisModalMedical(false);
+            //enviar os dados para a página de medicalRecords
+            navigation.navigate("MedicalRecord", { userData: selectedUserData });
+          }}
+          widtContainerInfoUser={280}
+          marginBottomName={"30px"}
+        />
+      )} */}
+
+
+      {isModalMedical && (
+        <SeeMedicalDialog
+          isVisible={isModalMedical}
+          // imageUser={
+          //   selectedUserData != null &&
+          //   selectedUserData.idNavigation.foto
+          // }
+          nameUser={
+            selectedUserData != null &&
+            selectedUserData.idNavigation.nome
+          }
+          ageUser={`   ${calcularIdade(
+            selectedUserData.paciente.dataNascimento
+          )} anos`
+          }
+          emailuser={
+            selectedUserData != null &&
+            selectedUserData.paciente.idNavigation.email
+          }
+          heightImageUser={250}
+          widthImageUser={320}
+          showCancelButton={true}
+          onPressCancel={() => setisModalMedical(false)}
+          titleButton={"Ver local da consulta".toUpperCase()}
+          onPress={() => {
+            navigation.navigate("MedicalRecord");
+            setisModalMedical(false);
+            //enviar os dados para a página de medicalRecords
+            navigation.navigate("MedicalRecord", { userData: selectedUserData });
+          }}
+          widtContainerInfoUser={180}
+          marginBottomName={"15px"}
+        />
       )}
 
-      <SeeMedicalDialog
-        isVisible={isModalMedical}
-        // imageUser={
-        //   selectedUserData != null &&
-        //   selectedUserData.idNavigation.foto
-        // }
-        showCancelButton={true}
-        onPressCancel={() => setisModalMedical(false)}
-        heightImageUser={250}
-        widthImageUser={320}
-        // nameUser={selectedUserData.paciente.idNavigation.nome}
-        ageUser={`   ${calcularIdade(
-          // selectedUserData.paciente.dataNascimento
-        )} anos`}
-        // emailuser={selectedUserData.paciente.idNavigation.email}
-        titleButton={"Inserir prontuário"}
-        onPress={() => {
-          navigation.navigate("MedicalRecord");
-          setisModalMedical(false);
-          //enviar os dados para a página de medicalRecords
-          navigation.navigate("MedicalRecord", { userData: selectedUserData });
-        }}
-        widtContainerInfoUser={280}
-        marginBottomName={"30px"}
-      />
+
+
     </Container>
   );
 };
