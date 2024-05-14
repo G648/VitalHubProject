@@ -65,7 +65,7 @@ export const ContainerInfoClinic = styled.View`
   background-color: white;
   position: absolute;
   bottom: 0;
-  elevation: 8px;
+  elevation: 8;
   align-items: center;
 `;
 

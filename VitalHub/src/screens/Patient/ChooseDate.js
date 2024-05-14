@@ -162,7 +162,6 @@ export default function ChooseDate({ navigation, route }) {
               height: "80px",
               zIndex: 1,
               borderColor: APP_COLORS.primary,
-              borderWidth: "2px",
               borderRadius: 5,
               borderWidth: 2,
               borderTopWidth: 0,

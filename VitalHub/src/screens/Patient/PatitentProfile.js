@@ -1,5 +1,4 @@
-
-import { View, Text, Pressable } from "react-native";
+import { ActivityIndicator, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Container } from "../../components/Container/Style";
 import {
@@ -32,41 +31,30 @@ import api from "../../service/service";
 export default function PatitentProfile({ navigation, route }) {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [isEditable, setIsEditable] = useState(false); // Estado de edição dos inputs
+  const [dateOfBirth, setDateOfBirth] = useState(new Date());
+  const [isEditable, setIsEditable] = useState(false);
   const [emailUser, setEmailUser] = useState("");
   const [nomeUser, setNomeUser] = useState("");
-  const [rgUser, setRgUser] = useState("");
-  const [cpfUser, setCpfUser] = useState("");
-  const [dataNascimentoUser, setDataNascimentoUser] = useState("");
-  const [logradouroUser, setLogradouroUser] = useState("");
-  const [cepUser, setCepUser] = useState("");
-  const [idUser, setIdUser] = useState("");
-  const [cidadeUser, setCidadeUser] = useState("");
-  const [fotoUser, setFotoUser] = useState("")
-
-  // console.log(rgUser, cpfUser, dataNascimentoUser, logradouroUser, cepUser);
+  const [idUser, setIdUser] = useState();
+  const [fotoUser, setFotoUser] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [retornoUserData, setRetornoUserData] = useState({
+    rg: "",
+    cpf: "",
+    endereco: {
+      logradouro: "",
+      numero: "",
+      cep: "",
+      cidade: "",
+    },
+  });
 
   const toggleEdit = () => {
-    setIsEditable((prevState) => !prevState); // Alterna entre editável e não editável
+    setIsEditable((prevState) => !prevState);
   };
 
   const handleSave = () => {
-    setIsEditable(false); // Define todos os inputs como não editáveis ao salvar
-  };
-
-  const formatDate = (rawDate) => {
-    let date = new Date(rawDate);
-
-    let year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-
-    if (day < 10 || month < 10) {
-
-      return `0${day}/0${month}/${year}`;
-    }
-
+    setIsEditable(false);
   };
 
   const toggleDatePicker = () => {
@@ -75,36 +63,25 @@ export default function PatitentProfile({ navigation, route }) {
 
   const onChange = ({ type }, selectedDate) => {
     if (type == "set") {
-      const currentDate = selectedDate;
+      const currentDate = selectedDate || date;
       setDate(currentDate);
-
-      if (Platform.OS === "android") {
-        toggleDatePicker();
-
-        setDateOfBirth(formatDate(currentDate));
-      }
+      setDateOfBirth(currentDate);
+      toggleDatePicker();
     } else {
       toggleDatePicker();
     }
   };
 
   async function GetByIdUser() {
-    try {
-      const response = await api.get(`/api/Pacientes/BuscarPorId?id=${idUser}`);
+    setIsLoading(true);
+    const response = await api
+      .get(`/api/Pacientes/BuscarPorId?id=${idUser}`)
+      .catch((error) => console.log(error.request));
+    console.log(response.data);
 
-      setRgUser(response.data.rg);
-      setCpfUser(response.data.cpf);
-      setDataNascimentoUser(formatDate(response.data.dataNascimento));
-      setLogradouroUser(response.data.endereco.logradouro);
-      setCepUser(response.data.endereco.cep);
-      setCidadeUser(response.data.endereco.cidade);
-      setFotoUser(response.data.idNavigation.foto);
+    setRetornoUserData(response.data);
 
-      // console.log(response.data);
-    } catch (error) {
-      console.log("deu ruim na requição de usuario por ID");
-      console.log(error.request);
-    }
+    setIsLoading(false);
   }
 
   async function profileLoad() {
@@ -112,12 +89,11 @@ export default function PatitentProfile({ navigation, route }) {
       const token = await userDecodeToken();
 
       if (token) {
-        console.log('Token de acesso recuperado:', token);
+        console.log("Token de acesso recuperado:", token);
 
-        setNomeUser(token.name)
-        setEmailUser(token.email)
-        setIdUser(token.jti)
-
+        setNomeUser(token.name);
+        setEmailUser(token.email);
+        setIdUser(token.jti);
       } else {
         console.log("Não foi possível recuperar o token de acesso.");
       }
@@ -131,15 +107,9 @@ export default function PatitentProfile({ navigation, route }) {
 
   async function removeToken() {
     try {
-      const token = await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("token");
 
-      if (!token) {
-        navigation.navigate("Login");
-      } else {
-        console.log("Não foi possível recuperar o token de acesso.");
-      }
-
-      console.log(token);
+      navigation.navigate("Login");
     } catch (error) {
       console.log(error);
     }
@@ -150,37 +120,47 @@ export default function PatitentProfile({ navigation, route }) {
     formData.append("Arquivo", {
       uri: route.params.photoUri,
       name: `image.jpg`,
-      type: `image/jpg`
-    })
+      type: `image/jpg`,
+    });
 
+    console.log('PHOTO ATUALIZADAAAAAAAAAAAA');
     try {
       console.log(route.params.photoUri);
       await api.put(`/api/Usuario/AlterarFotoPerfil?id=${idUser}`, formData, {
         headers: {
-          "Content-Type": "multipart/form-data"
-        }
+          "Content-Type": "multipart/form-data",
+        },
       });
       setFotoUser(route.params.photoUri);
       console.log("Foto de perfil atualizada com sucesso!");
     } catch (error) {
       console.log("Erro ao tentar atualizar a foto de perfil:", error);
     }
-
   }
+
+  const formatDate = (date) => {
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  };
 
   useEffect(() => {
     profileLoad();
-  }, [])
+  }, []);
 
   useEffect(() => {
-    if (route.params && idUser != '') {
-      UpdatePhoto()
+    if (route.params && idUser != "") {
+      UpdatePhoto();
     }
-  }, [route.params, idUser])
+  }, [route.params, idUser]);
 
   useEffect(() => {
-    GetByIdUser();
-  });
+    if (idUser) {
+      GetByIdUser();
+    }
+  }, [idUser]);
 
   return (
     <Container>
@@ -193,146 +173,164 @@ export default function PatitentProfile({ navigation, route }) {
 
       <DoctorContainerInfos>
         <ContentInputSmall>
-          <ButtonCamera onPress={() => navigation.navigate("MedicalProfilePhotos")}>
-            <MaterialCommunityIcons name="camera-plus" size={20} color="fbfbfb"></MaterialCommunityIcons>
-
+          <ButtonCamera
+            onPress={() => navigation.navigate("MedicalProfilePhotos")}
+          >
+            <MaterialCommunityIcons
+              name="camera-plus"
+              size={20}
+              color="fbfbfb"
+            ></MaterialCommunityIcons>
           </ButtonCamera>
-        </ContentInputSmall >
+        </ContentInputSmall>
         <DataUser>
           <DoctorName>{nomeUser}</DoctorName>
 
           <DoctorEmail>{emailUser}</DoctorEmail>
         </DataUser>
-      </DoctorContainerInfos >
-
-      <ScrollViewContainer width={"90%"} showsVerticalScrollIndicator={false}>
-        <TextLabel>Data de nascimento</TextLabel>
-
-        {open && (
-          <DateTimePicker
-            mode="date"
-            display="inline"
-            value={dataNascimentoUser}
-            onChange={onChange}
+      </DoctorContainerInfos>
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <ScrollViewContainer width={"90%"} showsVerticalScrollIndicator={false}>
+          <TextLabel>Data de nascimento</TextLabel>
+          {open && (
+            <DateTimePicker
+              mode="date"
+              display="inline"
+              value={dateOfBirth}
+              onChange={onChange}
+              editable={isEditable}
+            />
+          )}
+          {!open && (
+            <Pressable onPress={toggleDatePicker}>
+              <InputStyle
+                placeholder={formatDate(dateOfBirth)} // Use a função formatDate aqui
+                placeholderTextColor={APP_COLORS.primaryV1}
+                boxHeigth={"60px"}
+                boxWidth={"100%"}
+                borderColor={APP_COLORS.primary}
+                editable={false}
+                isEditable={isEditable}
+              />
+            </Pressable>
+          )}
+          <TextLabel>Rg</TextLabel>
+          <InputStyle
+            value={retornoUserData.rg}
+            placeholderTextColor={APP_COLORS.primaryV1}
+            boxHeigth={"60px"}
+            boxWidth={"100%"}
+            borderColor={APP_COLORS.primary}
             editable={isEditable}
             isEditable={isEditable}
           />
-        )}
+          <TextLabel>CPF</TextLabel>
+          <InputStyle
+            value={retornoUserData.cpf}
+            placeholderTextColor={APP_COLORS.primaryV1}
+            boxHeigth={"60px"}
+            boxWidth={"100%"}
+            borderColor={APP_COLORS.primary}
+            editable={isEditable}
+            isEditable={isEditable}
+          />
+          <InfosContainer>
+            <InfosColumn>
+              <TextLabel>Endereço</TextLabel>
 
-        {!open && (
-          <Pressable onPress={toggleDatePicker}>
-            <InputStyle
-              placeholder={dataNascimentoUser}
-              value={dateOfBirth}
-              onChangeText={setDateOfBirth}
-              placeholderTextColor={APP_COLORS.primaryV1}
-              boxHeigth={"60px"}
-              boxWidth={"100%"}
-              borderColor={APP_COLORS.primary}
-              editable={false}
-              isEditable={isEditable}
+              <InputStyle
+                value={retornoUserData.endereco.logradouro}
+                placeholderTextColor={APP_COLORS.primaryV1}
+                boxHeigth={"60px"}
+                boxWidth={"100%"}
+                borderColor={APP_COLORS.primary}
+                editable={isEditable}
+                isEditable={isEditable}
+              />
+            </InfosColumn>
+
+            <InfosColumn>
+              <TextLabel>Número</TextLabel>
+
+              <InputStyle
+                value={retornoUserData.endereco.numero.toString()}
+                placeholderTextColor={APP_COLORS.primaryV1}
+                boxHeigth={"60px"}
+                boxWidth={"100%"}
+                borderColor={APP_COLORS.primary}
+                editable={isEditable}
+                isEditable={isEditable}
+              />
+            </InfosColumn>
+          </InfosContainer>
+          <InfosContainer>
+            <InfosColumn>
+              <TextLabel>CEP</TextLabel>
+              <InputStyle
+                value={retornoUserData.endereco.cep}
+                boxWidth={"100%"}
+                placeholderTextColor={APP_COLORS.primaryV1}
+                boxHeigth={"60px"}
+                editable={isEditable}
+                isEditable={isEditable}
+              />
+            </InfosColumn>
+
+            <InfosColumn>
+              <TextLabel>Cidade</TextLabel>
+              <InputStyle
+                value={retornoUserData.endereco.cidade}
+                boxWidth={"100%"}
+                placeholderTextColor={APP_COLORS.primaryV1}
+                boxHeigth={"60px"}
+                editable={isEditable}
+                isEditable={isEditable}
+              />
+            </InfosColumn>
+          </InfosContainer>
+          {!isEditable && (
+            <Button
+              width={"100%"}
+              activeOpacity={0.6}
+              backgroundColor={APP_COLORS.secondary}
+              border={APP_COLORS.secondary}
+              color={APP_COLORS.white}
+              title={"Editar"}
+              onPress={toggleEdit}
             />
-          </Pressable>
-        )}
+          )}
 
-        {/* <Calendar
-          name="calendar"
-          size={24}
-          color={APP_COLORS.primaryV1}
-        /> */}
-
-        <TextLabel>CPF</TextLabel>
-
-        <InputStyle
-          placeholder={cpfUser}
-          value={cpfUser}
-          placeholderTextColor={APP_COLORS.primaryV1}
-          boxHeigth={"60px"}
-          boxWidth={"100%"}
-          borderColor={APP_COLORS.primary}
-          editable={isEditable}
-          isEditable={isEditable}
-        />
-        <TextLabel>Endereço</TextLabel>
-
-        <InputStyle
-          value={logradouroUser}
-          placeholderTextColor={APP_COLORS.primaryV1}
-          boxHeigth={"60px"}
-          boxWidth={"100%"}
-          borderColor={APP_COLORS.primary}
-          editable={isEditable}
-          isEditable={isEditable}
-        />
-
-        <InfosContainer>
-          <InfosColumn>
-            <TextLabel>CEP</TextLabel>
-            <InputStyle
-              value={cepUser}
-              boxWidth={"100%"}
-              boxHeigth={"60px"}
-              editable={isEditable}
-              isEditable={isEditable}
+          {isEditable && (
+            <Button
+              width={"100%"}
+              activeOpacity={0.6}
+              backgroundColor={APP_COLORS.secondary}
+              border={APP_COLORS.secondary}
+              color={APP_COLORS.white}
+              title={"Salvar"}
+              onPress={handleSave}
             />
-          </InfosColumn>
-
-          <InfosColumn>
-            <TextLabel>Cidade</TextLabel>
-            <InputStyle
-              value={cidadeUser}
-              boxWidth={"100%"}
-              boxHeigth={"60px"}
-              editable={isEditable}
-              isEditable={isEditable}
-            />
-          </InfosColumn>
-        </InfosContainer>
-
-        {!isEditable && ( // Renderiza o botão de editar apenas quando os inputs não estiverem editáveis
+          )}
           <Button
             width={"100%"}
             activeOpacity={0.6}
             backgroundColor={APP_COLORS.secondary}
             border={APP_COLORS.secondary}
             color={APP_COLORS.white}
-            title={"Editar"}
-            // marginTop={30}
-            onPress={toggleEdit}
+            title={"Sair"}
+            marginTop={15}
+            onPress={removeToken}
           />
-        )}
-
-        {isEditable && ( // Renderiza o botão de salvar apenas quando os inputs estiverem editáveis
-          <Button
-            width={"100%"}
-            activeOpacity={0.6}
-            backgroundColor={APP_COLORS.secondary}
-            border={APP_COLORS.secondary}
-            color={APP_COLORS.white}
-            title={"Salvar"}
-            // marginTop={-10}
-            onPress={handleSave}
+          <UnderlinedLink
+            textIntput={"Cancelar"}
+            ColorText={APP_COLORS.secondaryV1}
+            buttonOpacity={0.6}
+            onClick={handleSave}
           />
-        )}
-
-        <Button
-          width={"100%"}
-          activeOpacity={0.6}
-          backgroundColor={APP_COLORS.secondary}
-          border={APP_COLORS.secondary}
-          color={APP_COLORS.white}
-          title={"Sair"}
-          marginTop={15}
-          onPress={removeToken}
-        />
-
-        <UnderlinedLink
-          textIntput={"Cancelar"}
-          ColorText={APP_COLORS.secondaryV1}
-          buttonOpacity={0.6}
-          onClick={handleSave}
-        />
-      </ScrollViewContainer>
-    </Container >
+        </ScrollViewContainer>
+      )}
+    </Container>
   );
 }

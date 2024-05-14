@@ -21,7 +21,7 @@ export const DoctorContainerInfos = styled.View`
   top: -13%;
   background-color: ${APP_COLORS.white};
   border-radius: 8px;
-  elevation: 10px;
+  elevation: 10;
   z-index: 9999;
 `
 
@@ -147,8 +147,8 @@ export default function PatitentProfile({
       setTypeUSer(response.data.idNavigation.tipoUsuarioId);
 
     } catch (error) {
-      // console.log("deu ruim na requisição de usuario por ID");
-      // console.log(error.request);
+      console.log("deu ruim na requisição de usuario por ID de médico");
+      console.log(error.request);
     }
   }
 
@@ -370,7 +370,6 @@ export default function PatitentProfile({
         </TextLabel>
 
         <InputStyle
-          // placeholder={logradouroUser}
           placeholder={infosEndereco.logradouro}
           // value={logradouroUser}
           placeholderTextColor={APP_COLORS.primaryV1}
