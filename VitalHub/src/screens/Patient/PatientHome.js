@@ -160,7 +160,6 @@ const DoctorHome = ({ navigation }) => {
     }
   }, [dataConsulta]);
 
-
   useEffect(() => {
     GetByIdUser();
   });
