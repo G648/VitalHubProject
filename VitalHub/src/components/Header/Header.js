@@ -1,11 +1,9 @@
 import styled from "styled-components/native";
-//import lib linear gradient
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
 import { userDecodeToken } from '../../utils/Auth'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TouchableOpacity } from "react-native";
-import PatitentProfile from "../../screens/Patient/PatitentProfile";
 
 export const BoxUser = styled.View`
   gap: 10px;
@@ -21,9 +19,7 @@ export const ImageUser = styled.Image`
   border-radius: 5px;
 `;
 
-export const DataUser = styled.View`
-
-`;
+export const DataUser = styled.View``;
 
 export const TextDefault = styled.Text`
   font-size: 14px;
@@ -93,7 +89,8 @@ export const Header = ({
         onPress={() => SendToProfile(navigation)}
       >
         <BoxUser>
-          <ImageUser source={{ uri: sourcePhoto }} />
+
+          <ImageUser source={sourcePhoto ? { uri: sourcePhoto } : null} />
 
           <DataUser>
             <TextDefault>{textValue}</TextDefault>

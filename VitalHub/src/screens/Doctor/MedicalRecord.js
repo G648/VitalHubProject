@@ -66,11 +66,11 @@ export default function MedicalRecord({ navigation, route }) {
 
 
     const toggleEdit = () => {
-        setIsEditable(prevState => !prevState); // Alterna entre editável e não editável
+        setIsEditable(prevState => !prevState); 
     };
 
     const handleSave = () => {
-        setIsEditable(false); // Define todos os inputs como não editáveis ao salvar
+        setIsEditable(false); 
     };
 
     const calcularIdade = (dataNascimento) => {

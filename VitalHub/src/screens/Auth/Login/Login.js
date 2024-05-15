@@ -21,12 +21,6 @@ const Login = ({ navigation }) => {
     senha: "123456",
   });
 
-// paciente: gabrieldemetrio571@gmail.com
-// médico: 00001092257160sp@al.educacao.sp.gov.br
-
-  console.log(submitData);
-
-
   const [loading, setLoading] = useState(false);
 
   async function LoadUserParams() {
@@ -34,7 +28,6 @@ const Login = ({ navigation }) => {
       const token = await userDecodeToken();
 
       if (token) {
-
         if (token.role === "Medico") {
           navigation.navigate("DoctorHome");
         } else {
@@ -54,12 +47,9 @@ const Login = ({ navigation }) => {
   async function handleSelectUser() {
     setLoading(true);
 
-
     if (!isFormValid) {
-      // Form is valid, perform the submission logic
       console.log("Form submitted successfully!");
     } else {
-      // Form is invalid, display error messages
       showErrorToastMessage();
     }
 
@@ -70,13 +60,10 @@ const Login = ({ navigation }) => {
 
       await LoadUserParams();
     } catch (error) {
-
       showValidationLogin();
 
       console.log(`teste ${error}`);
-
     } finally {
-
       setLoading(false);
     }
   }
@@ -111,34 +98,27 @@ const Login = ({ navigation }) => {
   const validateForm = () => {
     let errors = {};
 
-    // Validate email field
     if (!submitData.email) {
       errors.email = "Email is required.";
     } else if (!/\S+@\S+\.\S+/.test(submitData.email)) {
       errors.email = "Email is invalid.";
     }
 
-    // Validate password field
     if (!submitData.senha) {
       errors.senha = "Password is required.";
     } else if (submitData.senha.length < 6) {
       errors.senha = "Password must be at least 6 characters.";
     }
 
-    // Set the errors and update form validity
     setErrors(errors);
     setIsFormValid(Object.keys(errors).length === 0);
 
-    return Object.keys(errors).length === 0; // Return true if no errors, false otherwise
+    return Object.keys(errors).length === 0;
   };
 
   useEffect(() => {
     validateForm();
   }, [submitData]);
-
-  // useEffect(() => {
-  //   LoadUserParams();
-  // }, []);
 
   return (
     <Container>
@@ -172,7 +152,6 @@ const Login = ({ navigation }) => {
         isRecoveryPassword={false}
       />
 
-      {/* Display error messages */}
       {Object.values(errors).map((error, index) => (
         <Text
           key={index}

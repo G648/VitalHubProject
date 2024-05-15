@@ -109,39 +109,19 @@ export default function MedicalExamsPhotos(
       setPhoto(photo.uri)
 
       setOpenModal(true)
-      console.log(photo);
     }
   }
 
-  async function TakeVideo() {
-    if (cameraRef) {
-      setIsRecording(true)
-      const photo = await cameraRef.current.recordAsync()
-
-      setPhoto(photo.uri)
-
-      setOpenModal(true)
-      console.log(photo);
-    }
-  }
-
-  async function StopVideo() {
-    if (cameraRef) {
-      setIsRecording(false)
-      const photo = await cameraRef.current.stopRecording()
-    }
-  }
-
-  async function SavePhoto() {
-    if (photo) {
-      await MediaLibrary.createAssetAsync(photo)
-        .then(() => {
-          Alert.alert("Sucesso", 'Foto salva na galeria')
-        }).catch(() => {
-          Alert.alert("erro ao processar foto")
-        })
-    }
-  }
+  // async function SavePhoto() {
+  //   if (photo) {
+  //     await MediaLibrary.createAssetAsync(photo)
+  //       .then(() => {
+  //         Alert.alert("Sucesso", 'Foto salva na galeria')
+  //       }).catch(() => {
+  //         Alert.alert("erro ao processar foto")
+  //       })
+  //   }
+  // }
 
   async function GetLastPhoto() {
     const { assets } = await MediaLibrary.getAssetsAsync({ sortBy: [[MediaLibrary.SortBy.creationTime, false]], first: 1 })
@@ -209,17 +189,9 @@ export default function MedicalExamsPhotos(
 
   useEffect(() => {
     (async () => {
-      //acesso a camera
-      // const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync()
-
-      //acesso a galeria da camera
-      // const { status: mediaStatus } = await MediaLibrary.requestPermissionsAsync()
       if (permissionResponse && !permissionResponse.granted) {
         await requestPermission();
       }
-
-      //acesso ao microfone
-      // const { status: videoStatus } = await Camera.requestMicrophonePermissionsAsync()
     })();
 
   }, [])

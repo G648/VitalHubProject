@@ -23,7 +23,7 @@ export const ScheduledButton = styled.TouchableOpacity`
   height: 60px;
   color: ${APP_COLORS.white};
   border-radius: 8px;
-  elevation: 9px;
+  elevation: 9;
   position: absolute;
   bottom: 2%; /* Ajuste conforme necessário */
   left: 80%;
