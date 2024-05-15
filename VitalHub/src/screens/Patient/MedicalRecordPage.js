@@ -153,6 +153,7 @@ export default function MedicalRecordPage({ navigation, route }) {
                     placeholderTextColor={APP_COLORS.primaryV1}
                     boxHeigth={'150px'}
                     boxWidth={"100%"}
+                    textAlignVertical='top'
                     borderColor={APP_COLORS.primary}
                     editable={isEditable}
                     isEditable={isEditable}

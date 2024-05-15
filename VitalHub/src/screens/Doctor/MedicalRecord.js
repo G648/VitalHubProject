@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Container } from '../../components/Header/Header'
+import { Container, DataUser } from '../../components/Header/Header'
 // import { useRoute } from '@react-navigation/native';
 import { ContainerInfoUser, Infouser, ProfileImageModal } from '../../components/Dialogs/SeeMedicalDialog';
 import { ContainerTextBox } from '../../components/Dialogs/CalcelDialogs';
@@ -8,6 +8,8 @@ import styled from 'styled-components/native';
 import { APP_COLORS } from '../../utils/App_colors';
 import { Button } from '../../components/Button/Button';
 import { UnderlinedLink } from '../../components/Links/Style';
+import { ContainerInfoDoctor, ContainerInfoPatient, Crm, DoctorContainerInfos, DoctorName, Especialidade } from './DoctorProfile';
+import moment from "moment";
 
 
 export const ContainerViewUserInfo = styled.View`
@@ -57,10 +59,10 @@ export default function MedicalRecord({ navigation, route }) {
     const [isEditable, setIsEditable] = useState(false); // Estado de edição dos inputs
     // const {nomeMedico} = route.params;
 
-    const { consultaId, foto, nomeMedico, crm, especialidade, descricao, diagnostico } = route.params;
+    const { consultaId, foto, email, nomePaciente, dataNascimento, descricao, diagnostico } = route.params;
     const [photoUri, setPhotoUri] = useState(null);
 
-    console.log(consultaId, foto, nomeMedico, crm, especialidade, descricao, diagnostico);
+    console.log(consultaId, foto, nomePaciente, dataNascimento, descricao, diagnostico);
 
 
     const toggleEdit = () => {
@@ -71,6 +73,22 @@ export default function MedicalRecord({ navigation, route }) {
         setIsEditable(false); // Define todos os inputs como não editáveis ao salvar
     };
 
+    const calcularIdade = (dataNascimento) => {
+        const hoje = moment();
+        const dataNasc = moment(dataNascimento);
+        const anos = hoje.diff(dataNasc, "years");
+        return anos;
+    };
+
+    useEffect(() => {
+        console.log(route.params);
+        if (route.params) {
+            setPhotoUri(route.params.foto)
+            console.log(route.params.foto);
+            // InserirExame();
+        }
+    }, [route])
+
     return (
         <Container>
 
@@ -80,7 +98,7 @@ export default function MedicalRecord({ navigation, route }) {
                 widthImageUser={"100%"}
                 heightImageUser={280}
             />
-
+            {/* 
             <ContainerTextBox
                 padding={"5px"}
             >
@@ -88,20 +106,40 @@ export default function MedicalRecord({ navigation, route }) {
                 <ProfileName
                     marginBottomName={20}
                 >
-                    {`${nomeMedico}`}
+                    {`${nomePaciente}`}
                 </ProfileName>
 
                 <ContainerInfoUser
                     widtContainerInfoUser={"68%"}
                 >
                     <Infouser>
-                        {/* {`${userData.idade} anos`} */}
+                        {`${userData.idade} anos`}
                     </Infouser>
                     <Infouser>
-                        {/* {userData.email} */}
+                        {userData.email}
                     </Infouser>
                 </ContainerInfoUser>
-            </ContainerTextBox>
+            </ContainerTextBox> */}
+
+
+            <DoctorContainerInfos>
+                <DataUser>
+                    <DoctorName>
+                        {`${nomePaciente}`}
+                    </DoctorName>
+
+                    <ContainerInfoPatient>
+                        <Crm>
+                            {`${calcularIdade(dataNascimento)} anos`}
+                        </Crm>
+
+                        <Especialidade>
+                            {email}
+                        </Especialidade>
+                    </ContainerInfoPatient>
+                </DataUser>
+            </DoctorContainerInfos>
+
 
             {/*  Scroll view para informações do user */}
             <ScrollViewContainer
@@ -112,11 +150,11 @@ export default function MedicalRecord({ navigation, route }) {
                         Descrição da consulta
                     </TextLabel>
                     <InputStyle
+                        placeholder={descricao}
                         placeholderTextColor={APP_COLORS.primaryV1}
                         boxHeigth={'200px'}
                         boxWidth={"100%"}
                         borderColor={APP_COLORS.primary}
-                        placeholder='Descrição'
                         textAlignVertical='top'
                         editable={isEditable}
                         isEditable={isEditable}
@@ -126,11 +164,11 @@ export default function MedicalRecord({ navigation, route }) {
                         Diagnóstico do paciente
                     </TextLabel>
                     <InputStyle
+                        placeholder={diagnostico}
                         placeholderTextColor={APP_COLORS.primaryV1}
                         boxHeigth={'80px'}
                         boxWidth={"100%"}
                         borderColor={APP_COLORS.primary}
-                        placeholder='Prescrição médica'
                         textAlignVertical='center'
                         editable={isEditable}
                         isEditable={isEditable}

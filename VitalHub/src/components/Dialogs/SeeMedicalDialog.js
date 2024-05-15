@@ -42,6 +42,10 @@ export const ContainerInfoUser = styled.View`
 export const Infouser = styled.Text`
     font-size: ${({ fontSizeAge = "16px" }) => fontSizeAge};
 `
+export const InfoEmail = styled.Text`
+    font-size: ${({ fontSizeAge = "16px" }) => fontSizeAge};
+    /* width: 145%; */
+`
 
 export const ProfileImageModal = styled.Image`
     width: ${({ widthImageUser = "60px" }) => widthImageUser};
@@ -95,9 +99,9 @@ export function SeeMedicalDialog({
                         <Infouser>
                             {ageUser}
                         </Infouser>
-                        <Infouser>
+                        <InfoEmail>
                             {emailuser}
-                        </Infouser>
+                        </InfoEmail>
                     </ContainerInfoUser>
                     <Button
                         activeOpacity={.8}

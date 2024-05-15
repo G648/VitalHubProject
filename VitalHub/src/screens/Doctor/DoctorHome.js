@@ -39,6 +39,8 @@ const DoctorHome = ({ navigation }) => {
     // console.log(selectedUserData);
   };
 
+  console.log(selectedUserData);
+
   const calcularIdade = (dataNascimento) => {
     const hoje = moment();
     const dataNasc = moment(dataNascimento);
@@ -246,23 +248,12 @@ const DoctorHome = ({ navigation }) => {
                   situation={item.situacao.situacao}
                   onPress={() => {
                     setisModalMedical(true);
+                    item.situacao.situacao === "Realizados"
+                      ? handleCardPress(selectedButton, item)
+                      : null
 
-                    // navigation.push("MedicalRecord",
-                    //   {
-                    //     consultaId: item.id,
-                    //     foto: item.medicoClinica.medico.idNavigation.foto,
-                    //     nomeMedico: item.medicoClinica.medico.idNavigation.nome,
-                    //     crm: item.medicoClinica.medico.crm,
-                    //     especialidade: item.medicoClinica.medico.especialidade.especialidade1,
-                    //     descricao: item.descricao, 
-                    //     diagnostico: item.diagnostico
-                    //   }
-                    // )
                   }}
                 // onPressBorder={() =>
-                //   item.situacao.situacao === "Realizados"
-                //     ? handleCardPress(selectedButton, item)
-                //     : null
                 // }
                 />
               );
@@ -306,28 +297,28 @@ const DoctorHome = ({ navigation }) => {
       {/* Renderiza o Dialogs quando isModalVisible for true */}
       {/* {isModalCancel && (
         <CancelDialogs
-          isVisible={isModalCancel}
-          bgColor={APP_COLORS.grayV6}
-          titleContent={"Cancelar consulta"}
-          customContent={
-            "Ao cancelar essa consulta, abrirá uma possível disponibilidade no seu horário, deseja mesmo cancelar essa consulta?"
-          }
-          fontSizeText={"22px"}
-          fontSizeTextParagraf={"15px"}
-          onPressConfirm={() => {
-            setIsModalCancel(false);
-          }}
-          onPressCancel={() => {
-            setIsModalCancel(false);
-          }}
-          showCancelButton={true}
+        isVisible={isModalCancel}
+        bgColor={APP_COLORS.grayV6}
+        titleContent={"Cancelar consulta"}
+        customContent={
+          "Ao cancelar essa consulta, abrirá uma possível disponibilidade no seu horário, deseja mesmo cancelar essa consulta?"
+        }
+        fontSizeText={"22px"}
+        fontSizeTextParagraf={"15px"}
+        onPressConfirm={() => {
+          setIsModalCancel(false);
+        }}
+        onPressCancel={() => {
+          setIsModalCancel(false);
+        }}
+        showCancelButton={true}
         />
       )} */}
 
       {/* {isModalMedical && (
         <SeeMedicalDialog
-          isVisible={isModalMedical}
-          // imageUser={
+        isVisible={isModalMedical}
+        // imageUser={
           //   selectedUserData != null &&
           //   selectedUserData.idNavigation.foto
           // }
@@ -349,20 +340,20 @@ const DoctorHome = ({ navigation }) => {
           }}
           widtContainerInfoUser={280}
           marginBottomName={"30px"}
-        />
-      )} */}
+          />
+        )} */}
 
 
       {isModalMedical && (
         <SeeMedicalDialog
           isVisible={isModalMedical}
-          // imageUser={
-          //   selectedUserData != null &&
-          //   selectedUserData.idNavigation.foto
-          // }
+          imageUser={
+            selectedUserData != null &&
+            selectedUserData.paciente.idNavigation.foto
+          }
           nameUser={
             selectedUserData != null &&
-            selectedUserData.idNavigation.nome
+            selectedUserData.paciente.idNavigation.nome
           }
           ageUser={`   ${calcularIdade(
             selectedUserData.paciente.dataNascimento
@@ -378,10 +369,22 @@ const DoctorHome = ({ navigation }) => {
           onPressCancel={() => setisModalMedical(false)}
           titleButton={"Ver local da consulta".toUpperCase()}
           onPress={() => {
-            navigation.navigate("MedicalRecord");
+            // navigation.navigate("MedicalRecord");
+            navigation.push("MedicalRecord",
+              {
+                consultaId: selectedUserData.id,
+                foto: selectedUserData.paciente.idNavigation.foto,
+                email: selectedUserData.paciente.idNavigation.email,
+                nomePaciente: selectedUserData.paciente.idNavigation.nome,
+                dataNascimento: selectedUserData.paciente.dataNascimento,
+                descricao: selectedUserData.descricao,
+                diagnostico: selectedUserData.diagnostico
+
+              }
+            )
             setisModalMedical(false);
             //enviar os dados para a página de medicalRecords
-            navigation.navigate("MedicalRecord", { userData: selectedUserData });
+            // navigation.navigate("MedicalRecord", { userData: selectedUserData });
           }}
           widtContainerInfoUser={180}
           marginBottomName={"15px"}

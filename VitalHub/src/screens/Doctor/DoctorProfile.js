@@ -63,6 +63,11 @@ export const ContainerInfoDoctor = styled.View`
   justify-content: center;
   gap: 20px;
 `
+
+export const ContainerInfoPatient = styled.View`
+  flex-direction: column;
+  justify-content: center;
+`
 export const Crm = styled(DoctorEmail)`
 
 `
