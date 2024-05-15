@@ -178,13 +178,13 @@ const DoctorHome = ({ navigation }) => {
 
     switch (buttonName) {
       case "Rotina":
-        setPrioridadeSelected("884CBA42-62A3-4FA5-856C-03A0AE7E3333");
+        setPrioridadeSelected("029B2CA3-8AC1-4F8D-8757-6B0FB623EB86");
         break;
       case "Exame":
-        setPrioridadeSelected("B200F0CC-FB72-4D3F-88B4-63EC574DFC67");
+        setPrioridadeSelected("5F8F5DAB-DF4F-4281-BF06-687564AE850F");
         break;
       case "Urgência":
-        setPrioridadeSelected("8D422B71-59FC-4A66-A025-B4294CF691D0");
+        setPrioridadeSelected("C646BE4D-4E43-440A-B5CD-E257F1FFCE9F");
         break;
 
       default:

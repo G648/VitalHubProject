@@ -30,7 +30,7 @@ export default function ChooseDate({ navigation, route }) {
   console.log(agendamento);
 
   const dadosEnviadosApi = {
-    situacaoId: "B2A29251-975A-46CA-8A41-D82AD95512DA",
+    situacaoId: "4BA379BE-4D05-4CCC-A220-FB9D922E84EA",
     pacienteId: agendamento.pacienteId,
     medicoClinicaId: agendamento.medicoClinicaId,
     prioridadeId: agendamento.prioridadeId,
@@ -76,6 +76,8 @@ export default function ChooseDate({ navigation, route }) {
 
   async function handleGoBackPage() {
     try {
+
+      console.log( dadosEnviadosApi);
       const response = await api.post(
         "/api/Consultas/Cadastrar",
         dadosEnviadosApi,
@@ -91,7 +93,7 @@ export default function ChooseDate({ navigation, route }) {
         navigation.navigate("HomePatient");
       }
     } catch (error) {
-      console.log(error);
+      console.log(`faz o L ${error}`);
     }
   }
 
