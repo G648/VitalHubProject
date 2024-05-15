@@ -26,6 +26,7 @@ import axios from "axios";
 import { useRoute } from "@react-navigation/native";
 import api from "../../../service/service";
 import { Masks, useMaskedInputProps } from "react-native-mask-input";
+import { disableErrorHandling } from "expo";
 
 export default function InfosCadastroUser({ navigation, route }) {
   const [date, setDate] = useState(new Date());
@@ -39,6 +40,7 @@ export default function InfosCadastroUser({ navigation, route }) {
   const [rg, setRg] = useState("");
   const [cpf, setCpf] = useState("");
   const [numero, setNumero] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const { email, senha } = route.params;
   const { params } = useRoute();
 
@@ -102,13 +104,15 @@ export default function InfosCadastroUser({ navigation, route }) {
 
     console.log(form);
 
+    setIsLoading(true);
+
     await api
       .post("/api/Pacientes", form, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       })
-      .then((response) => {
+      .then(() => {
         navigation.navigate("Login");
       })
       .catch((error) => {
@@ -281,31 +285,16 @@ export default function InfosCadastroUser({ navigation, route }) {
           value={infosEndereco.localidade}
         />
 
-        {!isEditable && ( // Renderiza o botão de editar apenas quando os inputs não estiverem editáveis
-          <Button
-            width={"100%"}
-            activeOpacity={0.6}
-            backgroundColor={APP_COLORS.secondary}
-            border={APP_COLORS.secondary}
-            color={APP_COLORS.white}
-            title={"Cadastrar"}
-            // marginTop={30}
-            onPress={SubmitForm}
-          />
-        )}
-
-        {isEditable && ( // Renderiza o botão de salvar apenas quando os inputs estiverem editáveis
-          <Button
-            width={"100%"}
-            activeOpacity={0.6}
-            backgroundColor={APP_COLORS.secondary}
-            border={APP_COLORS.secondary}
-            color={APP_COLORS.white}
-            title={"Cadastrar"}
-            // marginTop={-10}
-            onPress={SubmitForm}
-          />
-        )}
+        <Button
+          width={"100%"}
+          activeOpacity={0.6}
+          backgroundColor={isLoading ? APP_COLORS.grayV6 : APP_COLORS.secondary}
+          border={isLoading ? APP_COLORS.grayV6 : APP_COLORS.secondary}
+          color={APP_COLORS.white}
+          title={!isLoading ? "cadastrar".toUpperCase()  : <ActivityIndicator />}
+          disabled={!isLoading ? false : true}
+          onPress={SubmitForm}
+        />
 
         <UnderlinedLink
           textIntput={"Cancelar"}

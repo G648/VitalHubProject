@@ -18,6 +18,8 @@ export default function ChoseDoctor({ navigation, route }) {
   const [medicoClinicaId, setMedicoClinicaId] = useState("");
   const [isSelected, setIsSelected] = useState(false);
 
+  console.log(doctorList);
+
   const { agendamento } = route.params;
 
   const getDoctor = async () => {

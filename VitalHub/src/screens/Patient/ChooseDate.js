@@ -30,7 +30,7 @@ export default function ChooseDate({ navigation, route }) {
   console.log(agendamento);
 
   const dadosEnviadosApi = {
-    situacaoId: "4BA379BE-4D05-4CCC-A220-FB9D922E84EA",
+    situacaoId: "B2A29251-975A-46CA-8A41-D82AD95512DA",
     pacienteId: agendamento.pacienteId,
     medicoClinicaId: agendamento.medicoClinicaId,
     prioridadeId: agendamento.prioridadeId,
