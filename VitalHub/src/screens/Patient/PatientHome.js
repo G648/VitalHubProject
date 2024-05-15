@@ -62,6 +62,12 @@ const DoctorHome = ({ navigation }) => {
     setSelectedUserData(userData);
   };
 
+  console.log('consultas');
+  console.log(consultas);
+  console.log(idUser);
+  console.log("dadosUser");
+  console.log(selectedUserData);
+
   const verifyPriorityLevels = (priority) => {
     switch (priority) {
       case 0:
@@ -262,7 +268,7 @@ const DoctorHome = ({ navigation }) => {
                   nameUser={
                     "Dr. " + item.medicoClinica.medico.idNavigation.nome
                   }
-                  // ageUser={item.medicoClinica.medico.crm}
+                  ageUser={item.medicoClinica.medico.crm}
                   descriptionUser={verifyPriorityLevels(
                     item.prioridade.prioridade
                   )}
@@ -330,7 +336,7 @@ const DoctorHome = ({ navigation }) => {
                   nameUser={
                     "Dr. " + item.medicoClinica.medico.idNavigation.nome
                   }
-                  // ageUser={"crm: " + item.medicoClinica.medico.crm}
+                  ageUser={"crm: " + item.medicoClinica.medico.crm}
                   descriptionUser={verifyPriorityLevels(
                     item.prioridade.prioridade
                   )}
@@ -464,7 +470,3 @@ const DoctorHome = ({ navigation }) => {
 };
 
 export default DoctorHome;
-
-
-
-

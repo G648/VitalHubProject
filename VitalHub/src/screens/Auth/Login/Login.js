@@ -13,6 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import { userDecodeToken } from "../../../utils/Auth";
 
+
 const Login = ({ navigation }) => {
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
@@ -21,11 +22,15 @@ const Login = ({ navigation }) => {
     senha: "123456",
   });
 
+  console.log(submitData);
+
   const [loading, setLoading] = useState(false);
 
   async function LoadUserParams() {
     try {
       const token = await userDecodeToken();
+
+      console.log(token);
 
       if (token) {
         if (token.role === "Medico") {
@@ -58,11 +63,13 @@ const Login = ({ navigation }) => {
 
       await AsyncStorage.setItem("token", JSON.stringify(response.data));
 
+      console.log(response.data);
+
       await LoadUserParams();
     } catch (error) {
       showValidationLogin();
 
-      console.log(`teste ${error}`);
+      console.error(`teste ${error}`);
     } finally {
       setLoading(false);
     }
@@ -122,11 +129,6 @@ const Login = ({ navigation }) => {
 
   return (
     <Container>
-      <ComeBack
-        onClick={() => navigation.navigate("Navegacao")}
-        buttonOpacity={1}
-      />
-
       <Logo source={require("../../../assets/Images/LogoBlue.png")} />
       <Title>Entrar ou criar conta</Title>
 
@@ -172,7 +174,7 @@ const Login = ({ navigation }) => {
 
       <Button
         color={APP_COLORS.white}
-        border={isFormValid ? APP_COLORS.secondary : APP_COLORS.grayV6}
+        border={loading ? APP_COLORS.grayV6 :  APP_COLORS.secondary}
         activeOpacity={1}
         title={
           !loading ? (
@@ -182,8 +184,8 @@ const Login = ({ navigation }) => {
           )
         }
         marginTop={15}
-        disabled={!isFormValid}
-        backgroundColor={isFormValid ? APP_COLORS.secondary : APP_COLORS.grayV6}
+        disabled={loading ? true : false}
+        backgroundColor={!loading ? APP_COLORS.secondary : APP_COLORS.grayV6}
         onPress={() => handleSelectUser()}
       />
 
